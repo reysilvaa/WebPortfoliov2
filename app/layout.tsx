@@ -60,6 +60,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark">
+      <meta name="google-site-verification" content="sSAXC-o0B8AiNsebK1dSgyA87NmmVYdHOo7pCJoSOgw" />
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="alternate icon" href="/favicon.ico" sizes="any" />
