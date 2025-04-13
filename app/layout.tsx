@@ -21,6 +21,9 @@ export const metadata = {
     template: `%s | ${seoConfig.title || 'Reynald Silva | Portfolio'}`,
   },
   description: seoConfig.description || 'Portfolio Moch Reynald Silva Baktiar - Web & Mobile Developer',
+  verification: {
+    google: "sSAXC-o0B8AiNsebK1dSgyA87NmmVYdHOo7pCJoSOgw",
+  },
   openGraph: {
     type: 'website',
     locale: 'id_ID',
@@ -60,7 +63,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark">
-      <meta name="google-site-verification" content="sSAXC-o0B8AiNsebK1dSgyA87NmmVYdHOo7pCJoSOgw" />
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="alternate icon" href="/favicon.ico" sizes="any" />
