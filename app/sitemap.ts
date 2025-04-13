@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 import { projects, projectsList } from './models'
 
-type ChangeFreq = 'always' | 'hourly' | 'daily' | 'weekly' | 'daily' | 'yearly' | 'never';
+type ChangeFreq = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://reynaldsilva.vercel.app'
@@ -11,31 +11,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'daily' as ChangeFreq,
+      changeFreq: 'daily' as ChangeFreq,
       priority: 1,
     },
     {
       url: `${baseUrl}/about`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as ChangeFreq,
+      changeFreq: 'daily' as ChangeFreq,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/projects`,
       lastModified: new Date(),
-      changeFrequency: 'weekly' as ChangeFreq,
+      changeFreq: 'weekly' as ChangeFreq,
       priority: 0.9,
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: new Date(),
-      changeFrequency: 'weekly' as ChangeFreq,
+      changeFreq: 'weekly' as ChangeFreq,
       priority: 0.8,
     },
     {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as ChangeFreq,
+      changeFreq: 'daily' as ChangeFreq,
       priority: 0.7,
     }
   ]
@@ -44,7 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const projectsPages = Object.keys(projects).map(projectId => ({
     url: `${baseUrl}/projects/${projectId}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as ChangeFreq,
+    changeFreq: 'daily' as ChangeFreq,
     priority: 0.7,
   }))
   
