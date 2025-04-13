@@ -1,6 +1,5 @@
 import type React from "react"
 import { JetBrains_Mono } from "next/font/google"
-import { DefaultSeo } from 'next-seo'
 import Script from 'next/script'
 import "./globals.css"
 import { Navigation } from "@/components/navigation"
@@ -93,7 +92,6 @@ export default function RootLayout({
         />
       </head>
       <body className={`${jetbrainsMono.variable} font-mono bg-black text-white min-h-screen flex flex-col`}>
-        <DefaultSeo {...seoConfig} />
         <div className="fixed inset-0 bg-grid-pattern opacity-10 pointer-events-none z-0"></div>
         <Navigation />
         <main className="flex-1 container mx-auto px-4 py-8 relative z-10">{children}</main>
@@ -102,6 +100,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-import './globals.css'
