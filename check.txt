@@ -1,0 +1,254 @@
+﻿
+> portofolio@0.0.1 check D:\Koding\Projek\Self\portofolio
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: d:\Koding\Projek\Self\portofolio
+Getting Svelte diagnostics...
+
+d:\Koding\Projek\Self\portofolio\[32mvite.config.ts[39m:9:28
+[31mError[39m: Cannot find module '@vitest/browser-playwright' or its corresponding type declarations. 
+[36mimport { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from [35m'@vitest/browser-playwright'[36m;
+const dirname =[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.server.ts[39m:3:22
+[31mError[39m: Cannot find module '$lib/server/auth' or its corresponding type declarations. 
+[36mimport { building } from '$app/environment';
+import { auth } from [35m'$lib/server/auth'[36m;
+import { svelteKitHandler } from 'better-auth/svelte-kit';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.server.ts[39m:6:34
+[31mError[39m: Cannot find module '$lib/paraglide/runtime' or its corresponding type declarations. 
+[36mimport type { Handle } from '@sveltejs/kit';
+import { getTextDirection } from [35m'$lib/paraglide/runtime'[36m;
+import { paraglideMiddleware } from '$lib/paraglide/server';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.server.ts[39m:7:37
+[31mError[39m: Cannot find module '$lib/paraglide/server' or its corresponding type declarations. 
+[36mimport { getTextDirection } from '$lib/paraglide/runtime';
+import { paraglideMiddleware } from [35m'$lib/paraglide/server'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.server.ts[39m:10:40
+[31mError[39m: Binding element 'request' implicitly has an 'any' type. 
+[36mconst handleParaglide: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, ({ [35mrequest[36m, locale }) => {
+		event.request = request;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.server.ts[39m:10:49
+[31mError[39m: Binding element 'locale' implicitly has an 'any' type. 
+[36mconst handleParaglide: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, ({ request, [35mlocale[36m }) => {
+		event.request = request;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.ts[39m:1:31
+[31mError[39m: Cannot find module '$lib/paraglide/runtime' or its corresponding type declarations. 
+[36mimport { deLocalizeUrl } from [35m'$lib/paraglide/runtime'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\lib\server\auth.ts[39m:6:20
+[31mError[39m: Cannot find module '$lib/server/db' or its corresponding type declarations. 
+[36mimport { getRequestEvent } from '$app/server';
+import { db } from [35m'$lib/server/db'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\lib\server\db\index.ts[39m:3:25
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Did you mean './schema.js'? 
+[36mimport { createClient } from '@libsql/client';
+import * as schema from [35m'./schema'[36m;
+import { env } from '$env/dynamic/private';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\lib\server\db\schema.ts[39m:11:15
+[31mError[39m: Cannot find module './auth.schema' or its corresponding type declarations. 
+[36m
+export * from [35m'./auth.schema'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+layout.server.ts[39m:2:39
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport { redirect } from '@sveltejs/kit';
+import type { LayoutServerLoad } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+layout.server.ts[39m:4:48
+[31mError[39m: Binding element 'locals' implicitly has an 'any' type. 
+[36m
+export const load: LayoutServerLoad = async ({ [35mlocals[36m, url }) => {
+	const user = locals.user;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+layout.server.ts[39m:4:56
+[31mError[39m: Binding element 'url' implicitly has an 'any' type. 
+[36m
+export const load: LayoutServerLoad = async ({ locals, [35murl[36m }) => {
+	const user = locals.user;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\login\+page.server.ts[39m:2:37
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\login\+page.server.ts[39m:4:46
+[31mError[39m: Binding element 'locals' implicitly has an 'any' type. 
+[36m
+export const load: PageServerLoad = async ({ [35mlocals[36m }) => {
+	if (locals.user) {[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.server.ts[39m:2:30
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport { redirect } from '@sveltejs/kit';
+import type { Actions } from [35m'./$types'[36m;
+import type { PageServerLoad } from './$types';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.server.ts[39m:3:37
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport type { Actions } from './$types';
+import type { PageServerLoad } from [35m'./$types'[36m;
+import { auth } from '$lib/server/auth';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.server.ts[39m:4:22
+[31mError[39m: Cannot find module '$lib/server/auth' or its corresponding type declarations. 
+[36mimport type { PageServerLoad } from './$types';
+import { auth } from [35m'$lib/server/auth'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.server.ts[39m:6:44
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36m
+export const load: PageServerLoad = async ([35mevent[36m) => {
+	if (!event.locals.user) {[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.server.ts[39m:14:18
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36mexport const actions: Actions = {
+	signOut: async ([35mevent[36m) => {
+		await auth.api.signOut({[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:2:30
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport { fail, redirect } from '@sveltejs/kit';
+import type { Actions } from [35m'./$types'[36m;
+import type { PageServerLoad } from './$types';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:3:37
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. 
+[36mimport type { Actions } from './$types';
+import type { PageServerLoad } from [35m'./$types'[36m;
+import { auth } from '$lib/server/auth';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:4:22
+[31mError[39m: Cannot find module '$lib/server/auth' or its corresponding type declarations. 
+[36mimport type { PageServerLoad } from './$types';
+import { auth } from [35m'$lib/server/auth'[36m;
+import { APIError } from 'better-auth/api';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:7:44
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36m
+export const load: PageServerLoad = async ([35mevent[36m) => {
+	if (event.locals.user) {[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:15:22
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36mexport const actions: Actions = {
+	signInEmail: async ([35mevent[36m) => {
+		const formData = await event.request.formData();[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:37:22
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36m	},
+	signUpEmail: async ([35mevent[36m) => {
+		const formData = await event.request.formData();[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.server.ts[39m:61:23
+[31mError[39m: Parameter 'event' implicitly has an 'any' type. 
+[36m	},
+	signInSocial: async ([35mevent[36m) => {
+		const formData = await event.request.formData();[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\+layout.svelte[39m:3:40
+[31mError[39m: Cannot find module '$lib/paraglide/runtime' or its corresponding type declarations. (ts)
+[36m	import { page } from '$app/state';
+	import { locales, localizeHref } from [35m'$lib/paraglide/runtime'[36m;
+	import './layout.css';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+page.svelte[39m:2:29
+[31mError[39m: Cannot find module '$lib/auth-client' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import { authClient } from [35m'$lib/auth-client'[36m;
+	import { goto } from '$app/navigation';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+page.svelte[39m:4:32
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. (ts)
+[36m	import { goto } from '$app/navigation';
+	import type { PageData } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\login\+page.svelte[39m:2:29
+[31mError[39m: Cannot find module '$lib/auth-client' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import { authClient } from [35m'$lib/auth-client'[36m;
+	import { goto } from '$app/navigation';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\+page.svelte[39m:3:38
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. (ts)
+[36m	import { enhance } from '$app/forms';
+	import type { PageServerData } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\better-auth\login\+page.svelte[39m:3:34
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. (ts)
+[36m	import { enhance } from '$app/forms';
+	import type { ActionData } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\paraglide\+page.svelte[39m:2:28
+[31mError[39m: Cannot find module '$lib/paraglide/runtime' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import { setLocale } from [35m'$lib/paraglide/runtime'[36m;
+	import { m } from '$lib/paraglide/messages.js';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\demo\paraglide\+page.svelte[39m:3:20
+[31mError[39m: Cannot find module '$lib/paraglide/messages.js' or its corresponding type declarations. (ts)
+[36m	import { setLocale } from '$lib/paraglide/runtime';
+	import { m } from [35m'$lib/paraglide/messages.js'[36m;
+</script>[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Button.stories.svelte[39m:2:30
+[31mError[39m: Cannot find module '@storybook/addon-svelte-csf' or its corresponding type declarations. (js)
+[36m<script module>
+  import { defineMeta } from [35m'@storybook/addon-svelte-csf'[36m;
+  import Button from './Button.svelte';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Button.stories.svelte[39m:4:22
+[31mError[39m: Cannot find module 'storybook/test' or its corresponding type declarations. (js)
+[36m  import Button from './Button.svelte';
+  import { fn } from [35m'storybook/test'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Header.stories.svelte[39m:2:30
+[31mError[39m: Cannot find module '@storybook/addon-svelte-csf' or its corresponding type declarations. (js)
+[36m<script module>
+  import { defineMeta } from [35m'@storybook/addon-svelte-csf'[36m;
+  import Header from './Header.svelte';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Header.stories.svelte[39m:4:22
+[31mError[39m: Cannot find module 'storybook/test' or its corresponding type declarations. (js)
+[36m  import Header from './Header.svelte';
+  import { fn } from [35m'storybook/test'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Page.stories.svelte[39m:2:30
+[31mError[39m: Cannot find module '@storybook/addon-svelte-csf' or its corresponding type declarations. (js)
+[36m<script module>
+  import { defineMeta } from [35m'@storybook/addon-svelte-csf'[36m;
+  import { expect, userEvent, waitFor, within } from 'storybook/test';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Page.stories.svelte[39m:3:54
+[31mError[39m: Cannot find module 'storybook/test' or its corresponding type declarations. (js)
+[36m  import { defineMeta } from '@storybook/addon-svelte-csf';
+  import { expect, userEvent, waitFor, within } from [35m'storybook/test'[36m;
+  import Page from './Page.svelte';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Page.stories.svelte[39m:5:22
+[31mError[39m: Cannot find module 'storybook/test' or its corresponding type declarations. (js)
+[36m  import Page from './Page.svelte';
+  import { fn } from [35m'storybook/test'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\stories\Page.stories.svelte[39m:18:40
+[31mError[39m: Binding element 'canvasElement' implicitly has an 'any' type. (js)
+[36m
+<Story name="Logged In" play={async ({ [35mcanvasElement[36m }) => {
+    const canvas = within(canvasElement);[39m
+
+====================================
+[31msvelte-check found 43 errors and 0 warnings in 19 files
+[39mΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

@@ -1,0 +1,36 @@
+﻿
+> portofolio@0.0.1 check D:\Koding\Projek\Self\portofolio
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: d:\Koding\Projek\Self\portofolio
+Getting Svelte diagnostics...
+
+d:\Koding\Projek\Self\portofolio\[32msrc\lib\server\auth.ts[39m:6:20
+[31mError[39m: Cannot find module '$lib/server/db' or its corresponding type declarations. 
+[36mimport { getRequestEvent } from '$app/server';
+import { db } from [35m'$lib/server/db'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\hooks.ts[39m:1:31
+[31mError[39m: Cannot find module '$lib/paraglide/runtime' or its corresponding type declarations. 
+[36mimport { deLocalizeUrl } from [35m'$lib/paraglide/runtime'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+page.svelte[39m:2:29
+[31mError[39m: Cannot find module '$lib/auth-client' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import { authClient } from [35m'$lib/auth-client'[36m;
+	import { goto } from '$app/navigation';[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\+page.svelte[39m:4:32
+[31mError[39m: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'. Consider adding an extension to the import path. (ts)
+[36m	import { goto } from '$app/navigation';
+	import type { PageData } from [35m'./$types'[36m;[39m
+
+d:\Koding\Projek\Self\portofolio\[32msrc\routes\dashboard\login\+page.svelte[39m:2:29
+[31mError[39m: Cannot find module '$lib/auth-client' or its corresponding type declarations. (ts)
+[36m<script lang="ts">
+	import { authClient } from [35m'$lib/auth-client'[36m;
+	import { goto } from '$app/navigation';[39m
+
+====================================
+[31msvelte-check found 5 errors and 0 warnings in 4 files
+[39mΓÇëELIFECYCLEΓÇë Command failed with exit code 1.
