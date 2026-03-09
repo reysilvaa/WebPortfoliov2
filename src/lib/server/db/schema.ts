@@ -4,14 +4,20 @@ export const projects = sqliteTable('projects', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
+	githubId: integer('github_id').unique(),
 	title: text('title').notNull(),
-	description: text('description').notNull(),
+	description: text('description'),
 	imageUrl: text('image_url'),
 	repoUrl: text('repo_url'),
 	liveUrl: text('live_url'),
-	tags: text('tags'), // Stored as comma-separated or JSON
+	stars: integer('stars').default(0),
+	forks: integer('forks').default(0),
+	language: text('language'),
+	tags: text('tags'),
+	isHidden: integer('is_hidden', { mode: 'boolean' }).default(false),
 	order: integer('order').default(0),
-	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date())
 });
 
 export const certificates = sqliteTable('certificates', {

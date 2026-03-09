@@ -1,11 +1,19 @@
 import { db } from '$lib/server/db';
 import { projects, certificates, skills, profile } from '$lib/server/db/schema';
-import { desc, asc, eq } from 'drizzle-orm';
+import { desc, asc, eq, inArray, notInArray } from 'drizzle-orm';
+import { GithubService } from './github.service';
 
 export class PortfolioService {
-	static async getAllContent() {
+	static async getAllContent(includeHidden = false) {
+		const projectQuery = db.select().from(projects);
+
+		if (!includeHidden) {
+			// @ts-ignore drizzle mode boolean handling
+			projectQuery.where(eq(projects.isHidden, false));
+		}
+
 		const [allProjects, allCertificates, allSkills, currentProfile] = await Promise.all([
-			db.select().from(projects).orderBy(asc(projects.order), desc(projects.createdAt)),
+			projectQuery.orderBy(asc(projects.order), desc(projects.createdAt)),
 			db.select().from(certificates).orderBy(asc(certificates.order)),
 			db.select().from(skills).orderBy(asc(skills.order)),
 			db.select().from(profile).where(eq(profile.id, 'main')).limit(1)
@@ -19,6 +27,64 @@ export class PortfolioService {
 		};
 	}
 
+	static async syncGithubProjects() {
+		const githubRepos = await GithubService.getAllRepositories();
+		const existingProjects = await db.select().from(projects);
+		const existingGithubIds = existingProjects
+			.filter((p) => p.githubId !== null)
+			.map((p) => p.githubId as number);
+
+		const results = [];
+
+		for (const repo of githubRepos) {
+			const projectData = {
+				githubId: repo.id,
+				title: repo.name,
+				description: repo.description,
+				repoUrl: repo.html_url,
+				liveUrl: repo.homepage,
+				stars: repo.stargazers_count,
+				forks: repo.forks_count,
+				language: repo.language,
+				tags: Array.from(new Set([...(repo.topics || []), repo.owner.login]))
+					.filter((t) => t !== 'reysilvaa') // Example: exclude own username from tags
+					.join(', '),
+				updatedAt: new Date(repo.updated_at)
+			};
+
+			if (existingGithubIds.includes(repo.id)) {
+				// Update existing
+				const updated = await db
+					.update(projects)
+					.set(projectData)
+					.where(eq(projects.githubId, repo.id))
+					.returning();
+				results.push(...updated);
+			} else {
+				// Insert new
+				const inserted = await db
+					.insert(projects)
+					.values({
+						...projectData,
+						isHidden: false,
+						order: 0
+					})
+					.returning();
+				results.push(...inserted);
+			}
+		}
+
+		return results;
+	}
+
+	static async toggleProjectVisibility(id: string, isHidden: boolean) {
+		return await db.update(projects).set({ isHidden }).where(eq(projects.id, id)).returning();
+	}
+
+	static async updateProjectOrder(id: string, order: number) {
+		return await db.update(projects).set({ order }).where(eq(projects.id, id)).returning();
+	}
+
 	static async getProfile() {
 		const result = await db.select().from(profile).where(eq(profile.id, 'main')).limit(1);
 		return result[0] || null;
@@ -29,15 +95,18 @@ export class PortfolioService {
 		if (existing) {
 			return await db.update(profile).set(data).where(eq(profile.id, 'main')).returning();
 		} else {
-			return await db.insert(profile).values({
-				id: 'main',
-				name: data.name || '',
-				role: data.role || '',
-				bio: data.bio || '',
-				email: data.email || '',
-				github: data.github || '',
-				linkedin: data.linkedin || ''
-			}).returning();
+			return await db
+				.insert(profile)
+				.values({
+					id: 'main',
+					name: data.name || '',
+					role: data.role || '',
+					bio: data.bio || '',
+					email: data.email || '',
+					github: data.github || '',
+					linkedin: data.linkedin || ''
+				})
+				.returning();
 		}
 	}
 

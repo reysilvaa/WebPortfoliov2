@@ -10,7 +10,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (session) {
 		// Restriction: Only allow @reysilvaa (identified by email or name)
 		const ALLOWED_EMAILS = [process.env.GITHUB_EMAIL]; // Add your github email here
-		const isOwner = ALLOWED_EMAILS.includes(session.user.email) || session.user.name === 'Rey Silva';
+		const isOwner =
+			ALLOWED_EMAILS.includes(session.user.email) || session.user.name === 'Rey Silva';
 
 		if (isOwner) {
 			event.locals.session = session.session;

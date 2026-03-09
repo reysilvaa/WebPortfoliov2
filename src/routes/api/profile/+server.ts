@@ -3,19 +3,19 @@ import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ locals }) => {
-    if (!locals.user) throw error(401, 'Unauthorized');
-    const profile = await PortfolioService.getProfile();
-    return json(profile);
+	if (!locals.user) throw error(401, 'Unauthorized');
+	const profile = await PortfolioService.getProfile();
+	return json(profile);
 };
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-    if (!locals.user) throw error(401, 'Unauthorized');
-    const data = await request.json();
-    try {
-        const result = await PortfolioService.updateProfile(data);
-        return json(result);
-    } catch (e) {
-        console.error(e);
-        throw error(500, 'Failed to update profile');
-    }
+	if (!locals.user) throw error(401, 'Unauthorized');
+	const data = await request.json();
+	try {
+		const result = await PortfolioService.updateProfile(data);
+		return json(result);
+	} catch (e) {
+		console.error(e);
+		throw error(500, 'Failed to update profile');
+	}
 };
