@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
+	import Button from '$lib/components/ui/Button.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -34,59 +38,68 @@
 	}
 </script>
 
-<div class="space-y-16">
+<div class="mx-auto max-w-4xl space-y-12">
 	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">Stack</h1>
-		<p class="text-[14px] text-neutral-500">Manage your technical capabilities.</p>
+		<h1 class="text-xl font-semibold tracking-tight">{m.dashboard_skills_title()}</h1>
+		<p class="text-[14px] text-neutral-500">{m.dashboard_skills_description()}</p>
 	</header>
 
-	<section class="space-y-8">
-		<form
-			onsubmit={handleSubmit}
-			class="max-w-xl space-y-4 rounded-xl border border-neutral-100 bg-neutral-50 p-6"
-		>
-			<h3 class="mb-4 text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">
-				Add Skill
-			</h3>
-			<input
-				bind:value={name}
-				placeholder="Skill Name (e.g., SvelteKit)"
-				required
-				class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-			/>
-			<input
-				bind:value={category}
-				placeholder="Category (e.g., Frontend, Backend)"
-				required
-				class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-			/>
-			<button
-				type="submit"
-				disabled={loading}
-				class="h-11 w-full rounded-lg bg-neutral-900 text-[13px] font-medium text-white transition-all hover:bg-neutral-800"
-			>
-				{loading ? 'Adding...' : 'Add Skill'}
-			</button>
-		</form>
+	<section class="space-y-10">
+		<Card title="Add Skill" description="Add a new technical capability.">
+			<form onsubmit={handleSubmit} class="space-y-6">
+				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+					<Input bind:value={name} label="Skill Name" placeholder="e.g., SvelteKit" required />
+					<Input
+						bind:value={category}
+						label="Category"
+						placeholder="e.g., Frontend, Backend"
+						required
+					/>
+				</div>
+				<div class="flex justify-end pt-2">
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
+						Add Skill
+					</Button>
+				</div>
+			</form>
+		</Card>
 
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-			{#each data.skills as skill}
-				<div class="flex items-center justify-between rounded-xl border border-neutral-100 p-4">
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{#each data.skills as skill (skill.id)}
+				<div
+					class="flex items-center justify-between rounded-2xl border border-neutral-100 bg-white p-5 transition-all hover:bg-neutral-50/50"
+				>
 					<div class="space-y-1">
-						<h4 class="text-[14px] font-medium">{skill.name}</h4>
-						<p class="text-[12px] text-neutral-400">{skill.category}</p>
+						<h4 class="text-[15px] font-semibold text-neutral-900">{skill.name}</h4>
+						<p class="text-[13px] text-neutral-500">{skill.category}</p>
 					</div>
-					<button
-						onclick={() => deleteEntry(skill.id)}
-						class="text-[12px] font-medium text-red-500 hover:text-red-700">Delete</button
-					>
+					<Button variant="danger" size="icon" onclick={() => deleteEntry(skill.id)}>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="lucide lucide-trash-2"
+							><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
+								d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+							/><line x1="10" x2="10" y1="11" y2="17" /><line
+								x1="14"
+								x2="14"
+								y1="11"
+								y2="17"
+							/></svg
+						>
+					</Button>
 				</div>
 			{:else}
-				<p
-					class="text-[13px] text-neutral-400 py-8 text-center bg-neutral-50 rounded-xl sm:col-span-2"
-				>
-					No skills found.
-				</p>
+				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200 sm:col-span-2 lg:col-span-3">
+					<p class="text-[14px] text-neutral-400">No skills found.</p>
+				</div>
 			{/each}
 		</div>
 	</section>

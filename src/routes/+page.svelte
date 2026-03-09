@@ -1,5 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import * as m from '$lib/paraglide/messages';
+	import PublicProjectCard from '$lib/components/PublicProjectCard.svelte';
+	import Section from '$lib/components/Section.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -31,7 +34,7 @@
 </svelte:head>
 
 <div
-	class="min-h-screen bg-white pb-32 font-sans text-neutral-900 selection:bg-neutral-900 selection:text-white"
+	class="min-h-screen bg-white pb-32 font-sans selection:bg-neutral-900 selection:text-white dark:selection:bg-white dark:selection:text-neutral-900"
 >
 	<main class="mx-auto max-w-2xl px-6 pt-24 sm:pt-40">
 		<!-- Hero -->
@@ -76,48 +79,17 @@
 		</section>
 
 		<!-- Projects -->
-		<section class="mt-24 space-y-12">
-			<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">Projects</h2>
-
+		<Section title={m.public_projects()}>
 			<div class="space-y-10">
 				{#each items.projects as project}
-					<a
-						href={project.liveUrl || project.repoUrl || '#'}
-						target="_blank"
-						class="group block space-y-2"
-					>
-						<div class="flex items-center justify-between">
-							<h3
-								class="text-[15px] font-medium text-neutral-950 decoration-neutral-300 underline-offset-4 transition-all group-hover:underline"
-							>
-								{project.title}
-							</h3>
-						</div>
-						<p class="text-[14px] leading-relaxed text-neutral-500">
-							{project.description}
-						</p>
-						{#if project.tags}
-							<div class="flex gap-3 pt-1">
-								{#each (project.tags || '')
-									.split(',')
-									.map((t) => t.trim())
-									.filter(Boolean) as tag}
-									<span class="text-[11px] font-medium text-neutral-400">{tag}</span>
-								{/each}
-							</div>
-						{/if}
-					</a>
+					<PublicProjectCard {project} />
 				{/each}
 			</div>
-		</section>
+		</Section>
 
 		{#if items.certificates.length > 0}
 			<!-- Credentials -->
-			<section class="mt-24 space-y-12">
-				<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">
-					Credentials
-				</h2>
-
+			<Section title={m.public_credentials()}>
 				<div class="space-y-8">
 					{#each items.certificates as cert}
 						<div class="group flex items-start justify-between">
@@ -130,20 +102,18 @@
 									href={cert.credentialUrl}
 									target="_blank"
 									class="text-[11px] font-medium tracking-wider text-neutral-400 uppercase transition-colors hover:text-neutral-950"
-									>Verify</a
+									>{m.public_verify()}</a
 								>
 							{/if}
 						</div>
 					{/each}
 				</div>
-			</section>
+			</Section>
 		{/if}
 
 		<!-- Skills -->
 		{#if items.skills.length > 0}
-			<section class="mt-24 space-y-12">
-				<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">Stack</h2>
-
+			<Section title={m.public_stack()}>
 				<div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
 					{#each items.skills as skill}
 						<div class="space-y-1">
@@ -154,15 +124,17 @@
 						</div>
 					{/each}
 				</div>
-			</section>
+			</Section>
 		{/if}
 
 		<!-- Footer -->
 		<footer
 			class="mt-32 flex items-center justify-between border-t border-neutral-100 pt-12 text-neutral-400"
 		>
-			<p class="text-[12px]">© {new Date().getFullYear()} — Rey Silva</p>
-			<a href="/dashboard" class="text-[12px] transition-colors hover:text-neutral-950">Admin</a>
+			<p class="text-[12px]">© {new Date().getFullYear()} — {profile.name}</p>
+			<a href="/dashboard" class="text-[12px] transition-colors hover:text-neutral-950">
+				{m.public_admin()}
+			</a>
 		</footer>
 	</main>
 </div>

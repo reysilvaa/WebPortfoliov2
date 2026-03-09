@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { authClient } from '$lib/auth-client';
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
+	import Button from '$lib/components/ui/Button.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Textarea from '$lib/components/ui/Textarea.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -28,10 +32,10 @@
 			});
 
 			if (res.ok) {
-				profileMessage = { type: 'success', text: 'Profile updated successfully' };
+				profileMessage = { type: 'success', text: m.common_success() };
 				await invalidateAll();
 			} else {
-				profileMessage = { type: 'error', text: 'Failed to update profile' };
+				profileMessage = { type: 'error', text: m.common_error() };
 			}
 		} finally {
 			profileLoading = false;
@@ -39,98 +43,47 @@
 	}
 </script>
 
-<div class="space-y-16">
+<div class="space-y-12">
 	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">Settings</h1>
-		<p class="text-[14px] text-neutral-500">Manage your public information.</p>
+		<h1 class="text-xl font-semibold tracking-tight">{m.dashboard_settings_title()}</h1>
+		<p class="text-[14px] text-neutral-500">{m.dashboard_settings_description()}</p>
 	</header>
 
-	<section class="space-y-10">
-		<h2 class="text-[12px] font-semibold tracking-widest text-neutral-400 uppercase">
-			Public Profile
-		</h2>
-
+	<Card title={m.dashboard_profile_section()} description={m.dashboard_settings_description()}>
 		{#if profileMessage.text}
-			<p
-				class="text-[12px] font-medium {profileMessage.type === 'success'
-					? 'text-green-600'
-					: 'text-red-600'}"
+			<div
+				class="mb-6 rounded-lg p-3 text-[12px] font-medium {profileMessage.type === 'success'
+					? 'bg-green-50 text-green-600'
+					: 'bg-red-50 text-red-600'}"
 			>
 				{profileMessage.text}
-			</p>
+			</div>
 		{/if}
 
 		<form onsubmit={updateProfile} class="space-y-8">
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-				<div class="space-y-2">
-					<label for="name" class="text-[12px] font-medium text-neutral-500">Full Name</label>
-					<input
-						id="name"
-						bind:value={name}
-						required
-						class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-					/>
-				</div>
-				<div class="space-y-2">
-					<label for="role" class="text-[12px] font-medium text-neutral-500">Job Role</label>
-					<input
-						id="role"
-						bind:value={role}
-						required
-						class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-						placeholder="e.g. Full Stack Engineer"
-					/>
-				</div>
+				<Input label={m.form_label_name()} bind:value={name} required />
+				<Input
+					label={m.form_label_role()}
+					bind:value={role}
+					required
+					placeholder="e.g. Full Stack Engineer"
+				/>
 			</div>
 
-			<div class="space-y-2">
-				<label for="bio" class="text-[12px] font-medium text-neutral-500">Short Bio</label>
-				<textarea
-					id="bio"
-					bind:value={bio}
-					required
-					class="h-32 w-full rounded-lg border border-neutral-200 px-4 py-3 text-[14px] transition-all outline-none focus:border-neutral-900"
-				></textarea>
-			</div>
+			<Textarea label={m.form_label_bio()} bind:value={bio} required />
 
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-				<div class="space-y-2">
-					<label for="email" class="text-[12px] font-medium text-neutral-500">Contact Email</label>
-					<input
-						id="email"
-						type="email"
-						bind:value={email}
-						class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-					/>
-				</div>
-				<div class="space-y-2">
-					<label for="github" class="text-[12px] font-medium text-neutral-500">GitHub URL</label>
-					<input
-						id="github"
-						bind:value={github}
-						class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-					/>
-				</div>
-				<div class="space-y-2">
-					<label for="linkedin" class="text-[12px] font-medium text-neutral-500">LinkedIn URL</label
-					>
-					<input
-						id="linkedin"
-						bind:value={linkedin}
-						class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-					/>
-				</div>
+				<Input label={m.form_label_email()} type="email" bind:value={email} />
+				<Input label={m.form_label_github()} bind:value={github} />
+				<Input label={m.form_label_linkedin()} bind:value={linkedin} />
 			</div>
 
-			<div class="flex justify-end">
-				<button
-					type="submit"
-					disabled={profileLoading}
-					class="h-11 rounded-lg bg-neutral-900 px-8 text-[13px] font-medium text-white transition-all hover:bg-neutral-800"
-				>
-					{profileLoading ? 'Saving...' : 'Save Profile'}
-				</button>
+			<div class="flex justify-end pt-4">
+				<Button type="submit" isLoading={profileLoading}>
+					{m.common_save()}
+				</Button>
 			</div>
 		</form>
-	</section>
+	</Card>
 </div>

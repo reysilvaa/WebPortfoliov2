@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
+	import * as m from '$lib/paraglide/messages';
+	import Button from '$lib/components/ui/Button.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Card from '$lib/components/ui/Card.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -36,62 +40,43 @@
 	}
 </script>
 
-<div class="space-y-16">
+<div class="space-y-12">
 	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">Credentials</h1>
-		<p class="text-[14px] text-neutral-500">Manage your certifications and awards.</p>
+		<h1 class="text-xl font-semibold tracking-tight">{m.dashboard_credentials_title()}</h1>
+		<p class="text-[14px] text-neutral-500">{m.dashboard_credentials_description()}</p>
 	</header>
 
-	<section class="space-y-8">
-		<form
-			onsubmit={handleSubmit}
-			class="max-w-xl space-y-4 rounded-xl border border-neutral-100 bg-neutral-50 p-6"
-		>
-			<h3 class="mb-4 text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">
-				Add Entry
-			</h3>
-			<input
-				bind:value={name}
-				placeholder="Certificate Name"
-				required
-				class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-			/>
-			<input
-				bind:value={issuer}
-				placeholder="Issuer (e.g., Google, Coursera)"
-				required
-				class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-			/>
-			<input
-				bind:value={credentialUrl}
-				placeholder="Verification URL"
-				class="h-11 w-full rounded-lg border border-neutral-200 px-4 text-[14px] transition-all outline-none focus:border-neutral-900"
-			/>
-			<button
-				type="submit"
-				disabled={loading}
-				class="h-11 w-full rounded-lg bg-neutral-900 text-[13px] font-medium text-white transition-all hover:bg-neutral-800"
-			>
-				{loading ? 'Adding...' : 'Add Credential'}
-			</button>
-		</form>
+	<section class="max-w-2xl space-y-10">
+		<Card title="Add Entry" description="Add a new certification or award.">
+			<form onsubmit={handleSubmit} class="space-y-6">
+				<Input bind:value={name} label="Certificate Name" required />
+				<Input bind:value={issuer} label="Issuer" placeholder="e.g., Google, Coursera" required />
+				<Input bind:value={credentialUrl} label="Verification URL" placeholder="https://..." />
+				<div class="flex justify-end pt-2">
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
+						Add Credential
+					</Button>
+				</div>
+			</form>
+		</Card>
 
-		<div class="space-y-4">
-			{#each data.certificates as cert}
-				<div class="flex items-center justify-between rounded-xl border border-neutral-100 p-4">
+		<div class="space-y-3">
+			{#each data.certificates as cert (cert.id)}
+				<div
+					class="flex items-center justify-between overflow-hidden rounded-2xl border border-neutral-100 bg-white p-6 transition-all hover:bg-neutral-50/50"
+				>
 					<div class="space-y-1">
-						<h4 class="text-[14px] font-medium">{cert.name}</h4>
-						<p class="text-[12px] text-neutral-400">{cert.issuer}</p>
+						<h4 class="text-[15px] font-semibold text-neutral-900">{cert.name}</h4>
+						<p class="text-[13px] text-neutral-500">{cert.issuer}</p>
 					</div>
-					<button
-						onclick={() => deleteEntry(cert.id)}
-						class="text-[12px] font-medium text-red-500 hover:text-red-700">Delete</button
-					>
+					<Button variant="danger" size="sm" onclick={() => deleteEntry(cert.id)}>
+						{m.common_delete()}
+					</Button>
 				</div>
 			{:else}
-				<p class="text-[13px] text-neutral-400 py-8 text-center bg-neutral-50 rounded-xl">
-					No credentials found.
-				</p>
+				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200">
+					<p class="text-[14px] text-neutral-400">No credentials found.</p>
+				</div>
 			{/each}
 		</div>
 	</section>
