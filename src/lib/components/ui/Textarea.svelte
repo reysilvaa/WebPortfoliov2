@@ -9,25 +9,28 @@
 	let {
 		label,
 		error,
+		value = $bindable(),
 		id = 'textarea-' + Math.random().toString(36).substring(2, 9),
 		class: className = '',
 		...rest
-	}: Props = $props();
+	}: Props & { value?: string } = $props();
 
-	const baseClass = 'h-32 w-full rounded-xl border border-neutral-200 px-4 py-3 text-[14px] transition-all outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900/5 placeholder:text-neutral-400';
+	const baseClass =
+		'h-32 w-full rounded-xl border border-neutral-200 px-4 py-3 text-[14px] transition-all outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900/5 placeholder:text-neutral-400';
 	const errorClass = 'border-red-500 bg-red-50/10 focus:border-red-500';
 </script>
 
-<div class="space-y-1.5 w-full">
+<div class="w-full space-y-1.5">
 	{#if label}
-		<label for={id} class="text-[12px] font-semibold text-neutral-500 uppercase tracking-widest ml-1">{label}</label>
+		<label
+			for={id}
+			class="ml-1 text-[12px] font-semibold tracking-widest text-neutral-500 uppercase"
+			>{label}</label
+		>
 	{/if}
-	<textarea
-		{id}
-		class="{baseClass} {error ? errorClass : ''} {className}"
-		{...rest}
+	<textarea {id} bind:value class="{baseClass} {error ? errorClass : ''} {className}" {...rest}
 	></textarea>
 	{#if error}
-		<p class="text-[11px] font-medium text-red-600 ml-1">{error}</p>
+		<p class="ml-1 text-[11px] font-medium text-red-600">{error}</p>
 	{/if}
 </div>

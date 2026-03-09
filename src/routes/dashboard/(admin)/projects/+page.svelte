@@ -111,7 +111,7 @@
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					class="absolute left-3-translate-y-1/2 text-neutral-400"
+					class="left-3-translate-y-1/2 absolute text-neutral-400"
 					style="top: 50%; transform: translateY(-50%);"
 					><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
 				>
@@ -220,7 +220,7 @@
 						/>
 					</div>
 
-					<ProjectItem {project} />
+					<ProjectItem project={{ ...project, isHidden: project.isHidden ?? false }} />
 
 					<div class="flex w-24 justify-end gap-2">
 						<form method="POST" action="?/toggle-visibility" use:enhance>

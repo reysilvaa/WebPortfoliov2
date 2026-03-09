@@ -19,6 +19,17 @@
 	let github = $state(data.profile?.github || '');
 	let linkedin = $state(data.profile?.linkedin || '');
 
+	$effect(() => {
+		if (data.profile) {
+			name = data.profile.name || '';
+			role = data.profile.role || '';
+			bio = data.profile.bio || '';
+			email = data.profile.email || '';
+			github = data.profile.github || '';
+			linkedin = data.profile.linkedin || '';
+		}
+	});
+
 	async function updateProfile(e: Event) {
 		e.preventDefault();
 		profileLoading = true;

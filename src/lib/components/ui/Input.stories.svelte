@@ -13,7 +13,8 @@
 		}
 	} satisfies Meta<Input>;
 
-	export default meta;
+	const _meta = meta;
+export default _meta;
 	type Story = StoryObj<typeof meta>;
 
 	export const Default: Story = {

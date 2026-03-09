@@ -11,5 +11,8 @@
 		"strict": true,
 		"module": "ESNext",
 		"moduleResolution": "bundler"
-	}
+	},
+	"exclude": [
+		"**/*.stories.svelte"
+	]
 }
