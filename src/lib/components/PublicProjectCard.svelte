@@ -30,7 +30,7 @@
 		{isHovered ? 'z-50 -translate-y-4 shadow-[20px_20px_0px_0px_#171717] border-[#FF90E8]' : 'z-10'}"
 >
 	<!-- Project Photo Container (Adjusted for Square) -->
-	<div class="relative h-2/3 w-full overflow-hidden border-b-4 border-neutral-900 bg-neutral-100">
+	<div class="relative h-2/3 w-full overflow-hidden border-b-4 border-neutral-900 bg-[#FFDE59]/10">
 		{#if project.imageUrl}
 			<img 
 				src={project.imageUrl} 
@@ -64,7 +64,7 @@
 						</div>
 					</div>
 					{#if project.language}
-						<span class="bg-[#FF90E8] border-2 border-neutral-900 px-3 py-1 text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_#171717]">
+						<span class="bg-[#FFDE59] border-2 border-neutral-900 px-3 py-1 text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_#171717]">
 							{project.language}
 						</span>
 					{/if}
@@ -92,7 +92,7 @@
 		{#if project.tags}
 			<div class="mt-6 flex flex-wrap gap-2">
 				{#each (project.tags || '').split(',').map((t) => t.trim()).filter(Boolean).slice(0, 3) as tag (tag)}
-					<span class="border-2 border-neutral-900 bg-neutral-50 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-neutral-400 group-hover:text-neutral-900 transition-all">
+					<span class="border-2 border-neutral-900 bg-[#FF90E8]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-neutral-500 group-hover:bg-[#FF90E8] group-hover:text-neutral-900 group-hover:shadow-[2px_2px_0px_0px_#171717] transition-all">
 						{tag}
 					</span>
 				{/each}
