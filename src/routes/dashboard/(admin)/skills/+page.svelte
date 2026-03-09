@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -11,31 +11,6 @@
 	let loading = $state(false);
 	let name = $state('');
 	let category = $state('');
-
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		loading = true;
-		try {
-			const res = await fetch('/api/skills', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, category })
-			});
-			if (res.ok) {
-				name = '';
-				category = '';
-				await invalidateAll();
-			}
-		} finally {
-			loading = false;
-		}
-	}
-
-	async function deleteEntry(id: string) {
-		if (!confirm('Are you sure?')) return;
-		await fetch(`/api/skills/${id}`, { method: 'DELETE' });
-		await invalidateAll();
-	}
 </script>
 
 <div class="mx-auto max-w-4xl space-y-12">
@@ -46,11 +21,20 @@
 
 	<section class="space-y-10">
 		<Card title="Add Skill" description="Add a new technical capability.">
-			<form onsubmit={handleSubmit} class="space-y-6">
+			<form method="POST" action="?/add" use:enhance={() => {
+				loading = true;
+				return async ({ update }) => {
+					await update();
+					loading = false;
+					name = '';
+					category = '';
+				};
+			}} class="space-y-6">
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-					<Input bind:value={name} label="Skill Name" placeholder="e.g., SvelteKit" required />
+					<Input bind:value={name} name="name" label="Skill Name" placeholder="e.g., SvelteKit" required />
 					<Input
 						bind:value={category}
+						name="category"
 						label="Category"
 						placeholder="e.g., Frontend, Backend"
 						required
@@ -73,28 +57,37 @@
 						<h4 class="text-[15px] font-semibold text-neutral-900">{skill.name}</h4>
 						<p class="text-[13px] text-neutral-500">{skill.category}</p>
 					</div>
-					<Button variant="danger" size="icon" onclick={() => deleteEntry(skill.id)}>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="lucide lucide-trash-2"
-							><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
-								d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-							/><line x1="10" x2="10" y1="11" y2="17" /><line
-								x1="14"
-								x2="14"
-								y1="11"
-								y2="17"
-							/></svg
-						>
-					</Button>
+					<form method="POST" action="?/delete" use:enhance={() => {
+						return async ({ update }) => {
+							if (confirm('Delete this skill?')) {
+								await update();
+							}
+						};
+					}}>
+						<input type="hidden" name="id" value={skill.id} />
+						<Button variant="danger" size="icon" type="submit">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-trash-2"
+								><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
+									d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+								/><line x1="10" x2="10" y1="11" y2="17" /><line
+									x1="14"
+									x2="14"
+									y1="11"
+									y2="17"
+								/></svg
+							>
+						</Button>
+					</form>
 				</div>
 			{:else}
 				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200 sm:col-span-2 lg:col-span-3">

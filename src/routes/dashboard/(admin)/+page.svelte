@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-	import { invalidateAll } from "$app/navigation";
+	import { enhance } from "$app/forms";
 	import * as m from "$lib/paraglide/messages";
 	import Button from "$lib/components/ui/Button.svelte";
 	import Input from "$lib/components/ui/Input.svelte";
@@ -30,35 +30,6 @@
 		}
 	});
 
-	async function updateProfile(e: Event) {
-		e.preventDefault();
-		profileLoading = true;
-		profileMessage = { type: "", text: "" };
-
-		try {
-			const res = await fetch("/api/profile", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					name,
-					role,
-					bio,
-					email,
-					github,
-					linkedin,
-				}),
-			});
-
-			if (res.ok) {
-				profileMessage = { type: "success", text: m.common_success() };
-				await invalidateAll();
-			} else {
-				profileMessage = { type: "error", text: m.common_error() };
-			}
-		} finally {
-			profileLoading = false;
-		}
-	}
 </script>
 
 <div class="space-y-12">
@@ -86,27 +57,41 @@
 			</div>
 		{/if}
 
-		<form onsubmit={updateProfile} class="space-y-8">
+		<form method="POST" action="?/updateProfile" use:enhance={() => {
+			profileLoading = true;
+			profileMessage = { type: "", text: "" };
+			return async ({ update, result }) => {
+				await update();
+				profileLoading = false;
+				if (result.type === 'success') {
+					profileMessage = { type: "success", text: m.common_success() };
+				} else {
+					profileMessage = { type: "error", text: m.common_error() };
+				}
+			};
+		}} class="space-y-8">
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-				<Input label={m.form_label_name()} bind:value={name} required />
+				<Input label={m.form_label_name()} name="name" bind:value={name} required />
 				<Input
 					label={m.form_label_role()}
+					name="role"
 					bind:value={role}
 					required
 					placeholder="e.g. Full Stack Engineer"
 				/>
 			</div>
 
-			<Textarea label={m.form_label_bio()} bind:value={bio} required />
+			<Textarea label={m.form_label_bio()} name="bio" bind:value={bio} required />
 
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 				<Input
 					label={m.form_label_email()}
+					name="email"
 					type="email"
 					bind:value={email}
 				/>
-				<Input label={m.form_label_github()} bind:value={github} />
-				<Input label={m.form_label_linkedin()} bind:value={linkedin} />
+				<Input label={m.form_label_github()} name="github" bind:value={github} />
+				<Input label={m.form_label_linkedin()} name="linkedin" bind:value={linkedin} />
 			</div>
 
 			<div class="flex justify-end pt-4">

@@ -15,7 +15,7 @@
 	href={project.liveUrl || project.repoUrl || '#'}
 	target="_blank"
 	rel="noopener noreferrer"
-	class="group flex h-full flex-col justify-between border border-neutral-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-neutral-900 hover:shadow-[4px_4px_0px_0px_#171717]"
+	class="group flex h-full flex-col justify-between border-2 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
 >
 	<div class="space-y-4">
 		<div class="flex items-start justify-between">

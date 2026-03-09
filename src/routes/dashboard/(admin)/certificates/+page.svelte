@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -13,31 +13,6 @@
 	let issuer = $state('');
 	let credentialUrl = $state('');
 
-	async function handleSubmit(e: Event) {
-		e.preventDefault();
-		loading = true;
-		try {
-			const res = await fetch('/api/certificates', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, issuer, credentialUrl })
-			});
-			if (res.ok) {
-				name = '';
-				issuer = '';
-				credentialUrl = '';
-				await invalidateAll();
-			}
-		} finally {
-			loading = false;
-		}
-	}
-
-	async function deleteEntry(id: string) {
-		if (!confirm('Are you sure?')) return;
-		await fetch(`/api/certificates/${id}`, { method: 'DELETE' });
-		await invalidateAll();
-	}
 </script>
 
 <div class="space-y-12">
@@ -48,10 +23,19 @@
 
 	<section class="max-w-2xl space-y-10">
 		<Card title="Add Entry" description="Add a new certification or award.">
-			<form onsubmit={handleSubmit} class="space-y-6">
-				<Input bind:value={name} label="Certificate Name" required />
-				<Input bind:value={issuer} label="Issuer" placeholder="e.g., Google, Coursera" required />
-				<Input bind:value={credentialUrl} label="Verification URL" placeholder="https://..." />
+			<form method="POST" action="?/add" use:enhance={() => {
+				loading = true;
+				return async ({ update }) => {
+					await update();
+					loading = false;
+					name = '';
+					issuer = '';
+					credentialUrl = '';
+				};
+			}} class="space-y-6">
+				<Input bind:value={name} name="name" label="Certificate Name" required />
+				<Input bind:value={issuer} name="issuer" label="Issuer" placeholder="e.g., Google, Coursera" required />
+				<Input bind:value={credentialUrl} name="credentialUrl" label="Verification URL" placeholder="https://..." />
 				<div class="flex justify-end pt-2">
 					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
 						Add Credential
@@ -69,9 +53,18 @@
 						<h4 class="text-[15px] font-semibold text-neutral-900">{cert.name}</h4>
 						<p class="text-[13px] text-neutral-500">{cert.issuer}</p>
 					</div>
-					<Button variant="danger" size="sm" onclick={() => deleteEntry(cert.id)}>
-						{m.common_delete()}
-					</Button>
+					<form method="POST" action="?/delete" use:enhance={() => {
+						return async ({ update }) => {
+							if (confirm('Delete this credential?')) {
+								await update();
+							}
+						};
+					}}>
+						<input type="hidden" name="id" value={cert.id} />
+						<Button variant="danger" size="sm" type="submit">
+							{m.common_delete()}
+						</Button>
+					</form>
 				</div>
 			{:else}
 				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200">

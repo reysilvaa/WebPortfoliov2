@@ -30,6 +30,7 @@
 	});
 
 	let activeSection = $state('home');
+	let showAllProjects = $state(false);
 
 	onMount(() => {
 		const observer = new IntersectionObserver((entries) => {
@@ -158,12 +159,23 @@
 		<!-- Projects Section -->
 		<Section id="projects" title={m.public_projects()}>
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-				{#each items.projects as project (project.id)}
+				{#each (showAllProjects ? items.projects : items.projects.slice(0, 5)) as project (project.id)}
 					<div class="h-full">
 						<PublicProjectCard {project} />
 					</div>
 				{/each}
 			</div>
+			{#if items.projects.length > 5}
+				<div class="mt-12 flex justify-center">
+					<button
+						onclick={() => showAllProjects = !showAllProjects}
+						class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
+					>
+						{showAllProjects ? 'Show Less' : 'Show More Projects'}
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform {showAllProjects ? 'rotate-180 group-hover:-translate-y-0.5' : 'group-hover:translate-y-0.5'}"><path d="M6 9l6 6 6-6"/></svg>
+					</button>
+				</div>
+			{/if}
 		</Section>
 
 		<!-- Credentials Section -->
@@ -180,9 +192,10 @@
 								<a
 									href={cert.credentialUrl}
 									target="_blank"
-									class="inline-flex shrink-0 border-2 items-center justify-center border-neutral-900 bg-white px-6 py-2.5 text-[12px] font-black tracking-widest text-neutral-900 uppercase shadow-[2px_2px_0px_0px_#171717] transition-all hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+									class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
 								>
 									{m.public_verify()}
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
 								</a>
 							{/if}
 						</div>
@@ -212,13 +225,14 @@
 		{/if}
 
 		<!-- Footer -->
-		<footer class="mt-40 mb-12 flex flex-col md:flex-row md:items-end justify-between border-t-4 border-neutral-900 pt-8 gap-4 bg-white p-8 shadow-[4px_4px_0px_0px_#171717]">
+		<footer class="mt-40 mb-12 flex flex-col md:flex-row md:items-center justify-between border-t-4 border-neutral-900 pt-8 gap-6 bg-white p-8 shadow-[4px_4px_0px_0px_#171717]">
 			<div class="space-y-2">
 				<p class="text-[14px] font-black uppercase tracking-widest text-neutral-900 bg-[#FFDE59] inline-block px-2 py-1 border-2 border-neutral-900">Portfolio</p>
 				<p class="text-[14px] font-bold uppercase text-neutral-500">© {new Date().getFullYear()} — {profile.name}</p>
 			</div>
-			<a href="/dashboard" class="group relative text-[14px] font-black uppercase tracking-widest text-neutral-900 bg-white border-2 border-neutral-900 px-4 py-2 shadow-[2px_2px_0px_0px_#171717] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+			<a href="/dashboard" class="group flex shrink-0 items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none">
 				<span>{m.public_admin()}</span>
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 			</a>
 		</footer>
 	</main>

@@ -21,11 +21,16 @@
 	}: Props = $props();
 
 	const variants = {
-		primary: 'bg-neutral-900 text-white hover:bg-neutral-800 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none border-2 border-transparent hover:border-neutral-900',
-		secondary: 'bg-[#FFDE59] text-neutral-900 border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:bg-neutral-50',
-		outline: 'bg-white border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] text-neutral-900 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none',
-		ghost: 'bg-transparent text-neutral-900 hover:bg-neutral-100 border-2 border-transparent hover:border-neutral-900 hover:shadow-[2px_2px_0px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
-		danger: 'bg-[#FF90E8] text-neutral-900 border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
+		primary:
+			'border-2 border-neutral-900 bg-neutral-900 text-white shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+		secondary:
+			'border-2 border-neutral-900 bg-neutral-100 text-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+		ghost:
+			'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 active:translate-x-1 active:translate-y-1',
+		danger:
+			'border-2 border-neutral-900 bg-[#FF90E8] text-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+		outline:
+			'border-2 border-neutral-900 bg-transparent text-neutral-900 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none'
 	};
 
 	const sizes = {
