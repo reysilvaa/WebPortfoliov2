@@ -1,6 +1,7 @@
 import { building } from '$app/environment';
 import { auth } from '$lib/server/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { env } from '$env/dynamic/private';
 import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -8,7 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	if (session) {
 		// Restriction: Only allow @reysilvaa (identified by email or name)
-		const ALLOWED_EMAILS = [process.env.GITHUB_EMAIL]; // Add your github email here
+		const ALLOWED_EMAILS = [env.GITHUB_EMAIL]; // Add your github email here
 		const isOwner =
 			ALLOWED_EMAILS.includes(session.user.email) || session.user.name === 'Rey Silva';
 
