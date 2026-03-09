@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
 import { projects, certificates, skills, profile } from '$lib/server/db/schema';
-import { desc, asc, eq, inArray, notInArray } from 'drizzle-orm';
+import { desc, asc, eq } from 'drizzle-orm';
 import { GithubService } from './github.service';
 
 export class PortfolioService {
@@ -8,7 +8,6 @@ export class PortfolioService {
 		const projectQuery = db.select().from(projects);
 
 		if (!includeHidden) {
-			// @ts-ignore drizzle mode boolean handling
 			projectQuery.where(eq(projects.isHidden, false));
 		}
 

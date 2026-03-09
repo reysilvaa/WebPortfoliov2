@@ -6,7 +6,7 @@ import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
 
 export const auth = betterAuth({
-	baseURL: env.BETTER_AUTH_URL ? env.BETTER_AUTH_URL : (env.ORIGIN ? `${env.ORIGIN}/api/auth` : undefined),
+	baseURL: env.BETTER_AUTH_URL || (env.ORIGIN ? `${env.ORIGIN}/api/auth` : undefined),
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	emailAndPassword: { enabled: false },
@@ -16,6 +16,6 @@ export const auth = betterAuth({
 			clientSecret: env.GITHUB_CLIENT_SECRET
 		}
 	},
-	trustedOrigins: [env.BETTER_AUTH_URL || env.ORIGIN].filter(Boolean) as string[],
-	plugins: [sveltekitCookies(getRequestEvent)] // make sure this is the last plugin in the array
+	trustedOrigins: [env.BETTER_AUTH_URL, env.ORIGIN].filter(Boolean) as string[],
+	plugins: [sveltekitCookies(getRequestEvent)]
 });
