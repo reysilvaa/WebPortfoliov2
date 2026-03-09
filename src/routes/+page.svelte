@@ -31,6 +31,7 @@
 
 	let activeSection = $state('home');
 	let showAllProjects = $state(false);
+	let hoveredProjectId = $state<string | null>(null);
 
 	onMount(() => {
 		const observer = new IntersectionObserver((entries) => {
@@ -158,10 +159,32 @@
 
 		<!-- Projects Section -->
 		<Section id="projects" title={m.public_projects()}>
-			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-				{#each (showAllProjects ? items.projects : items.projects.slice(0, 5)) as project (project.id)}
-					<div class="h-full">
-						<PublicProjectCard {project} />
+			<div class="grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3 transition-all duration-700">
+				{#each (showAllProjects ? items.projects : items.projects.slice(0, 6)) as project, i (project.id)}
+					{@const row = Math.floor(i / 3)}
+					{@const col = i % 3}
+					{@const hoveredIdx = items.projects.findIndex(p => p.id === hoveredProjectId)}
+					{@const hRow = hoveredIdx !== -1 ? Math.floor(hoveredIdx / 3) : -1}
+					{@const hCol = hoveredIdx !== -1 ? hoveredIdx % 3 : -1}
+					
+					<div 
+						class="h-full transition-all duration-500 ease-out"
+						onmouseenter={() => hoveredProjectId = project.id}
+						onmouseleave={() => hoveredProjectId = null}
+						style:transform={
+							hoveredProjectId && hoveredProjectId !== project.id 
+								? (row < hRow && col === hCol
+										? 'translateY(-140px) scale(0.98)' 
+										: 'scale(1)')
+								: ''
+						}
+						style:z-index={hoveredProjectId === project.id ? '50' : '1'}
+						style:opacity={hoveredProjectId && hoveredProjectId !== project.id ? '0.9' : '1'}
+					>
+						<PublicProjectCard 
+							{project} 
+							isHovered={hoveredProjectId === project.id}
+						/>
 					</div>
 				{/each}
 			</div>
