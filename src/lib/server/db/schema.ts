@@ -36,4 +36,15 @@ export const skills = sqliteTable('skills', {
 	order: integer('order').default(0)
 });
 
+export const profile = sqliteTable('profile', {
+	id: text('id').primaryKey(), // We'll just use 'main' as ID
+	name: text('name').notNull(),
+	role: text('role').notNull(),
+	bio: text('bio').notNull(),
+	email: text('email'),
+	github: text('github'),
+	linkedin: text('linkedin'),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export * from './auth.schema.ts';

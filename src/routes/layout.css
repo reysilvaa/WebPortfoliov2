@@ -1,3 +1,31 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+@theme {
+  --color-brand-primary: #171717;
+  --color-brand-secondary: #ffffff;
+  --color-surface-bg: #ffffff;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-neutral-900 font-sans antialiased selection:bg-neutral-900 selection:text-white;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply max-w-2xl mx-auto px-6;
+  }
+}
+
+/* Custom smooth easing */
+:global(html) {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #000;
+  color: #fff;
+}

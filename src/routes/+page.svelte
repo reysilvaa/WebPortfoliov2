@@ -1,16 +1,22 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+
 	let { data }: { data: PageData } = $props();
 
 	// Fallback if DB is empty
-	const profile = {
+	const fallbackProfile = {
 		name: 'Rey Silva',
 		role: 'Full Stack Engineer',
-		bio: 'Crafting high-precision digital experiences with SvelteKit and modern backend systems. Specialized in creating scalable, performance-oriented architectures.',
+		bio: 'I build high-performance web applications and digital experiences with a focus on precision and scalability. Currently specializing in SvelteKit and modern backend architectures.',
 		email: 'contact@reysilva.com',
 		github: 'https://github.com/reysilvaa',
 		linkedin: 'https://linkedin.com/in/reysilvaa'
 	};
+
+	const profile = $derived({
+		...fallbackProfile,
+		...(data.profile || {})
+	});
 
 	const items = $derived({
 		projects: data.projects || [],
@@ -20,105 +26,112 @@
 </script>
 
 <svelte:head>
-	<title>{profile.name} — {profile.role}</title>
+	<title>{profile.name}</title>
 	<meta name="description" content={profile.bio} />
 </svelte:head>
 
-<div class="min-h-screen bg-[#fafafa] selection:bg-neutral-950 selection:text-white font-sans antialiased text-neutral-900 pb-32">
-	<!-- Background Mesh -->
-	<div class="fixed inset-0 pointer-events-none opacity-[0.03] z-0">
-		<svg height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-			<defs>
-				<pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-					<path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" />
-				</pattern>
-			</defs>
-			<rect width="100%" height="100%" fill="url(#grid)" />
-		</svg>
-	</div>
-
-	<main class="max-w-2xl mx-auto px-6 pt-32 sm:pt-48 relative z-10 space-y-24">
+<div
+	class="min-h-screen bg-white pb-32 font-sans text-neutral-900 selection:bg-neutral-900 selection:text-white"
+>
+	<main class="mx-auto max-w-2xl px-6 pt-24 sm:pt-40">
 		<!-- Hero -->
-		<section class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-			<div class="flex flex-col gap-6">
-				<div class="w-14 h-14 bg-neutral-950 rounded-2xl flex items-center justify-center shadow-2xl shadow-neutral-900/20 rotate-3 hover:rotate-0 transition-all duration-500 cursor-default">
-					<span class="text-white text-2xl font-bold">R</span>
-				</div>
-				<div class="space-y-2">
-					<h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-neutral-950">
-						{profile.name}
-					</h1>
-					<p class="text-lg sm:text-xl font-bold text-neutral-400">
-						{profile.role}
-					</p>
-				</div>
+		<section class="space-y-6">
+			<div class="space-y-2">
+				<h1 class="text-2xl font-semibold tracking-tight text-neutral-950">
+					{profile.name}
+				</h1>
+				<p class="text-neutral-500">
+					{profile.role}
+				</p>
 			</div>
 
-			<p class="text-[17px] leading-relaxed text-neutral-500 font-medium max-w-xl">
+			<p class="max-w-lg text-[15px] leading-relaxed text-neutral-600">
 				{profile.bio}
 			</p>
 
-			<div class="flex items-center gap-4 pt-2">
-				<a href="mailto:{profile.email}" class="h-12 px-6 bg-neutral-950 text-white rounded-2xl font-bold hover:bg-neutral-800 transition-all active:scale-95 flex items-center shadow-xl shadow-neutral-900/10">
-					Get in touch
+			<div class="flex items-center gap-5 pt-2">
+				<a
+					href="mailto:{profile.email}"
+					class="text-[13px] font-medium text-neutral-950 transition-colors hover:text-neutral-600"
+				>
+					Email
 				</a>
-				<div class="flex gap-2">
-					<a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub Profile" class="w-12 h-12 flex items-center justify-center bg-white border border-neutral-200 rounded-2xl hover:bg-neutral-50 hover:border-neutral-300 transition-all">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-					</a>
-					<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile" class="w-12 h-12 flex items-center justify-center bg-white border border-neutral-200 rounded-2xl hover:bg-neutral-50 hover:border-neutral-300 transition-all">
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-					</a>
-				</div>
+				<a
+					href={profile.github}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-[13px] font-medium text-neutral-950 transition-colors hover:text-neutral-600"
+				>
+					GitHub
+				</a>
+				<a
+					href={profile.linkedin}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="text-[13px] font-medium text-neutral-950 transition-colors hover:text-neutral-600"
+				>
+					LinkedIn
+				</a>
 			</div>
 		</section>
 
 		<!-- Projects -->
-		<section class="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-			<div class="space-y-1">
-				<h2 class="text-xs font-black uppercase tracking-[0.3em] text-neutral-400">Selected Works</h2>
-				<div class="h-1 w-8 bg-neutral-900 rounded-full"></div>
-			</div>
-			
-			<div class="grid gap-8">
+		<section class="mt-24 space-y-12">
+			<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">Projects</h2>
+
+			<div class="space-y-10">
 				{#each items.projects as project}
-					<article class="group relative flex flex-col gap-3 p-6 -mx-6 rounded-3xl hover:bg-white hover:shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-transparent hover:border-neutral-200/60 transition-all duration-500">
+					<a
+						href={project.liveUrl || project.repoUrl || '#'}
+						target="_blank"
+						class="group block space-y-2"
+					>
 						<div class="flex items-center justify-between">
-							<h3 class="text-xl font-bold text-neutral-950 group-hover:translate-x-1 transition-transform">{project.title}</h3>
-							<div class="opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-								<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-neutral-400"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
+							<h3
+								class="text-[15px] font-medium text-neutral-950 decoration-neutral-300 underline-offset-4 transition-all group-hover:underline"
+							>
+								{project.title}
+							</h3>
+						</div>
+						<p class="text-[14px] leading-relaxed text-neutral-500">
+							{project.description}
+						</p>
+						{#if project.tags}
+							<div class="flex gap-3 pt-1">
+								{#each (project.tags || '')
+									.split(',')
+									.map((t) => t.trim())
+									.filter(Boolean) as tag}
+									<span class="text-[11px] font-medium text-neutral-400">{tag}</span>
+								{/each}
 							</div>
-						</div>
-						<p class="text-[15px] font-medium text-neutral-500 max-w-lg leading-relaxed">{project.description}</p>
-						<div class="flex gap-2 pt-2">
-							{#each (project.tags || '').split(',').map(t => t.trim()).filter(Boolean) as tag}
-								<span class="text-[10px] font-black uppercase tracking-widest text-neutral-400 bg-neutral-100 px-2 py-1 rounded-lg">{tag}</span>
-							{/each}
-						</div>
-					</article>
+						{/if}
+					</a>
 				{/each}
 			</div>
 		</section>
 
 		{#if items.certificates.length > 0}
-			<!-- Certificates -->
-			<section class="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
-				<div class="space-y-1">
-					<h2 class="text-xs font-black uppercase tracking-[0.3em] text-neutral-400">Credentials</h2>
-					<div class="h-1 w-8 bg-neutral-900 rounded-full"></div>
-				</div>
-				
-				<div class="grid gap-6">
+			<!-- Credentials -->
+			<section class="mt-24 space-y-12">
+				<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">
+					Credentials
+				</h2>
+
+				<div class="space-y-8">
 					{#each items.certificates as cert}
-						<div class="flex items-center justify-between p-6 -mx-6 rounded-3xl hover:bg-white border border-transparent hover:border-neutral-200/60 transition-all group">
+						<div class="group flex items-start justify-between">
 							<div class="space-y-1">
-								<h3 class="text-[15px] font-bold text-neutral-950">{cert.name}</h3>
-								<p class="text-[12px] font-bold text-neutral-400 uppercase tracking-widest">{cert.issuer}</p>
+								<h3 class="text-[15px] font-medium text-neutral-950">{cert.name}</h3>
+								<p class="text-[13px] text-neutral-500">{cert.issuer}</p>
 							</div>
 							{#if cert.credentialUrl}
-								<a href={cert.credentialUrl} target="_blank" aria-label="View Certificate for {cert.name}" class="w-10 h-10 flex items-center justify-center rounded-xl bg-neutral-50 group-hover:bg-neutral-950 group-hover:text-white transition-all">
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-								</a>
+								<a
+									href={cert.credentialUrl}
+									target="_blank"
+									class="text-[11px] font-medium tracking-wider text-neutral-400 uppercase transition-colors hover:text-neutral-950"
+									>Verify</a
+								>
 							{/if}
 						</div>
 					{/each}
@@ -126,40 +139,30 @@
 			</section>
 		{/if}
 
+		<!-- Skills -->
+		{#if items.skills.length > 0}
+			<section class="mt-24 space-y-12">
+				<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">Stack</h2>
+
+				<div class="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3">
+					{#each items.skills as skill}
+						<div class="space-y-1">
+							<p class="text-[11px] tracking-wider text-neutral-400 uppercase">
+								{skill.category || 'Tech'}
+							</p>
+							<p class="text-[14px] font-medium text-neutral-800">{skill.name}</p>
+						</div>
+					{/each}
+				</div>
+			</section>
+		{/if}
+
 		<!-- Footer -->
-		<footer class="pt-8 border-t border-neutral-100 flex flex-col sm:flex-row justify-between items-center gap-4 text-neutral-400 font-bold text-[11px] uppercase tracking-[0.2em] animate-in fade-in duration-1000 delay-500">
-			<p>© {new Date().getFullYear()} Precision Built</p>
-			<div class="flex gap-6 items-center">
-				<a href="/dashboard" class="hover:text-neutral-950 transition-colors">Admin Area</a>
-				<div class="w-1.5 h-1.5 bg-green-500 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.4)]"></div>
-			</div>
+		<footer
+			class="mt-32 flex items-center justify-between border-t border-neutral-100 pt-12 text-neutral-400"
+		>
+			<p class="text-[12px]">© {new Date().getFullYear()} — Rey Silva</p>
+			<a href="/dashboard" class="text-[12px] transition-colors hover:text-neutral-950">Admin</a>
 		</footer>
 	</main>
 </div>
-
-<style>
-	:global(html) {
-		scroll-behavior: smooth;
-	}
-
-	.animate-in {
-		animation-fill-mode: both;
-	}
-	
-	@keyframes fadeIn {
-		from { opacity: 0; }
-		to { opacity: 1; }
-	}
-	
-	@keyframes slideInFromBottom {
-		from { opacity: 0; transform: translateY(2rem); }
-		to { opacity: 1; transform: translateY(0); }
-	}
-
-	.fade-in { animation: fadeIn 1s ease-out; }
-	.slide-in-from-bottom-4 { animation: slideInFromBottom 0.8s ease-out; }
-	.slide-in-from-bottom-8 { animation: slideInFromBottom 1.2s ease-out; }
-
-	.delay-200 { animation-delay: 200ms; }
-	.delay-500 { animation-delay: 500ms; }
-</style>
