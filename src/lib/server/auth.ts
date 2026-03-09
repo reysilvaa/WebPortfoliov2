@@ -16,6 +16,11 @@ export const auth = betterAuth({
 			clientSecret: env.GITHUB_CLIENT_SECRET
 		}
 	},
-	trustedOrigins: [env.BETTER_AUTH_URL, env.ORIGIN].filter(Boolean) as string[],
+	trustedOrigins: [
+		env.BETTER_AUTH_URL,
+		env.ORIGIN,
+		'https://reynaldsilva.my.id',
+		'https://www.reynaldsilva.my.id'
+	].filter(Boolean) as string[],
 	plugins: [sveltekitCookies(getRequestEvent)]
 });
