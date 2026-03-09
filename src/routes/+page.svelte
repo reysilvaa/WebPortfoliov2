@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import * as m from '$lib/paraglide/messages';
 	import PublicProjectCard from '$lib/components/PublicProjectCard.svelte';
@@ -24,7 +25,26 @@
 	const items = $derived({
 		projects: data.projects || [],
 		certificates: data.certificates || [],
-		skills: data.skills || []
+		skills: data.skills || [],
+		experiences: data.experiences || []
+	});
+
+	let activeSection = $state('home');
+
+	onMount(() => {
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					activeSection = entry.target.id;
+				}
+			});
+		}, { rootMargin: '-20% 0px -60% 0px', threshold: 0.1 });
+
+		document.querySelectorAll('header[id], section[id]').forEach((sec) => {
+			observer.observe(sec);
+		});
+
+		return () => observer.disconnect();
 	});
 </script>
 
@@ -38,17 +58,31 @@
 	<div class="pointer-events-none fixed inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#e5e5e5_2px,transparent_2px),linear-gradient(to_bottom,#e5e5e5_2px,transparent_2px)] bg-size-[4rem_4rem]"></div>
 
 	<!-- Right Side Navigation (Comic style vertical nav) -->
-	<nav class="hidden lg:flex fixed right-16 top-1/2 -translate-y-1/2 flex-col gap-8 z-50 pointer-events-auto">
-		<a href="#home" class="text-[15px] font-black uppercase tracking-widest text-neutral-900 bg-[#FFDE59] px-4 py-2 border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">Home</a>
+	<nav class="hidden lg:flex fixed right-8 xl:right-16 top-1/2 -translate-y-1/2 flex-col gap-6 z-50 pointer-events-auto">
+		<a href="#home" class="block text-[14px] font-black uppercase tracking-widest transition-all px-4 py-2 border-2 
+			{activeSection === 'home' || activeSection === '' ? 'bg-[#FFDE59] text-neutral-900 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] -translate-y-1' : 'border-transparent text-neutral-400 hover:text-neutral-900 hover:-translate-y-1'}"
+		>Home</a>
 		
-		<a href="#projects" class="text-[15px] font-black uppercase tracking-widest text-neutral-500 hover:text-neutral-900 hover:-translate-y-1 transition-all pl-4 hover:pl-2">Projects</a>
+		{#if items.experiences && items.experiences.length > 0}
+		<a href="#experience" class="block text-[14px] font-black uppercase tracking-widest transition-all px-4 py-2 border-2 
+			{activeSection === 'experience' ? 'bg-[#FFDE59] text-neutral-900 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] -translate-y-1' : 'border-transparent text-neutral-400 hover:text-neutral-900 hover:-translate-y-1'}"
+		>Experience</a>
+		{/if}
+
+		<a href="#projects" class="block text-[14px] font-black uppercase tracking-widest transition-all px-4 py-2 border-2 
+			{activeSection === 'projects' ? 'bg-[#FFDE59] text-neutral-900 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] -translate-y-1' : 'border-transparent text-neutral-400 hover:text-neutral-900 hover:-translate-y-1'}"
+		>Projects</a>
 		
 		{#if items.certificates.length > 0}
-		<a href="#credentials" class="text-[15px] font-black uppercase tracking-widest text-neutral-500 hover:text-neutral-900 hover:-translate-y-1 transition-all pl-4 hover:pl-2">Credentials</a>
+		<a href="#credentials" class="block text-[14px] font-black uppercase tracking-widest transition-all px-4 py-2 border-2 
+			{activeSection === 'credentials' ? 'bg-[#FFDE59] text-neutral-900 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] -translate-y-1' : 'border-transparent text-neutral-400 hover:text-neutral-900 hover:-translate-y-1'}"
+		>Credentials</a>
 		{/if}
 		
 		{#if items.skills.length > 0}
-		<a href="#skills" class="text-[15px] font-black uppercase tracking-widest text-neutral-500 hover:text-neutral-900 hover:-translate-y-1 transition-all pl-4 hover:pl-2">Stack</a>
+		<a href="#skills" class="block text-[14px] font-black uppercase tracking-widest transition-all px-4 py-2 border-2 
+			{activeSection === 'skills' ? 'bg-[#FFDE59] text-neutral-900 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] -translate-y-1' : 'border-transparent text-neutral-400 hover:text-neutral-900 hover:-translate-y-1'}"
+		>Stack</a>
 		{/if}
 	</nav>
 
@@ -71,33 +105,60 @@
 			<div class="flex flex-row flex-wrap gap-4 pt-4 lg:flex-col lg:items-end lg:pt-0 shrink-0">
 				<a
 					href="mailto:{profile.email}"
-					class="border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
+					class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
 				>
-					Email ↗
+					Email
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
 				</a>
 				<a
 					href={profile.github}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="border-2 border-neutral-900 bg-[#FFDE59] px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
+					class="group flex items-center gap-2 border-2 border-neutral-900 bg-[#FFDE59] px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
 				>
-					GitHub ↗
+					GitHub
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
 				</a>
 				<a
 					href={profile.linkedin}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
+					class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
 				>
-					LinkedIn ↗
+					LinkedIn
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
 				</a>
 			</div>
 		</header>
 
+		<!-- Experience Section -->
+		{#if items.experiences && items.experiences.length > 0}
+			<Section id="experience" title="Experience">
+				<div class="flex flex-col gap-6">
+					{#each items.experiences as exp (exp.id)}
+						<div class="group flex flex-col items-start gap-4 border-4 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717]">
+							<div class="w-full flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+								<h3 class="text-[20px] font-black uppercase tracking-tight text-neutral-900">{exp.role}</h3>
+								<div class="flex items-center gap-2">
+									<span class="inline-block border-2 border-neutral-900 bg-[#FFDE59] px-2 py-0.5 text-[12px] font-bold text-neutral-900 uppercase">{exp.company}</span>
+									<span class="text-[12px] font-bold text-neutral-500">{exp.startDate} - {exp.endDate}</span>
+								</div>
+							</div>
+							{#if exp.description}
+								<p class="text-[15px] font-medium leading-relaxed text-neutral-700">
+									{exp.description}
+								</p>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			</Section>
+		{/if}
+
 		<!-- Projects Section -->
 		<Section id="projects" title={m.public_projects()}>
 			<div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-				{#each items.projects as project}
+				{#each items.projects as project (project.id)}
 					<div class="h-full">
 						<PublicProjectCard {project} />
 					</div>
@@ -109,7 +170,7 @@
 		{#if items.certificates.length > 0}
 			<Section id="credentials" title={m.public_credentials()}>
 				<div class="flex flex-col gap-4">
-					{#each items.certificates as cert}
+					{#each items.certificates as cert (cert.id)}
 						<div class="group flex flex-col items-start gap-4 border-4 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] sm:flex-row sm:items-center sm:justify-between">
 							<div class="space-y-2">
 								<h3 class="text-[18px] font-black uppercase tracking-tight text-neutral-900">{cert.name}</h3>
@@ -134,7 +195,7 @@
 		{#if items.skills.length > 0}
 			<Section id="skills" title={m.public_stack()}>
 				<div class="flex flex-wrap gap-4">
-					{#each items.skills as skill}
+					{#each items.skills as skill (skill.id)}
 						<div class="flex items-center border-2 border-neutral-900 bg-white shadow-[4px_4px_0px_0px_#171717] hover:shadow-[6px_6px_0px_0px_#171717] hover:-translate-y-0.5 transition-all cursor-default">
 							<span class="px-4 py-2 text-[15px] font-black uppercase text-neutral-900">
 								{skill.name}

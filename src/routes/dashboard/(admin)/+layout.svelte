@@ -13,6 +13,7 @@
 	const links = [
 		{ href: '/dashboard', label: m.dashboard_settings_title() },
 		{ href: '/dashboard/projects', label: m.dashboard_projects_title() },
+		{ href: '/dashboard/experiences', label: 'Experiences' },
 		{ href: '/dashboard/certificates', label: m.dashboard_credentials_title() },
 		{ href: '/dashboard/skills', label: m.dashboard_skills_title() }
 	];

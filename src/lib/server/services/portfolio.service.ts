@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { projects, certificates, skills, profile } from '$lib/server/db/schema';
+import { projects, certificates, skills, profile, experiences } from '$lib/server/db/schema';
 import { desc, asc, eq } from 'drizzle-orm';
 import { GithubService } from './github.service';
 
@@ -11,18 +11,20 @@ export class PortfolioService {
 			projectQuery.where(eq(projects.isHidden, false));
 		}
 
-		const [allProjects, allCertificates, allSkills, currentProfile] = await Promise.all([
+		const [allProjects, allCertificates, allSkills, currentProfile, allExperiences] = await Promise.all([
 			projectQuery.orderBy(asc(projects.order), desc(projects.createdAt)),
 			db.select().from(certificates).orderBy(asc(certificates.order)),
 			db.select().from(skills).orderBy(asc(skills.order)),
-			db.select().from(profile).where(eq(profile.id, 'main')).limit(1)
+			db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
+			db.select().from(experiences).orderBy(asc(experiences.order))
 		]);
 
 		return {
 			projects: allProjects,
 			certificates: allCertificates,
 			skills: allSkills,
-			profile: currentProfile[0] || null
+			profile: currentProfile[0] || null,
+			experiences: allExperiences
 		};
 	}
 
@@ -143,5 +145,17 @@ export class PortfolioService {
 
 	static async deleteSkill(id: string) {
 		return await db.delete(skills).where(eq(skills.id, id)).returning();
+	}
+
+	static async addExperience(data: typeof experiences.$inferInsert) {
+		return await db.insert(experiences).values(data).returning();
+	}
+
+	static async updateExperience(id: string, data: Partial<typeof experiences.$inferInsert>) {
+		return await db.update(experiences).set(data).where(eq(experiences.id, id)).returning();
+	}
+
+	static async deleteExperience(id: string) {
+		return await db.delete(experiences).where(eq(experiences.id, id)).returning();
 	}
 }

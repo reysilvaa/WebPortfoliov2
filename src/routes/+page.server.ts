@@ -7,6 +7,7 @@ export const load = async () => {
 		projects: content.projects,
 		certificates: content.certificates,
 		skills: content.skills,
+		experiences: content.experiences,
 		profile: content.profile
 	};
 };
