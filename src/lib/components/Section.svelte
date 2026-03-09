@@ -5,12 +5,13 @@
 		title: string;
 		children: Snippet;
 		class?: string;
+		id?: string;
 	}
 
-	let { title, children, class: className = '' }: Props = $props();
+	let { title, children, class: className = '', id }: Props = $props();
 </script>
 
-<section class="mt-24 space-y-12 {className}">
-	<h2 class="text-[13px] font-semibold tracking-widest text-neutral-400 uppercase">{title}</h2>
+<section {id} class="mt-32 space-y-12 {className}">
+	<h2 class="text-[20px] font-black tracking-widest text-neutral-900 uppercase inline-block border-b-4 border-neutral-900 pb-2 mb-4">{title}</h2>
 	{@render children()}
 </section>

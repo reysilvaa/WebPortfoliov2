@@ -42,6 +42,18 @@ export const skills = sqliteTable('skills', {
 	order: integer('order').default(0)
 });
 
+export const experiences = sqliteTable('experiences', {
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => crypto.randomUUID()),
+	role: text('role').notNull(),
+	company: text('company').notNull(),
+	startDate: text('start_date').notNull(),
+	endDate: text('end_date'),
+	description: text('description'),
+	order: integer('order').default(0)
+});
+
 export const profile = sqliteTable('profile', {
 	id: text('id').primaryKey(), // We'll just use 'main' as ID
 	name: text('name').notNull(),

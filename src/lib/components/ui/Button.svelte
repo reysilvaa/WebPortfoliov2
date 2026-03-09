@@ -21,21 +21,21 @@
 	}: Props = $props();
 
 	const variants = {
-		primary: 'bg-neutral-900 text-white hover:bg-neutral-800 disabled:bg-neutral-400',
-		secondary: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 disabled:bg-neutral-50',
-		outline: 'border border-neutral-200 bg-transparent hover:border-neutral-900 hover:text-neutral-900 text-neutral-600',
-		ghost: 'bg-transparent hover:bg-neutral-100 text-neutral-600 hover:text-neutral-900',
-		danger: 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-100'
+		primary: 'bg-neutral-900 text-white hover:bg-neutral-800 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none border-2 border-transparent hover:border-neutral-900',
+		secondary: 'bg-[#FFDE59] text-neutral-900 border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none disabled:bg-neutral-50',
+		outline: 'bg-white border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] text-neutral-900 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none',
+		ghost: 'bg-transparent text-neutral-900 hover:bg-neutral-100 border-2 border-transparent hover:border-neutral-900 hover:shadow-[2px_2px_0px_0px_#171717] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none',
+		danger: 'bg-[#FF90E8] text-neutral-900 border-2 border-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none'
 	};
 
 	const sizes = {
-		sm: 'h-8 px-3 text-[11px]',
-		md: 'h-10 px-5 text-[13px]',
-		lg: 'h-12 px-8 text-[14px]',
-		icon: 'h-9 w-9 flex items-center justify-center p-0'
+		sm: 'h-8 px-4 text-[12px]',
+		md: 'h-11 px-6 text-[14px]',
+		lg: 'h-14 px-8 text-[16px]',
+		icon: 'h-10 w-10 flex items-center justify-center p-0'
 	};
 
-	const baseClass = 'inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none disabled:cursor-not-allowed';
+	const baseClass = 'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
 </script>
 
 <button

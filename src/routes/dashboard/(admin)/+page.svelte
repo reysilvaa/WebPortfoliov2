@@ -62,11 +62,11 @@
 </script>
 
 <div class="space-y-12">
-	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">
+	<header class="space-y-2 border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+		<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">
 			{m.dashboard_settings_title()}
 		</h1>
-		<p class="text-[14px] text-neutral-500">
+		<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
 			{m.dashboard_settings_description()}
 		</p>
 	</header>

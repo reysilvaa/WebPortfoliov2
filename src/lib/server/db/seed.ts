@@ -64,6 +64,15 @@ async function main() {
 		])
 		.onConflictDoNothing();
 
+	console.log('Inserting experiences...');
+	await db
+		.insert(schema.experiences)
+		.values([
+			{ role: 'Full Stack Engineer', company: 'Google', startDate: '2023', endDate: 'Present', description: 'Working on core experimental features and internal tools.', order: 1 },
+			{ role: 'Frontend Intern', company: 'StartupX', startDate: '2022', endDate: '2023', description: 'Built an MVP from scratch using React and Tailwind.', order: 2 }
+		])
+		.onConflictDoNothing();
+
 	console.log('✅ Seeding complete.');
 }
 

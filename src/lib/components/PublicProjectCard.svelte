@@ -10,29 +10,43 @@
 	let { project }: { project: Project } = $props();
 </script>
 
+<!-- eslint-disable @inlang/paraglide-js/no-unresolved-href -->
 <a
 	href={project.liveUrl || project.repoUrl || '#'}
 	target="_blank"
 	rel="noopener noreferrer"
-	class="group block space-y-2"
+	class="group flex h-full flex-col justify-between border border-neutral-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-neutral-900 hover:shadow-[4px_4px_0px_0px_#171717]"
 >
-	<div class="flex items-center justify-between">
-		<h3
-			class="text-[15px] font-medium text-neutral-950 decoration-neutral-300 underline-offset-4 transition-all group-hover:underline"
-		>
-			{project.title}
-		</h3>
+	<div class="space-y-4">
+		<div class="flex items-start justify-between">
+			<h3 class="text-[18px] font-bold tracking-tight text-neutral-900">
+				{project.title}
+			</h3>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="20"
+				height="20"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="square"
+				stroke-linejoin="miter"
+				class="text-neutral-300 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-neutral-900"
+			>
+				<path d="M7 17L17 7M17 7H7M17 7V17" />
+			</svg>
+		</div>
+		<p class="text-[14px] leading-relaxed text-neutral-600 line-clamp-3">
+			{project.description}
+		</p>
 	</div>
-	<p class="text-[14px] leading-relaxed text-neutral-500">
-		{project.description}
-	</p>
 	{#if project.tags}
-		<div class="flex flex-wrap gap-3 pt-1">
-			{#each (project.tags || '')
-				.split(',')
-				.map((t) => t.trim())
-				.filter(Boolean) as tag}
-				<span class="text-[11px] font-medium text-neutral-400">{tag}</span>
+		<div class="mt-6 flex flex-wrap gap-2">
+			{#each (project.tags || '').split(',').map((t) => t.trim()).filter(Boolean) as tag (tag)}
+				<span class="border border-neutral-200 bg-neutral-50 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-neutral-500">
+					{tag}
+				</span>
 			{/each}
 		</div>
 	{/if}

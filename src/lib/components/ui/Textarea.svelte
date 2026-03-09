@@ -16,21 +16,21 @@
 	}: Props & { value?: string } = $props();
 
 	const baseClass =
-		'h-32 w-full rounded-xl border border-neutral-200 px-4 py-3 text-[14px] transition-all outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900/5 placeholder:text-neutral-400';
-	const errorClass = 'border-red-500 bg-red-50/10 focus:border-red-500';
+		'h-32 w-full border-2 border-neutral-900 bg-white px-4 py-3 text-[15px] font-medium transition-all outline-none focus:border-neutral-900 focus:shadow-[4px_4px_0px_0px_#171717] focus:-translate-y-0.5 placeholder:text-neutral-400 placeholder:font-normal';
+	const errorClass = 'border-red-500 bg-red-50 focus:border-red-500 focus:shadow-[4px_4px_0px_0px_#ef4444]';
 </script>
 
-<div class="w-full space-y-1.5">
+<div class="w-full space-y-2">
 	{#if label}
 		<label
 			for={id}
-			class="ml-1 text-[12px] font-semibold tracking-widest text-neutral-500 uppercase"
+			class="ml-1 inline-block text-[13px] font-black tracking-widest text-neutral-900 uppercase"
 			>{label}</label
 		>
 	{/if}
 	<textarea {id} bind:value class="{baseClass} {error ? errorClass : ''} {className}" {...rest}
 	></textarea>
 	{#if error}
-		<p class="ml-1 text-[11px] font-medium text-red-600">{error}</p>
+		<p class="ml-1 font-bold text-[12px] text-red-600 uppercase tracking-widest">{error}</p>
 	{/if}
 </div>
