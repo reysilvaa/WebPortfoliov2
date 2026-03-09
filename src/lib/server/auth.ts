@@ -17,7 +17,6 @@ export const auth = betterAuth({
 		}
 	},
 	trustedOrigins: [
-		env.BETTER_AUTH_URL,
 		env.ORIGIN,
 		'https://reynaldsilva.my.id',
 		'https://www.reynaldsilva.my.id'
