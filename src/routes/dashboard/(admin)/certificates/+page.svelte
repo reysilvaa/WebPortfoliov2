@@ -15,10 +15,14 @@
 
 </script>
 
-<div class="space-y-12">
-	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">{m.dashboard_credentials_title()}</h1>
-		<p class="text-[14px] text-neutral-500">{m.dashboard_credentials_description()}</p>
+<div class="mx-auto max-w-6xl space-y-12 pb-20">
+	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+		<div class="space-y-2">
+			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">{m.dashboard_credentials_title()}</h1>
+			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+				{m.dashboard_credentials_description()}
+			</p>
+		</div>
 	</header>
 
 	<section class="max-w-2xl space-y-10">
@@ -44,14 +48,14 @@
 			</form>
 		</Card>
 
-		<div class="space-y-3">
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.certificates as cert (cert.id)}
 				<div
-					class="flex items-center justify-between overflow-hidden rounded-2xl border border-neutral-100 bg-white p-6 transition-all hover:bg-neutral-50/50"
+					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="space-y-1">
-						<h4 class="text-[15px] font-semibold text-neutral-900">{cert.name}</h4>
-						<p class="text-[13px] text-neutral-500">{cert.issuer}</p>
+					<div class="space-y-2 pr-4">
+						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">{cert.name}</h4>
+						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{cert.issuer}</p>
 					</div>
 					<form method="POST" action="?/delete" use:enhance={() => {
 						return async ({ update }) => {
@@ -67,8 +71,8 @@
 					</form>
 				</div>
 			{:else}
-				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200">
-					<p class="text-[14px] text-neutral-400">No credentials found.</p>
+				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
+					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">No credentials found.</p>
 				</div>
 			{/each}
 		</div>

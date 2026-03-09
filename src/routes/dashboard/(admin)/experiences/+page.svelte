@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
+	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
@@ -15,10 +16,14 @@
 	let description = $state('');
 </script>
 
-<div class="mx-auto max-w-4xl space-y-12">
-	<header class="space-y-2">
-		<h1 class="text-xl font-semibold tracking-tight">Experiences</h1>
-		<p class="text-[14px] text-neutral-500">Manage your past projects and jobs.</p>
+<div class="mx-auto max-w-6xl space-y-12 pb-20">
+	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+		<div class="space-y-2">
+			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">Experiences</h1>
+			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+				{m.dashboard_projects_description()}
+			</p>
+		</div>
 	</header>
 
 	<section class="space-y-10">
@@ -56,14 +61,15 @@
 			</form>
 		</Card>
 
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.experiences as exp (exp.id)}
 				<div
-					class="flex items-center justify-between rounded-2xl border border-neutral-100 bg-white p-5 transition-all hover:bg-neutral-50/50"
+					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="space-y-1">
-						<h4 class="text-[15px] font-semibold text-neutral-900">{exp.role} @ {exp.company}</h4>
-						<p class="text-[13px] text-neutral-500">{exp.startDate} - {exp.endDate || 'Present'}</p>
+					<div class="space-y-2 pr-4">
+						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900">{exp.role}</h4>
+						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{exp.company}</p>
+						<p class="text-[11px] font-bold text-neutral-500 uppercase">{exp.startDate} - {exp.endDate || 'Present'}</p>
 					</div>
 					<form method="POST" action="?/delete" use:enhance={() => {
 						return async ({ update }) => {
@@ -98,8 +104,8 @@
 					</form>
 				</div>
 			{:else}
-				<div class="py-12 text-center rounded-2xl border border-dashed border-neutral-200 sm:col-span-2 lg:col-span-3">
-					<p class="text-[14px] text-neutral-400">No experiences found.</p>
+				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
+					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">No experiences found.</p>
 				</div>
 			{/each}
 		</div>

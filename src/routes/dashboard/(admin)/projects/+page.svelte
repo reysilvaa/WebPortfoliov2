@@ -92,40 +92,38 @@
 	</header>
 
 	<div
-		class="sticky top-0 z-10 mb-6 border-b border-neutral-100 bg-white/80 pt-4 pb-4 backdrop-blur-md"
+		class="sticky top-0 z-10 mb-8 border-b-4 border-neutral-900 bg-white/95 pt-4 pb-6 backdrop-blur-md"
 	>
-		<div class="flex flex-col items-center justify-between gap-4 md:flex-row">
+		<div class="flex flex-col items-center justify-between gap-6 md:flex-row">
 			<div class="relative w-full md:max-w-md">
 				<Input
 					bind:value={searchQuery}
 					placeholder={m.projects_search_placeholder()}
-					class="pl-10"
+					class="pl-12"
 				/>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
-					width="16"
-					height="16"
+					width="18"
+					height="18"
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="left-3-translate-y-1/2 absolute text-neutral-400"
-					style="top: 50%; transform: translateY(-50%);"
+					stroke-width="3"
+					stroke-linecap="square"
+					class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-900"
 					><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
 				>
 			</div>
 
 			{#if selectedIds.length > 0}
 				<div
-					class="animate-in fade-in slide-in-from-top-2 flex items-center gap-2 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-2"
+					class="flex items-center gap-4 border-4 border-neutral-900 bg-[#FF90E8] px-6 py-3 shadow-[4px_4px_0px_0px_#171717]"
 				>
-					<span class="mr-2 text-[12px] font-medium text-neutral-600"
-						>{selectedIds.length} selected</span
+					<span class="text-[14px] font-black uppercase tracking-widest text-neutral-900"
+						>{selectedIds.length} SELECTED</span
 					>
 
-					<div class="flex items-center gap-1.5">
+					<div class="flex items-center gap-2">
 						<form
 							method="POST"
 							action="?/bulk-action"
@@ -207,7 +205,7 @@
 		</div>
 
 		<div
-			class="divide-y divide-neutral-100 overflow-hidden rounded-2xl border border-neutral-100 bg-white"
+			class="divide-y-4 divide-neutral-900 overflow-hidden border-4 border-neutral-900 bg-white shadow-[8px_8px_0px_0px_#171717]"
 		>
 			{#each filteredProjects as project (project.id)}
 				<div class="group flex items-center p-6 transition-all hover:bg-neutral-50/50">

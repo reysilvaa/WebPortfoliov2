@@ -20,9 +20,9 @@
 	}: Props = $props();
 </script>
 
-<div class="border-2 border-neutral-900 bg-white shadow-[6px_6px_0px_0px_#171717] overflow-hidden {className}">
+<div class="border-4 border-neutral-900 bg-white shadow-[8px_8px_0px_0px_#171717] overflow-hidden {className}">
 	{#if title || description || headerSnippet}
-		<div class="border-b-2 border-neutral-900 bg-neutral-50 px-6 py-5">
+		<div class="border-b-4 border-neutral-900 bg-[#FF90E8]/10 px-6 py-5">
 			<div class="flex items-center justify-between gap-4">
 				<div class="space-y-1">
 					{#if title}

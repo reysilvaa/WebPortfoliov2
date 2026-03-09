@@ -48,10 +48,9 @@
 	>
 		{#if profileMessage.text}
 			<div
-				class="mb-6 rounded-lg p-3 text-[12px] font-medium {profileMessage.type ===
-				'success'
-					? 'bg-green-50 text-green-600'
-					: 'bg-red-50 text-red-600'}"
+				class="mb-8 border-4 p-4 text-[13px] font-black uppercase tracking-widest {profileMessage.type === 'success'
+					? 'border-neutral-900 bg-[#FFDE59] text-neutral-900 shadow-[4px_4px_0px_0px_#171717]'
+					: 'border-neutral-900 bg-[#FF90E8] text-neutral-900 shadow-[4px_4px_0px_0px_#171717]'}"
 			>
 				{profileMessage.text}
 			</div>

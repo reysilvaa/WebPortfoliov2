@@ -24,13 +24,13 @@
 
 	const items = $derived({
 		projects: data.projects || [],
+		pagination: data.pagination,
 		certificates: data.certificates || [],
 		skills: data.skills || [],
 		experiences: data.experiences || []
 	});
 
 	let activeSection = $state('home');
-	let showAllProjects = $state(false);
 	let hoveredProjectId = $state<string | null>(null);
 
 	onMount(() => {
@@ -160,7 +160,7 @@
 		<!-- Projects Section -->
 		<Section id="projects" title={m.public_projects()}>
 			<div class="grid grid-cols-1 gap-16 md:grid-cols-2 lg:grid-cols-3 transition-all duration-700">
-				{#each (showAllProjects ? items.projects : items.projects.slice(0, 6)) as project, i (project.id)}
+				{#each items.projects as project, i (project.id)}
 					{@const row = Math.floor(i / 3)}
 					{@const col = i % 3}
 					{@const hoveredIdx = items.projects.findIndex(p => p.id === hoveredProjectId)}
@@ -189,15 +189,20 @@
 					</div>
 				{/each}
 			</div>
-			{#if items.projects.length > 5}
-				<div class="mt-12 flex justify-center">
-					<button
-						onclick={() => showAllProjects = !showAllProjects}
-						class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
-					>
-						{showAllProjects ? 'Show Less' : 'Show More Projects'}
-						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform {showAllProjects ? 'rotate-180 group-hover:-translate-y-0.5' : 'group-hover:translate-y-0.5'}"><path d="M6 9l6 6 6-6"/></svg>
-					</button>
+			
+			{#if items.pagination && items.pagination.totalPages > 1}
+				<div class="mt-20 flex flex-wrap justify-center gap-4">
+					{#each Array.from({ length: items.pagination.totalPages }, (_, i) => i + 1) as p (p)}
+						<a
+							href="?page={p}#projects"
+							class="flex h-14 w-14 items-center justify-center border-4 border-neutral-900 text-[18px] font-black transition-all
+								{items.pagination.page === p 
+									? 'bg-[#FFDE59] text-neutral-900 shadow-[6px_6px_0px_0px_#171717] -translate-y-1' 
+									: 'bg-white text-neutral-900 hover:shadow-[6px_6px_0px_0px_#171717] hover:-translate-y-1 active:translate-y-0 active:shadow-none'}"
+						>
+							{p}
+						</a>
+					{/each}
 				</div>
 			{/if}
 		</Section>

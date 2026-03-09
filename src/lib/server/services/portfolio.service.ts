@@ -1,9 +1,32 @@
 import { db } from '$lib/server/db';
 import { projects, certificates, skills, profile, experiences } from '$lib/server/db/schema';
-import { desc, asc, eq } from 'drizzle-orm';
+import { desc, asc, eq, sql } from 'drizzle-orm';
 import { GithubService } from './github.service';
 
 export class PortfolioService {
+	static async getPaginatedProjects(page: number, limit: number, includeHidden = false) {
+		const offset = (page - 1) * limit;
+		
+		const whereClause = !includeHidden ? eq(projects.isHidden, false) : undefined;
+		
+		const [allProjects, totalResult] = await Promise.all([
+			db.select()
+				.from(projects)
+				.where(whereClause)
+				.orderBy(asc(projects.order), desc(projects.createdAt))
+				.limit(limit)
+				.offset(offset),
+			db.select({ count: sql<number>`count(*)` })
+				.from(projects)
+				.where(whereClause)
+		]);
+
+		return {
+			projects: allProjects,
+			total: totalResult[0].count
+		};
+	}
+
 	static async getAllContent(includeHidden = false) {
 		const projectQuery = db.select().from(projects);
 
