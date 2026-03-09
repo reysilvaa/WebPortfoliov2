@@ -26,11 +26,11 @@
 	href={project.liveUrl || project.repoUrl || '#'}
 	target="_blank"
 	rel="noopener noreferrer"
-	class="group relative flex h-full min-h-[400px] flex-col overflow-visible border-4 border-neutral-900 bg-white shadow-[4px_4px_0px_0px_#171717] transition-all duration-500 active:translate-x-1 active:translate-y-1 active:shadow-none
-		{isHovered ? 'z-50 -translate-y-4 shadow-[16px_16px_0px_0px_#171717] border-[#FF90E8]' : 'z-10'}"
+	class="group relative flex aspect-square flex-col overflow-visible border-4 border-neutral-900 bg-white shadow-[6px_6px_0px_0px_#171717] transition-all duration-500 active:translate-x-1 active:translate-y-1 active:shadow-none
+		{isHovered ? 'z-50 -translate-y-4 shadow-[20px_20px_0px_0px_#171717] border-[#FF90E8]' : 'z-10'}"
 >
-	<!-- Project Photo Container (Fixed Height) -->
-	<div class="relative h-60 w-full overflow-hidden border-b-4 border-neutral-900 bg-neutral-100">
+	<!-- Project Photo Container (Adjusted for Square) -->
+	<div class="relative h-2/3 w-full overflow-hidden border-b-4 border-neutral-900 bg-neutral-100">
 		{#if project.imageUrl}
 			<img 
 				src={project.imageUrl} 

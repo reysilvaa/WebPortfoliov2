@@ -174,12 +174,13 @@
 						style:transform={
 							hoveredProjectId && hoveredProjectId !== project.id 
 								? (row < hRow && col === hCol
-										? 'translateY(-140px) scale(0.98)' 
+										? 'translateY(-160px)' 
 										: 'scale(1)')
 								: ''
 						}
 						style:z-index={hoveredProjectId === project.id ? '50' : '1'}
-						style:opacity={hoveredProjectId && hoveredProjectId !== project.id ? '0.9' : '1'}
+						style:opacity={hoveredProjectId && hoveredProjectId !== project.id ? '0.7' : '1'}
+						style:filter={hoveredProjectId && hoveredProjectId !== project.id ? 'blur(4px) grayscale(0.2)' : 'none'}
 					>
 						<PublicProjectCard 
 							{project} 
