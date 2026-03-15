@@ -1,8 +1,8 @@
-<script lang="ts">
-	import type { Meta, StoryObj } from '@storybook/svelte';
+<script module lang="ts">
+	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Input from './Input.svelte';
 
-	const meta = {
+	const { Story } = defineMeta({
 		title: 'UI/Input',
 		component: Input,
 		tags: ['autodocs'],
@@ -11,30 +11,29 @@
 			error: { control: 'text' },
 			placeholder: { control: 'text' }
 		}
-	} satisfies Meta<Input>;
-
-	const _meta = meta;
-export default _meta;
-	type Story = StoryObj<typeof meta>;
-
-	export const Default: Story = {
-		args: {
-			placeholder: 'Enter something...'
-		}
-	};
-
-	export const WithLabel: Story = {
-		args: {
-			label: 'Full Name',
-			placeholder: 'Rey Silva'
-		}
-	};
-
-	export const WithError: Story = {
-		args: {
-			label: 'Email',
-			placeholder: 'email@example.com',
-			error: 'Invalid email address'
-		}
-	};
+	});
 </script>
+
+<Story
+	name="Default"
+	args={{
+		placeholder: 'Enter something...'
+	}}
+/>
+
+<Story
+	name="WithLabel"
+	args={{
+		label: 'Full Name',
+		placeholder: 'Rey Silva'
+	}}
+/>
+
+<Story
+	name="WithError"
+	args={{
+		label: 'Email',
+		placeholder: 'email@example.com',
+		error: 'Invalid email address'
+	}}
+/>

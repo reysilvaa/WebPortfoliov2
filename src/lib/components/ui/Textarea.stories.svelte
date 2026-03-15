@@ -1,8 +1,8 @@
-<script lang="ts">
-	import type { Meta, StoryObj } from '@storybook/svelte';
+<script module lang="ts">
+	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Textarea from './Textarea.svelte';
 
-	const meta = {
+	const { Story } = defineMeta({
 		title: 'UI/Textarea',
 		component: Textarea,
 		tags: ['autodocs'],
@@ -11,30 +11,29 @@
 			error: { control: 'text' },
 			placeholder: { control: 'text' }
 		}
-	} satisfies Meta<Textarea>;
-
-	const _meta = meta;
-export default _meta;
-	type Story = StoryObj<typeof meta>;
-
-	export const Default: Story = {
-		args: {
-			placeholder: 'Write your content here...'
-		}
-	};
-
-	export const WithLabel: Story = {
-		args: {
-			label: 'Bio',
-			placeholder: 'Tell us about yourself...'
-		}
-	};
-
-	export const WithError: Story = {
-		args: {
-			label: 'Bio',
-			placeholder: 'Tell us about yourself...',
-			error: 'Bio must be at least 10 characters'
-		}
-	};
+	});
 </script>
+
+<Story
+	name="Default"
+	args={{
+		placeholder: 'Write your content here...'
+	}}
+/>
+
+<Story
+	name="WithLabel"
+	args={{
+		label: 'Bio',
+		placeholder: 'Tell us about yourself...'
+	}}
+/>
+
+<Story
+	name="WithError"
+	args={{
+		label: 'Bio',
+		placeholder: 'Tell us about yourself...',
+		error: 'Bio must be at least 10 characters'
+	}}
+/>

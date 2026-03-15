@@ -15,7 +15,9 @@
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "tsx src/lib/server/db/seed.ts",
-		"auth:schema": "better-auth generate --config src/lib/server/auth.ts --output src/lib/server/db/auth.schema.ts --yes"
+		"auth:schema": "better-auth generate --config src/lib/server/auth.ts --output src/lib/server/db/auth.schema.ts --yes",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"files": [
 		"dist",
@@ -72,7 +74,15 @@
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.56.1",
 		"vite": "^7.3.1",
-		"vitest": "^4.0.18"
+		"vitest": "^4.0.18",
+		"@storybook/sveltekit": "^10.2.19",
+		"@storybook/addon-svelte-csf": "^5.0.11",
+		"@chromatic-com/storybook": "^5.0.1",
+		"@storybook/addon-a11y": "^10.2.19",
+		"@storybook/addon-docs": "^10.2.19",
+		"eslint-plugin-storybook": "^10.2.19",
+		"playwright": "^1.58.2",
+		"@vitest/coverage-v8": "4.0.18"
 	},
 	"keywords": [
 		"svelte"

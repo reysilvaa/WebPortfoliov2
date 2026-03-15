@@ -1,8 +1,8 @@
-<script lang="ts">
-	import type { Meta, StoryObj } from '@storybook/svelte';
+<script module lang="ts">
+	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Card from './Card.svelte';
 
-	const meta = {
+	const { Story } = defineMeta({
 		title: 'UI/Card',
 		component: Card,
 		tags: ['autodocs'],
@@ -10,32 +10,31 @@
 			title: { control: 'text' },
 			description: { control: 'text' }
 		}
-	} satisfies Meta<Card>;
-
-	const _meta = meta;
-export default _meta;
-	type Story = StoryObj<typeof meta>;
-
-	export const Default: Story = {
-		args: {
-			children: () => 'Card Content'
-		}
-	};
-
-	export const WithHeader: Story = {
-		args: {
-			title: 'Card Title',
-			description: 'Card Description',
-			children: () => 'Card Content'
-		}
-	};
-
-	export const WithFooter: Story = {
-		args: {
-			title: 'Settings',
-			description: 'Update your profile information.',
-			children: () => 'Settings form content goes here.',
-			footerSnippet: () => 'Save Changes'
-		}
-	};
+	});
 </script>
+
+<Story
+	name="Default"
+	args={{
+		children: () => 'Card Content'
+	}}
+/>
+
+<Story
+	name="WithHeader"
+	args={{
+		title: 'Card Title',
+		description: 'Card Description',
+		children: () => 'Card Content'
+	}}
+/>
+
+<Story
+	name="WithFooter"
+	args={{
+		title: 'Settings',
+		description: 'Update your profile information.',
+		children: () => 'Settings form content goes here.',
+		footerSnippet: () => 'Save Changes'
+	}}
+/>
