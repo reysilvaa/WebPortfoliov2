@@ -110,20 +110,19 @@
 						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{cert.issuer}</p>
 					</div>
 
-					{#if cert.credentialUrl}
-						{@const udemyMatch = cert.credentialUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
-						{@const isDirectImage = cert.credentialUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+					{#if cert.credentialUrl || cert.imageUrl}
+						{@const displayUrl = cert.imageUrl || cert.credentialUrl || ''}
+						{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
 						{@const previewUrl = udemyMatch 
 							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
 							: isDirectImage 
-								? cert.credentialUrl 
-								: null}
+								? displayUrl 
+								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 						
-						{#if previewUrl}
-							<div class="mb-6 aspect-video w-full overflow-hidden border-2 border-neutral-900 rounded-lg shadow-[2px_2px_0px_0px_#171717]">
-								<img src={previewUrl} alt="Preview" class="h-full w-full object-cover" />
-							</div>
-						{/if}
+						<div class="mb-6 aspect-video w-full overflow-hidden border-2 border-neutral-900 rounded-lg shadow-[2px_2px_0px_0px_#171717] bg-neutral-50">
+							<img src={previewUrl} alt="Preview" class="h-full w-full object-cover" />
+						</div>
 					{/if}
 
 					<div class="flex items-center justify-end gap-2 border-t-2 border-neutral-50 pt-4">
