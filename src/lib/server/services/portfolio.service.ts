@@ -66,12 +66,14 @@ export class PortfolioService {
 				title: repo.name,
 				description: repo.description,
 				repoUrl: repo.html_url,
-				liveUrl: repo.homepage,
+				liveUrl: repo.homepage && repo.homepage.trim() !== '' 
+					? (repo.homepage.startsWith('http') ? repo.homepage : `https://${repo.homepage}`) 
+					: null,
 				stars: repo.stargazers_count,
 				forks: repo.forks_count,
 				language: repo.language,
 				tags: Array.from(new Set([...(repo.topics || []), repo.owner.login]))
-					.filter((t) => t !== 'reysilvaa') // Example: exclude own username from tags
+					.filter((t) => t !== 'reysilvaa')
 					.join(', '),
 				updatedAt: new Date(repo.updated_at)
 			};
