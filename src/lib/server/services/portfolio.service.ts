@@ -90,7 +90,7 @@ export class PortfolioService {
 					.insert(projects)
 					.values({
 						...projectData,
-						isHidden: false,
+						isHidden: true,
 						order: 0
 					})
 					.returning();
