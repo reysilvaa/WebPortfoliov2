@@ -12,6 +12,7 @@
 		name: 'Rey Silva.',
 		role: 'Full Stack Engineer & Designer',
 		bio: 'Crafting digital experiences with precision. Specializing in highly performant architectures, minimal aesthetics, and scalable engineering.',
+		avatarUrl: 'https://github.com/reysilvaa.png',
 		email: 'contact@reysilva.com',
 		github: 'https://github.com/reysilvaa',
 		linkedin: 'https://linkedin.com/in/reysilvaa'
@@ -90,18 +91,38 @@
 
 	<!-- Main Content Area -->
 	<main class="mx-auto max-w-6xl px-6 pt-24 sm:pt-32 lg:pr-64">
-		<!-- Hero Section -->
 		<header id="home" class="mb-24 flex flex-col gap-6 border-b-4 border-neutral-900 pb-12">
-			<div class="space-y-6 lg:max-w-2xl bg-white p-8 border-4 border-neutral-900 shadow-[8px_8px_0px_0px_#171717]">
-				<h1 class="text-5xl font-black uppercase tracking-tighter text-neutral-900 sm:text-7xl leading-none">
-					{profile.name}
-				</h1>
-				<p class="inline-block bg-[#FF90E8] border-2 border-neutral-900 text-[16px] font-bold tracking-widest text-neutral-900 px-3 py-1 uppercase shadow-[2px_2px_0px_0px_#171717]">
-					{profile.role}
-				</p>
-				<p class="text-[18px] font-medium leading-relaxed text-neutral-900 text-balance border-l-4 border-neutral-900 pl-4 py-1">
-					{profile.bio}
-				</p>
+			<div class="flex flex-col md:flex-row gap-8 items-start">
+				<div class="shrink-0">
+					<div class="relative group">
+						<div class="absolute inset-0 bg-neutral-900 translate-x-3 translate-y-3 transition-transform group-hover:translate-x-4 group-hover:translate-y-4"></div>
+						<div class="relative size-48 md:size-64 border-4 border-neutral-900 bg-white overflow-hidden shadow-[2px_2px_0px_0px_#171717]">
+							{#if profile.avatarUrl}
+								<img 
+									src={profile.avatarUrl} 
+									alt={profile.name} 
+									class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" 
+								/>
+							{:else}
+								<div class="w-full h-full flex items-center justify-center bg-[#FFDE59]">
+									<span class="text-6xl font-black">{profile.name.charAt(0)}</span>
+								</div>
+							{/if}
+						</div>
+					</div>
+				</div>
+
+				<div class="space-y-6 lg:max-w-2xl bg-white p-8 border-4 border-neutral-900 shadow-[8px_8px_0px_0px_#171717]">
+					<h1 class="text-5xl font-black uppercase tracking-tighter text-neutral-900 sm:text-7xl leading-none">
+						{profile.name}
+					</h1>
+					<p class="inline-block bg-[#FF90E8] border-2 border-neutral-900 text-[16px] font-bold tracking-widest text-neutral-900 px-3 py-1 uppercase shadow-[2px_2px_0px_0px_#171717]">
+						{profile.role}
+					</p>
+					<p class="text-[18px] font-medium leading-relaxed text-neutral-900 text-balance border-l-4 border-neutral-900 pl-4 py-1">
+						{profile.bio}
+					</p>
+				</div>
 			</div>
 
 			<div class="flex flex-row flex-wrap gap-4 pt-2">

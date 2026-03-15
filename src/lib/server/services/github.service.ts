@@ -66,4 +66,31 @@ export class GithubService {
 
 		return uniqueRepos;
 	}
+
+	static async getProfileInfo() {
+		if (!GITHUB_TOKEN_PERSONAL) return null;
+
+		try {
+			const response = await fetch('https://api.github.com/user', {
+				headers: {
+					Authorization: `token ${GITHUB_TOKEN_PERSONAL}`,
+					Accept: 'application/vnd.github.v3+json'
+				}
+			});
+
+			if (!response.ok) return null;
+
+			const data = await response.json();
+			return {
+				name: data.name,
+				bio: data.bio,
+				avatarUrl: data.avatar_url,
+				github: data.html_url,
+				email: data.email
+			};
+		} catch (error) {
+			console.error('Error fetching GitHub profile:', error);
+			return null;
+		}
+	}
 }

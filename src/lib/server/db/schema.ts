@@ -59,6 +59,7 @@ export const profile = sqliteTable('profile', {
 	name: text('name').notNull(),
 	role: text('role').notNull(),
 	bio: text('bio').notNull(),
+	avatarUrl: text('avatar_url'),
 	email: text('email'),
 	github: text('github'),
 	linkedin: text('linkedin'),

@@ -126,6 +126,7 @@ export class PortfolioService {
 					name: data.name || '',
 					role: data.role || '',
 					bio: data.bio || '',
+					avatarUrl: data.avatarUrl || '',
 					email: data.email || '',
 					github: data.github || '',
 					linkedin: data.linkedin || ''
