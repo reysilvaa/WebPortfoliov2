@@ -14,8 +14,16 @@
 	let issuer = $state('');
 	let credentialUrl = $state('');
 
+	let editingCertificate = $state<{
+		id: string;
+		name: string;
+		issuer: string;
+		credentialUrl: string | null;
+	} | null>(null);
+
 	// Modal State
 	let deleteModalOpen = $state(false);
+	let editModalOpen = $state(false);
 	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
 	let deleteModalTitle = $state('');
 	let deleteModalMessage = $state('');
@@ -78,16 +86,74 @@
 						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">{cert.name}</h4>
 						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{cert.issuer}</p>
 					</div>
-					<form method="POST" action="?/delete" onsubmit={(e) => openDeleteModal(e, `Delete "${cert.name}"?`, 'This will permanently remove this certification/award from your records.')} use:enhance={() => {
-						return async ({ update }) => {
-							await update();
-						};
-					}}>
-						<input type="hidden" name="id" value={cert.id} />
-						<Button variant="danger" size="sm" type="submit">
-							{m.common_delete()}
+					<div class="flex gap-2">
+						<Button
+							variant="outline"
+							size="icon"
+							type="button"
+							class="text-neutral-400"
+							onclick={() => {
+								editingCertificate = { ...cert };
+								editModalOpen = true;
+							}}
+							title="Edit"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-pencil"
+								><path
+									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+								/><path d="m15 5 4 4" /></svg
+							>
 						</Button>
-					</form>
+						<form
+							method="POST"
+							action="?/delete"
+							onsubmit={(e) =>
+								openDeleteModal(
+									e,
+									`Delete "${cert.name}"?`,
+									'This will permanently remove this certification/award from your records.'
+								)}
+							use:enhance={() => {
+								return async ({ update }) => {
+									await update();
+								};
+							}}
+						>
+							<input type="hidden" name="id" value={cert.id} />
+							<Button variant="danger" size="icon" type="submit">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="lucide lucide-trash-2"
+									><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
+										d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+									/><line x1="10" x2="10" y1="11" y2="17" /><line
+										x1="14"
+										x2="14"
+										y1="11"
+										y2="17"
+									/></svg
+								>
+							</Button>
+						</form>
+					</div>
 				</div>
 			{:else}
 				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
@@ -106,3 +172,69 @@
 	onCancel={() => (deleteModalOpen = false)}
 	isLoading={loading}
 />
+
+{#if editModalOpen && editingCertificate}
+	<div
+		role="dialog"
+		aria-modal="true"
+		class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+	>
+		<!-- Backdrop -->
+		<button
+			type="button"
+			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			onclick={() => (editModalOpen = false)}
+			aria-label="Close modal"
+		></button>
+
+		<!-- Modal -->
+		<form
+			method="POST"
+			action="?/update"
+			use:enhance={() => {
+				loading = true;
+				return async ({ update }) => {
+					await update();
+					editModalOpen = false;
+					loading = false;
+				};
+			}}
+			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+		>
+			<div class="mb-6">
+				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+					Edit Credential
+				</h2>
+				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+					Update certification details.
+				</p>
+			</div>
+
+			<div class="space-y-6">
+				<input type="hidden" name="id" value={editingCertificate.id} />
+				<Input bind:value={editingCertificate.name} name="name" label="Certificate Name" required />
+				<Input
+					bind:value={editingCertificate.issuer}
+					name="issuer"
+					label="Issuer"
+					placeholder="e.g., Google, Coursera"
+					required
+				/>
+				<Input
+					value={editingCertificate.credentialUrl || ''}
+					oninput={(e) => { if (editingCertificate) editingCertificate.credentialUrl = (e.target as HTMLInputElement).value }}
+					name="credentialUrl"
+					label="Verification URL"
+					placeholder="https://..."
+				/>
+			</div>
+
+			<div class="mt-8 flex justify-end gap-4">
+				<Button variant="outline" type="button" onclick={() => (editModalOpen = false)}>
+					Cancel
+				</Button>
+				<Button type="submit" isLoading={loading}>Save Changes</Button>
+			</div>
+		</form>
+	</div>
+{/if}

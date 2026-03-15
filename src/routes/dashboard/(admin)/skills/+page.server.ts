@@ -24,5 +24,17 @@ export const actions: Actions = {
 		const id = formData.get('id') as string;
 		await PortfolioService.deleteSkill(id);
 		return { success: true };
+	},
+	update: async ({ request }) => {
+		const formData = await request.formData();
+		const id = formData.get('id') as string;
+		const name = formData.get('name') as string;
+		const category = formData.get('category') as string;
+
+		await PortfolioService.updateSkill(id, {
+			name,
+			category
+		});
+		return { success: true };
 	}
 };

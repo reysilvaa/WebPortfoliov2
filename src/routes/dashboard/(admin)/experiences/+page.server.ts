@@ -30,5 +30,23 @@ export const actions: Actions = {
 		const id = formData.get('id') as string;
 		await PortfolioService.deleteExperience(id);
 		return { success: true };
+	},
+	update: async ({ request }) => {
+		const formData = await request.formData();
+		const id = formData.get('id') as string;
+		const role = formData.get('role') as string;
+		const company = formData.get('company') as string;
+		const startDate = formData.get('startDate') as string;
+		const endDate = formData.get('endDate') as string;
+		const description = formData.get('description') as string;
+
+		await PortfolioService.updateExperience(id, {
+			role,
+			company,
+			startDate,
+			endDate,
+			description
+		});
+		return { success: true };
 	}
 };

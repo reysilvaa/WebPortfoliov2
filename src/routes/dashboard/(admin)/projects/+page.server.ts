@@ -38,5 +38,26 @@ export const actions: Actions = {
 		const id = formData.get('id') as string;
 		await PortfolioService.deleteProject(id);
 		return { success: true };
+	},
+	update: async ({ request }) => {
+		const formData = await request.formData();
+		const id = formData.get('id') as string;
+		const title = formData.get('title') as string;
+		const description = formData.get('description') as string;
+		const language = formData.get('language') as string;
+		const tags = formData.get('tags') as string;
+		const liveUrl = formData.get('liveUrl') as string;
+		const repoUrl = formData.get('repoUrl') as string;
+
+		await PortfolioService.updateProject(id, {
+			title,
+			description,
+			language,
+			tags,
+			liveUrl,
+			repoUrl
+		});
+
+		return { success: true };
 	}
 };

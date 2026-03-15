@@ -47,9 +47,26 @@
 
 	// Modal State
 	let deleteModalOpen = $state(false);
+	let editModalOpen = $state(false);
 	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
 	let deleteModalTitle = $state('');
 	let deleteModalMessage = $state('');
+
+	// Edit State
+	let editingProject = $state<{
+		id: string;
+		title: string;
+		description: string | null;
+		language: string | null;
+		tags: string | null;
+		liveUrl: string | null;
+		repoUrl: string | null;
+	} | null>(null);
+
+	function openEditModal(project: any) {
+		editingProject = { ...project };
+		editModalOpen = true;
+	}
 
 	function openDeleteModal(e: Event, title: string, message: string) {
 		e.preventDefault();
@@ -242,6 +259,31 @@
 					<ProjectItem project={{ ...project, isHidden: project.isHidden ?? false }} />
 
 					<div class="flex w-24 justify-end gap-2">
+						<Button
+							variant="outline"
+							size="icon"
+							type="button"
+							class="text-neutral-400"
+							onclick={() => openEditModal(project)}
+							title="Edit"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="lucide lucide-pencil"
+								><path
+									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
+								/><path d="m15 5 4 4" /></svg
+							>
+						</Button>
+
 						<form method="POST" action="?/toggle-visibility" use:enhance>
 							<input type="hidden" name="id" value={project.id} />
 							<input type="hidden" name="isHidden" value={(!project.isHidden).toString()} />
@@ -363,3 +405,94 @@
 	onCancel={() => (deleteModalOpen = false)}
 	isLoading={bulkActionLoading}
 />
+
+{#if editModalOpen && editingProject}
+	<div
+		role="dialog"
+		aria-modal="true"
+		class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+	>
+		<!-- Backdrop -->
+		<button
+			type="button"
+			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			onclick={() => (editModalOpen = false)}
+			aria-label="Close modal"
+		></button>
+
+		<!-- Modal -->
+		<form
+			method="POST"
+			action="?/update"
+			use:enhance={() => {
+				bulkActionLoading = true;
+				return async ({ update }) => {
+					await update();
+					editModalOpen = false;
+					bulkActionLoading = false;
+				};
+			}}
+			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+		>
+			<div class="mb-6">
+				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+					Edit Project
+				</h2>
+				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+					Update project information.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+				<input type="hidden" name="id" value={editingProject.id} />
+				<div class="col-span-full">
+					<Input bind:value={editingProject.title} name="title" label="Title" required />
+				</div>
+				<div class="col-span-full">
+					<Input
+						value={editingProject.description || ''}
+						oninput={(e) => { if (editingProject) editingProject.description = (e.target as HTMLInputElement).value }}
+						name="description"
+						label="Description"
+						placeholder="Briefly describe what this project is about..."
+					/>
+				</div>
+				<Input
+					value={editingProject.language || ''}
+					oninput={(e) => { if (editingProject) editingProject.language = (e.target as HTMLInputElement).value }}
+					name="language"
+					label="Primary Language"
+					placeholder="e.g., TypeScript, Python"
+				/>
+				<Input
+					value={editingProject.tags || ''}
+					oninput={(e) => { if (editingProject) editingProject.tags = (e.target as HTMLInputElement).value }}
+					name="tags"
+					label="Tags"
+					placeholder="svelte, tailwind, etc. (comma separated)"
+				/>
+				<Input
+					value={editingProject.liveUrl || ''}
+					oninput={(e) => { if (editingProject) editingProject.liveUrl = (e.target as HTMLInputElement).value }}
+					name="liveUrl"
+					label="Live URL"
+					placeholder="https://yourapp.com"
+				/>
+				<Input
+					value={editingProject.repoUrl || ''}
+					oninput={(e) => { if (editingProject) editingProject.repoUrl = (e.target as HTMLInputElement).value }}
+					name="repoUrl"
+					label="Repository URL"
+					placeholder="https://github.com/..."
+				/>
+			</div>
+
+			<div class="mt-8 flex justify-end gap-4">
+				<Button variant="outline" type="button" onclick={() => (editModalOpen = false)}>
+					Cancel
+				</Button>
+				<Button type="submit" isLoading={bulkActionLoading}>Save Changes</Button>
+			</div>
+		</form>
+	</div>
+{/if}
