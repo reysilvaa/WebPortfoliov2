@@ -84,13 +84,21 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.skills as skill (skill.id)}
 				<div
-					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
+					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="space-y-2 pr-4">
-						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">{skill.name}</h4>
-						<p class="text-[12px] font-bold uppercase tracking-widest text-[#FF90E8]">{skill.category}</p>
+					<div class="flex-1 space-y-2 mb-4 flex items-start justify-between">
+						<div>
+							<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">
+								{skill.name}
+							</h4>
+							<p class="text-[12px] font-bold uppercase tracking-widest text-[#FF90E8]">{skill.category}</p>
+						</div>
+						<div class="bg-neutral-900 px-2 py-0.5 text-[10px] font-bold text-white uppercase shrink-0">
+							{skill.level}%
+						</div>
 					</div>
-					<div class="flex gap-2">
+
+					<div class="flex items-center justify-end gap-2 border-t-2 border-neutral-50 pt-4">
 						<Button
 							variant="outline"
 							size="icon"
@@ -113,9 +121,9 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								class="lucide lucide-pencil"
-								><path
-									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-								/><path d="m15 5 4 4" /></svg
+								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
+									d="m15 5 4 4"
+								/></svg
 							>
 						</Button>
 						<form
