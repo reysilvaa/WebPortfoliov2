@@ -4,8 +4,8 @@
 	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import Card from '$lib/components/ui/Card.svelte';
 	import ProjectItem from '$lib/components/ProjectItem.svelte';
+	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -44,6 +44,27 @@
 	}
 
 	let bulkActionLoading = $state(false);
+
+	// Modal State
+	let deleteModalOpen = $state(false);
+	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
+	let deleteModalTitle = $state('');
+	let deleteModalMessage = $state('');
+
+	function openDeleteModal(e: Event, title: string, message: string) {
+		e.preventDefault();
+		pendingDeleteForm = e.target as HTMLFormElement;
+		deleteModalTitle = title;
+		deleteModalMessage = message;
+		deleteModalOpen = true;
+	}
+
+	function handleConfirm() {
+		if (pendingDeleteForm) {
+			pendingDeleteForm.requestSubmit();
+		}
+		deleteModalOpen = false;
+	}
 </script>
 
 <div class="mx-auto max-w-5xl space-y-10 pb-20">
@@ -165,9 +186,9 @@
 						<form
 							method="POST"
 							action="?/bulk-action"
+							onsubmit={(e) => openDeleteModal(e, `Delete ${selectedIds.length} projects?`, 'This will permanently remove these projects from your portfolio database.')}
 							use:enhance={() => {
 								bulkActionLoading = true;
-								if (!confirm(`Delete ${selectedIds.length} projects?`)) return;
 								return async ({ update }) => {
 									await update();
 									selectedIds = [];
@@ -274,11 +295,10 @@
 						<form
 							method="POST"
 							action="?/delete"
+							onsubmit={(e) => openDeleteModal(e, `Delete "${project.title}"?`, 'This project will be permanently removed from your portfolio.')}
 							use:enhance={() => {
 								return async ({ update }) => {
-									if (confirm('Delete this project?')) {
-										await update();
-									}
+									await update();
 								};
 							}}
 						>
@@ -334,3 +354,12 @@
 		</div>
 	</section>
 </div>
+
+<ConfirmModal
+	isOpen={deleteModalOpen}
+	title={deleteModalTitle}
+	message={deleteModalMessage}
+	onConfirm={handleConfirm}
+	onCancel={() => (deleteModalOpen = false)}
+	isLoading={bulkActionLoading}
+/>

@@ -5,12 +5,34 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
+	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 
 	let { data }: { data: PageData } = $props();
 
 	let loading = $state(false);
 	let name = $state('');
 	let category = $state('');
+
+	// Modal State
+	let deleteModalOpen = $state(false);
+	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
+	let deleteModalTitle = $state('');
+	let deleteModalMessage = $state('');
+
+	function openDeleteModal(e: Event, title: string, message: string) {
+		e.preventDefault();
+		pendingDeleteForm = e.target as HTMLFormElement;
+		deleteModalTitle = title;
+		deleteModalMessage = message;
+		deleteModalOpen = true;
+	}
+
+	function handleConfirm() {
+		if (pendingDeleteForm) {
+			pendingDeleteForm.requestSubmit();
+		}
+		deleteModalOpen = false;
+	}
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
@@ -61,11 +83,9 @@
 						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">{skill.name}</h4>
 						<p class="text-[12px] font-bold uppercase tracking-widest text-[#FF90E8]">{skill.category}</p>
 					</div>
-					<form method="POST" action="?/delete" use:enhance={() => {
+					<form method="POST" action="?/delete" onsubmit={(e) => openDeleteModal(e, `Delete skill "${skill.name}"?`, 'This will remove this skill from your tech stack showcase.')} use:enhance={() => {
 						return async ({ update }) => {
-							if (confirm('Delete this skill?')) {
-								await update();
-							}
+							await update();
 						};
 					}}>
 						<input type="hidden" name="id" value={skill.id} />
@@ -101,3 +121,12 @@
 		</div>
 	</section>
 </div>
+
+<ConfirmModal
+	isOpen={deleteModalOpen}
+	title={deleteModalTitle}
+	message={deleteModalMessage}
+	onConfirm={handleConfirm}
+	onCancel={() => (deleteModalOpen = false)}
+	isLoading={loading}
+/>
