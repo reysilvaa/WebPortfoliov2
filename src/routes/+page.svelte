@@ -232,14 +232,14 @@
 			<Section id="credentials" title={m.public_credentials()}>
 				<div class="flex flex-col gap-4">
 					{#each items.certificates as cert (cert.id)}
-						{@const url = cert.credentialUrl || ''}
+						{@const url = cert.imageUrl || cert.credentialUrl || ''}
 						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
 						{@const isDirectImage = url.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
 						{@const previewUrl = udemyMatch 
 							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
 							: isDirectImage 
 								? url 
-								: `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=640`}
+								: `https://api.microlink.io?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`}
 						
 						<div class="group flex flex-col items-center gap-8 border-4 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] md:flex-row">
 							{#if cert.credentialUrl}

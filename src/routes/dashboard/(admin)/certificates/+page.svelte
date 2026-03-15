@@ -13,12 +13,14 @@
 	let name = $state('');
 	let issuer = $state('');
 	let credentialUrl = $state('');
+	let imageUrl = $state('');
 
 	let editingCertificate = $state<{
 		id: string;
 		name: string;
 		issuer: string;
 		credentialUrl: string | null;
+		imageUrl: string | null;
 	} | null>(null);
 
 	// Modal State
@@ -64,24 +66,26 @@
 					name = '';
 					issuer = '';
 					credentialUrl = '';
+					imageUrl = '';
 				};
 			}} class="space-y-6">
 				<Input bind:value={name} name="name" label="Certificate Name" required />
 				<Input bind:value={issuer} name="issuer" label="Issuer" placeholder="e.g., Google, Coursera" required />
 				<Input bind:value={credentialUrl} name="credentialUrl" label="Verification URL" placeholder="https://..." />
+				<Input bind:value={imageUrl} name="imageUrl" label="Direct Image URL (Optional)" placeholder="https://... (Overrides automatic preview)" />
 				
-				{#if credentialUrl}
-					{@const udemyMatch = credentialUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
-					{@const isDirectImage = credentialUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+				{#if credentialUrl || imageUrl}
+					{@const displayUrl = imageUrl || credentialUrl}
+					{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+					{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
 					{@const previewUrl = udemyMatch 
 						? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
 						: isDirectImage 
-							? credentialUrl 
-							: `https://s0.wp.com/mshots/v1/${encodeURIComponent(credentialUrl)}?w=640`}
+							? displayUrl 
+							: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 					<div class="space-y-4">
-						<p class="text-[12px] font-bold uppercase tracking-widest text-neutral-500">Live Snapshot Preview</p>
+						<p class="text-[12px] font-bold uppercase tracking-widest text-neutral-500">Preview</p>
 						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
-							<div class="absolute inset-0 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-neutral-400">Capturing...</div>
 							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
 						</div>
 					</div>
@@ -264,17 +268,23 @@
 						label="Verification URL"
 						placeholder="https://yourapp.com/image.png"
 					/>
-					{#if editingCertificate.credentialUrl}
-						{@const url = editingCertificate.credentialUrl}
-						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
-						{@const isDirectImage = url.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+					<Input
+						value={editingCertificate.imageUrl || ''}
+						oninput={(e) => { if (editingCertificate) editingCertificate.imageUrl = (e.target as HTMLInputElement).value }}
+						name="imageUrl"
+						label="Direct Image URL (Optional)"
+						placeholder="https://..."
+					/>
+					{#if editingCertificate.credentialUrl || editingCertificate.imageUrl}
+						{@const displayUrl = editingCertificate.imageUrl || editingCertificate.credentialUrl || ''}
+						{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
 						{@const previewUrl = udemyMatch 
 							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
 							: isDirectImage 
-								? url 
-								: `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=640`}
+								? displayUrl 
+								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
-							<div class="absolute inset-0 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-neutral-400">Capturing...</div>
 							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
 						</div>
 					{/if}

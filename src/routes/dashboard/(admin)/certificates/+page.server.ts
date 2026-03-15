@@ -12,12 +12,13 @@ export const actions: Actions = {
 		const name = formData.get('name') as string;
 		const issuer = formData.get('issuer') as string;
 		const credentialUrl = formData.get('credentialUrl') as string;
+		const imageUrl = formData.get('imageUrl') as string;
 
 		await PortfolioService.addCertificate({
 			name,
 			issuer,
 			credentialUrl,
-			imageUrl: credentialUrl, // Use the same URL for preview
+			imageUrl,
 			order: 0
 		});
 		return { success: true };
@@ -34,12 +35,13 @@ export const actions: Actions = {
 		const name = formData.get('name') as string;
 		const issuer = formData.get('issuer') as string;
 		const credentialUrl = formData.get('credentialUrl') as string;
+		const imageUrl = formData.get('imageUrl') as string;
 
 		await PortfolioService.updateCertificate(id, {
 			name,
 			issuer,
 			credentialUrl,
-			imageUrl: credentialUrl // Update preview URL as well
+			imageUrl
 		});
 		return { success: true };
 	}
