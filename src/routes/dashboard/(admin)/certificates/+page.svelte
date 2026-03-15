@@ -69,6 +69,23 @@
 				<Input bind:value={name} name="name" label="Certificate Name" required />
 				<Input bind:value={issuer} name="issuer" label="Issuer" placeholder="e.g., Google, Coursera" required />
 				<Input bind:value={credentialUrl} name="credentialUrl" label="Verification URL" placeholder="https://..." />
+				
+				{#if credentialUrl}
+					{@const udemyMatch = credentialUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+					{@const isDirectImage = credentialUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+					{@const previewUrl = udemyMatch 
+						? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
+						: isDirectImage 
+							? credentialUrl 
+							: `https://s0.wp.com/mshots/v1/${encodeURIComponent(credentialUrl)}?w=640`}
+					<div class="space-y-4">
+						<p class="text-[12px] font-bold uppercase tracking-widest text-neutral-500">Live Snapshot Preview</p>
+						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
+							<div class="absolute inset-0 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-neutral-400">Capturing...</div>
+							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
+						</div>
+					</div>
+				{/if}
 				<div class="flex justify-end pt-2">
 					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
 						Add Credential
@@ -80,13 +97,32 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.certificates as cert (cert.id)}
 				<div
-					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
+					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="space-y-2 pr-4">
-						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">{cert.name}</h4>
+					<div class="flex-1 space-y-2 mb-4">
+						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">
+							{cert.name}
+						</h4>
 						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{cert.issuer}</p>
 					</div>
-					<div class="flex gap-2">
+
+					{#if cert.credentialUrl}
+						{@const udemyMatch = cert.credentialUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const isDirectImage = cert.credentialUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+						{@const previewUrl = udemyMatch 
+							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
+							: isDirectImage 
+								? cert.credentialUrl 
+								: null}
+						
+						{#if previewUrl}
+							<div class="mb-6 aspect-video w-full overflow-hidden border-2 border-neutral-900 rounded-lg shadow-[2px_2px_0px_0px_#171717]">
+								<img src={previewUrl} alt="Preview" class="h-full w-full object-cover" />
+							</div>
+						{/if}
+					{/if}
+
+					<div class="flex items-center justify-end gap-2 border-t-2 border-neutral-50 pt-4">
 						<Button
 							variant="outline"
 							size="icon"
@@ -109,9 +145,9 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								class="lucide lucide-pencil"
-								><path
-									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-								/><path d="m15 5 4 4" /></svg
+								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
+									d="m15 5 4 4"
+								/></svg
 							>
 						</Button>
 						<form
@@ -220,13 +256,29 @@
 					placeholder="e.g., Google, Coursera"
 					required
 				/>
-				<Input
-					value={editingCertificate.credentialUrl || ''}
-					oninput={(e) => { if (editingCertificate) editingCertificate.credentialUrl = (e.target as HTMLInputElement).value }}
-					name="credentialUrl"
-					label="Verification URL"
-					placeholder="https://..."
-				/>
+				<div class="space-y-4">
+					<Input
+						value={editingCertificate.credentialUrl || ''}
+						oninput={(e) => { if (editingCertificate) editingCertificate.credentialUrl = (e.target as HTMLInputElement).value }}
+						name="credentialUrl"
+						label="Verification URL"
+						placeholder="https://yourapp.com/image.png"
+					/>
+					{#if editingCertificate.credentialUrl}
+						{@const url = editingCertificate.credentialUrl}
+						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const isDirectImage = url.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+						{@const previewUrl = udemyMatch 
+							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
+							: isDirectImage 
+								? url 
+								: `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=640`}
+						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
+							<div class="absolute inset-0 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-neutral-400">Capturing...</div>
+							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
+						</div>
+					{/if}
+				</div>
 			</div>
 
 			<div class="mt-8 flex justify-end gap-4">

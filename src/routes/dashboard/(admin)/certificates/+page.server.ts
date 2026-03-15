@@ -17,6 +17,7 @@ export const actions: Actions = {
 			name,
 			issuer,
 			credentialUrl,
+			imageUrl: credentialUrl, // Use the same URL for preview
 			order: 0
 		});
 		return { success: true };
@@ -37,7 +38,8 @@ export const actions: Actions = {
 		await PortfolioService.updateCertificate(id, {
 			name,
 			issuer,
-			credentialUrl
+			credentialUrl,
+			imageUrl: credentialUrl // Update preview URL as well
 		});
 		return { success: true };
 	}

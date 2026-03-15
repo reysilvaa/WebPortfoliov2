@@ -232,21 +232,43 @@
 			<Section id="credentials" title={m.public_credentials()}>
 				<div class="flex flex-col gap-4">
 					{#each items.certificates as cert (cert.id)}
-						<div class="group flex flex-col items-start gap-4 border-4 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] sm:flex-row sm:items-center sm:justify-between">
-							<div class="space-y-2">
-								<h3 class="text-[18px] font-black uppercase tracking-tight text-neutral-900">{cert.name}</h3>
-								<p class="inline-block border-2 border-neutral-900 bg-[#FFDE59] px-2 py-0.5 text-[12px] font-bold text-neutral-900 uppercase">{cert.issuer}</p>
-							</div>
+						{@const url = cert.credentialUrl || ''}
+						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const isDirectImage = url.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
+						{@const previewUrl = udemyMatch 
+							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
+							: isDirectImage 
+								? url 
+								: `https://s0.wp.com/mshots/v1/${encodeURIComponent(url)}?w=640`}
+						
+						<div class="group flex flex-col items-center gap-8 border-4 border-neutral-900 bg-white p-6 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] md:flex-row">
 							{#if cert.credentialUrl}
-								<a
+								<a 
 									href={cert.credentialUrl}
 									target="_blank"
-									class="group flex items-center gap-2 border-2 border-neutral-900 bg-white px-6 py-3 text-[14px] font-black uppercase tracking-widest text-neutral-900 shadow-[4px_4px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none"
+									rel="noopener noreferrer"
+									class="relative shrink-0 w-full md:w-48 aspect-video rounded-xl border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717] group/img"
 								>
-									{m.public_verify()}
-									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" class="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+									<div class="absolute inset-0 flex items-center justify-center text-[10px] font-black uppercase tracking-widest text-neutral-400">Loading...</div>
+									<img 
+										src={previewUrl} 
+										alt={cert.name} 
+										class="relative z-10 w-full h-full object-cover grayscale group-hover/img:grayscale-0 transition-all duration-500" 
+									/>
+									<div class="absolute inset-0 z-20 flex items-center justify-center bg-neutral-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity">
+										<div class="bg-neutral-900/60 rounded-full p-3 backdrop-blur-sm">
+											<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+										</div>
+									</div>
 								</a>
 							{/if}
+							
+							<div class="flex flex-1 flex-col justify-center">
+								<h3 class="text-[20px] font-black uppercase tracking-tight text-neutral-900 sm:text-[24px]">{cert.name}</h3>
+								<div class="mt-2 flex items-center gap-3">
+									<span class="inline-block border-2 border-neutral-900 bg-[#FFDE59] px-2 py-0.5 text-[12px] font-bold text-neutral-900 uppercase">{cert.issuer}</span>
+								</div>
+							</div>
 						</div>
 					{/each}
 				</div>
