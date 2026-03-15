@@ -167,26 +167,25 @@
 					{@const hRow = hoveredIdx !== -1 ? Math.floor(hoveredIdx / 3) : -1}
 					{@const hCol = hoveredIdx !== -1 ? hoveredIdx % 3 : -1}
 					
-					<div 
+					<article 
 						class="h-full transition-all duration-500 ease-out"
-						onmouseenter={() => hoveredProjectId = project.id}
-						onmouseleave={() => hoveredProjectId = null}
-						style:transform={
-							hoveredProjectId && hoveredProjectId !== project.id 
-								? (row < hRow && col === hCol
-										? 'translateY(-160px)' 
-										: 'scale(1)')
-								: ''
-						}
+						onmouseenter={() => (hoveredProjectId = project.id)}
+						onmouseleave={() => (hoveredProjectId = null)}
+						onfocusin={() => (hoveredProjectId = project.id)}
+						onfocusout={() => (hoveredProjectId = null)}
+						style:transform={hoveredProjectId && hoveredProjectId !== project.id
+							? row < hRow && col === hCol
+								? 'translateY(-160px)'
+								: 'scale(1)'
+							: ''}
 						style:z-index={hoveredProjectId === project.id ? '50' : '1'}
 						style:opacity={hoveredProjectId && hoveredProjectId !== project.id ? '0.7' : '1'}
-						style:filter={hoveredProjectId && hoveredProjectId !== project.id ? 'blur(4px) grayscale(0.2)' : 'none'}
+						style:filter={hoveredProjectId && hoveredProjectId !== project.id
+							? 'blur(4px) grayscale(0.2)'
+							: 'none'}
 					>
-						<PublicProjectCard 
-							{project} 
-							isHovered={hoveredProjectId === project.id}
-						/>
-					</div>
+						<PublicProjectCard {project} isHovered={hoveredProjectId === project.id} />
+					</article>
 				{/each}
 			</div>
 			
