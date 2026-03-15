@@ -20,6 +20,11 @@ export default defineConfig({
 			outdir: './src/lib/paraglide'
 		})
 	],
+	build: {
+		rollupOptions: {
+			external: ['encoding', 'bufferutil', 'utf-8-validate']
+		}
+	},
 	test: {
 		projects: [
 			{

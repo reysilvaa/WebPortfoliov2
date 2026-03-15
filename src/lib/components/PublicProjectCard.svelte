@@ -19,6 +19,14 @@
 		project: Project, 
 		isHovered?: boolean
 	} = $props();
+
+	const snapshotUrl = $derived(project.liveUrl || project.repoUrl);
+	const previewUrl = $derived(
+		project.imageUrl ||
+			(snapshotUrl
+				? `https://api.microlink.io?url=${encodeURIComponent(snapshotUrl)}&screenshot=true&meta=false&embed=screenshot.url`
+				: null)
+	);
 </script>
 
 <!-- eslint-disable @inlang/paraglide-js/no-unresolved-href -->
@@ -31,9 +39,9 @@
 >
 	<!-- Project Photo Container (Adjusted for Square) -->
 	<div class="relative h-2/3 w-full overflow-hidden border-b-4 border-neutral-900 bg-[#FFDE59]/10">
-		{#if project.imageUrl}
+		{#if previewUrl}
 			<img 
-				src={project.imageUrl} 
+				src={previewUrl} 
 				alt={project.title} 
 				class="h-full w-full object-cover transition-transform duration-700 {isHovered ? 'scale-110' : ''}" 
 			/>
