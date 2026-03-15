@@ -13,7 +13,7 @@ export class PortfolioService {
 			db.select()
 				.from(projects)
 				.where(whereClause)
-				.orderBy(asc(projects.order), desc(projects.createdAt))
+				.orderBy(desc(projects.createdAt))
 				.limit(limit)
 				.offset(offset),
 			db.select({ count: sql<number>`count(*)` })
@@ -35,7 +35,7 @@ export class PortfolioService {
 		}
 
 		const [allProjects, allCertificates, allSkills, currentProfile, allExperiences] = await Promise.all([
-			projectQuery.orderBy(asc(projects.order), desc(projects.createdAt)),
+			projectQuery.orderBy(desc(projects.createdAt)),
 			db.select().from(certificates).orderBy(asc(certificates.order)),
 			db.select().from(skills).orderBy(asc(skills.order)),
 			db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
