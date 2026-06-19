@@ -1,4 +1,5 @@
 <script module lang="ts">
+	// @ts-expect-error - missing types for storybook addon
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import ProjectItem from './ProjectItem.svelte';
 

@@ -47,10 +47,14 @@
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
-	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+	<header
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">{m.dashboard_credentials_title()}</h1>
-			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+				{m.dashboard_credentials_title()}
+			</h1>
+			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
 				{m.dashboard_credentials_description()}
 			</p>
 		</div>
@@ -58,42 +62,67 @@
 
 	<section class="max-w-2xl space-y-10">
 		<Card title="Add Entry" description="Add a new certification or award.">
-			<form method="POST" action="?/add" use:enhance={() => {
-				loading = true;
-				return async ({ update }) => {
-					await update();
-					loading = false;
-					name = '';
-					issuer = '';
-					credentialUrl = '';
-					imageUrl = '';
-				};
-			}} class="space-y-6">
+			<form
+				method="POST"
+				action="?/add"
+				use:enhance={() => {
+					loading = true;
+					return async ({ update }) => {
+						await update();
+						loading = false;
+						name = '';
+						issuer = '';
+						credentialUrl = '';
+						imageUrl = '';
+					};
+				}}
+				class="space-y-6"
+			>
 				<Input bind:value={name} name="name" label="Certificate Name" required />
-				<Input bind:value={issuer} name="issuer" label="Issuer" placeholder="e.g., Google, Coursera" required />
-				<Input bind:value={credentialUrl} name="credentialUrl" label="Verification URL" placeholder="https://..." />
-				<Input bind:value={imageUrl} name="imageUrl" label="Direct Image URL (Optional)" placeholder="https://... (Overrides automatic preview)" />
-				
+				<Input
+					bind:value={issuer}
+					name="issuer"
+					label="Issuer"
+					placeholder="e.g., Google, Coursera"
+					required
+				/>
+				<Input
+					bind:value={credentialUrl}
+					name="credentialUrl"
+					label="Verification URL"
+					placeholder="https://..."
+				/>
+				<Input
+					bind:value={imageUrl}
+					name="imageUrl"
+					label="Direct Image URL (Optional)"
+					placeholder="https://... (Overrides automatic preview)"
+				/>
+
 				{#if credentialUrl || imageUrl}
 					{@const displayUrl = imageUrl || credentialUrl}
 					{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
 					{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
-					{@const previewUrl = udemyMatch 
+					{@const previewUrl = udemyMatch
 						? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
-						: isDirectImage 
-							? displayUrl 
+						: isDirectImage
+							? displayUrl
 							: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 					<div class="space-y-4">
-						<p class="text-[12px] font-bold uppercase tracking-widest text-neutral-500">Preview</p>
-						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
-							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
+						<p class="text-[12px] font-bold tracking-widest text-neutral-500 uppercase">Preview</p>
+						<div
+							class="relative aspect-video w-full overflow-hidden border-4 border-neutral-900 bg-neutral-100 shadow-[4px_4px_0px_0px_#171717]"
+						>
+							<img
+								src={previewUrl}
+								alt="Preview"
+								class="relative z-10 h-full w-full object-cover"
+							/>
 						</div>
 					</div>
 				{/if}
 				<div class="flex justify-end pt-2">
-					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
-						Add Credential
-					</Button>
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">Add Credential</Button>
 				</div>
 			</form>
 		</Card>
@@ -103,24 +132,30 @@
 				<div
 					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="flex-1 space-y-2 mb-4">
-						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">
+					<div class="mb-4 flex-1 space-y-2">
+						<h4
+							class="text-[16px] leading-tight font-black tracking-tight text-neutral-900 uppercase"
+						>
 							{cert.name}
 						</h4>
-						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{cert.issuer}</p>
+						<p class="text-[13px] font-bold tracking-widest text-[#FF90E8] uppercase">
+							{cert.issuer}
+						</p>
 					</div>
 
 					{#if cert.credentialUrl || cert.imageUrl}
 						{@const displayUrl = cert.imageUrl || cert.credentialUrl || ''}
 						{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
 						{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
-						{@const previewUrl = udemyMatch 
+						{@const previewUrl = udemyMatch
 							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
-							: isDirectImage 
-								? displayUrl 
+							: isDirectImage
+								? displayUrl
 								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
-						
-						<div class="mb-6 aspect-video w-full overflow-hidden border-2 border-neutral-900 rounded-lg shadow-[2px_2px_0px_0px_#171717] bg-neutral-50">
+
+						<div
+							class="mb-6 aspect-video w-full overflow-hidden rounded-lg border-2 border-neutral-900 bg-neutral-50 shadow-[2px_2px_0px_0px_#171717]"
+						>
 							<img src={previewUrl} alt="Preview" class="h-full w-full object-cover" />
 						</div>
 					{/if}
@@ -195,8 +230,12 @@
 					</div>
 				</div>
 			{:else}
-				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">No credentials found.</p>
+				<div
+					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+				>
+					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+						No credentials found.
+					</p>
 				</div>
 			{/each}
 		</div>
@@ -221,7 +260,7 @@
 		<!-- Backdrop -->
 		<button
 			type="button"
-			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
 			onclick={() => (editModalOpen = false)}
 			aria-label="Close modal"
 		></button>
@@ -241,10 +280,10 @@
 			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
 		>
 			<div class="mb-6">
-				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
 					Edit Credential
 				</h2>
-				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
 					Update certification details.
 				</p>
 			</div>
@@ -262,29 +301,42 @@
 				<div class="space-y-4">
 					<Input
 						value={editingCertificate.credentialUrl || ''}
-						oninput={(e) => { if (editingCertificate) editingCertificate.credentialUrl = (e.target as HTMLInputElement).value }}
+						oninput={(e) => {
+							if (editingCertificate)
+								editingCertificate.credentialUrl = (e.target as HTMLInputElement).value;
+						}}
 						name="credentialUrl"
 						label="Verification URL"
 						placeholder="https://yourapp.com/image.png"
 					/>
 					<Input
 						value={editingCertificate.imageUrl || ''}
-						oninput={(e) => { if (editingCertificate) editingCertificate.imageUrl = (e.target as HTMLInputElement).value }}
+						oninput={(e) => {
+							if (editingCertificate)
+								editingCertificate.imageUrl = (e.target as HTMLInputElement).value;
+						}}
 						name="imageUrl"
 						label="Direct Image URL (Optional)"
 						placeholder="https://..."
 					/>
 					{#if editingCertificate.credentialUrl || editingCertificate.imageUrl}
-						{@const displayUrl = editingCertificate.imageUrl || editingCertificate.credentialUrl || ''}
+						{@const displayUrl =
+							editingCertificate.imageUrl || editingCertificate.credentialUrl || ''}
 						{@const udemyMatch = displayUrl.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
 						{@const isDirectImage = displayUrl.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
-						{@const previewUrl = udemyMatch 
+						{@const previewUrl = udemyMatch
 							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
-							: isDirectImage 
-								? displayUrl 
+							: isDirectImage
+								? displayUrl
 								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
-						<div class="relative w-full aspect-video border-4 border-neutral-900 bg-neutral-100 overflow-hidden shadow-[4px_4px_0px_0px_#171717]">
-							<img src={previewUrl} alt="Preview" class="relative z-10 w-full h-full object-cover" />
+						<div
+							class="relative aspect-video w-full overflow-hidden border-4 border-neutral-900 bg-neutral-100 shadow-[4px_4px_0px_0px_#171717]"
+						>
+							<img
+								src={previewUrl}
+								alt="Preview"
+								class="relative z-10 h-full w-full object-cover"
+							/>
 						</div>
 					{/if}
 				</div>

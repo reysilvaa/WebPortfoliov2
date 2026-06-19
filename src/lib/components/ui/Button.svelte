@@ -40,7 +40,8 @@
 		icon: 'h-10 w-10 flex items-center justify-center p-0'
 	};
 
-	const baseClass = 'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
+	const baseClass =
+		'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
 </script>
 
 <button

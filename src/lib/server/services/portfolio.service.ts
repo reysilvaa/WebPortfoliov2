@@ -6,17 +6,19 @@ import { GithubService } from './github.service';
 export class PortfolioService {
 	static async getPaginatedProjects(page: number, limit: number, includeHidden = false) {
 		const offset = (page - 1) * limit;
-		
+
 		const whereClause = !includeHidden ? eq(projects.isHidden, false) : undefined;
-		
+
 		const [allProjects, totalResult] = await Promise.all([
-			db.select()
+			db
+				.select()
 				.from(projects)
 				.where(whereClause)
 				.orderBy(desc(projects.createdAt))
 				.limit(limit)
 				.offset(offset),
-			db.select({ count: sql<number>`count(*)` })
+			db
+				.select({ count: sql<number>`count(*)` })
 				.from(projects)
 				.where(whereClause)
 		]);
@@ -34,13 +36,14 @@ export class PortfolioService {
 			projectQuery.where(eq(projects.isHidden, false));
 		}
 
-		const [allProjects, allCertificates, allSkills, currentProfile, allExperiences] = await Promise.all([
-			projectQuery.orderBy(desc(projects.createdAt)),
-			db.select().from(certificates).orderBy(asc(certificates.order)),
-			db.select().from(skills).orderBy(asc(skills.order)),
-			db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
-			db.select().from(experiences).orderBy(asc(experiences.order))
-		]);
+		const [allProjects, allCertificates, allSkills, currentProfile, allExperiences] =
+			await Promise.all([
+				projectQuery.orderBy(desc(projects.createdAt)),
+				db.select().from(certificates).orderBy(asc(certificates.order)),
+				db.select().from(skills).orderBy(asc(skills.order)),
+				db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
+				db.select().from(experiences).orderBy(asc(experiences.order))
+			]);
 
 		return {
 			projects: allProjects,
@@ -66,9 +69,12 @@ export class PortfolioService {
 				title: repo.name,
 				description: repo.description,
 				repoUrl: repo.html_url,
-				liveUrl: repo.homepage && repo.homepage.trim() !== '' 
-					? (repo.homepage.startsWith('http') ? repo.homepage : `https://${repo.homepage}`) 
-					: null,
+				liveUrl:
+					repo.homepage && repo.homepage.trim() !== ''
+						? repo.homepage.startsWith('http')
+							? repo.homepage
+							: `https://${repo.homepage}`
+						: null,
 				stars: repo.stargazers_count,
 				forks: repo.forks_count,
 				language: repo.language,

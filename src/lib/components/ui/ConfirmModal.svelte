@@ -43,7 +43,7 @@
 		<!-- Backdrop -->
 		<button
 			type="button"
-			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
 			transition:fade={{ duration: 200 }}
 			onclick={onCancel}
 			aria-label="Close modal"
@@ -55,15 +55,15 @@
 			transition:scale={{ duration: 200, start: 0.95 }}
 		>
 			<div class="mb-6">
-				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
 					{title}
 				</h2>
-				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
 					{message}
 				</p>
 			</div>
 
-			<div class="flex flex-col sm:flex-row gap-4 justify-end">
+			<div class="flex flex-col justify-end gap-4 sm:flex-row">
 				<Button variant="outline" onclick={onCancel} disabled={isLoading}>
 					{cancelText}
 				</Button>

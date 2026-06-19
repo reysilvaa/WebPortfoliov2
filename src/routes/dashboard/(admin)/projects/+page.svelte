@@ -63,7 +63,15 @@
 		repoUrl: string | null;
 	} | null>(null);
 
-	function openEditModal(project: any) {
+	function openEditModal(project: {
+		id: string;
+		title: string;
+		description: string | null;
+		language: string | null;
+		tags: string | null;
+		liveUrl: string | null;
+		repoUrl: string | null;
+	}) {
 		editingProject = { ...project };
 		editModalOpen = true;
 	}
@@ -85,10 +93,14 @@
 </script>
 
 <div class="mx-auto max-w-5xl space-y-10 pb-20">
-	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+	<header
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">{m.dashboard_projects_title()}</h1>
-			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+				{m.dashboard_projects_title()}
+			</h1>
+			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
 				{m.dashboard_projects_description()}
 			</p>
 		</div>
@@ -148,7 +160,7 @@
 					stroke="currentColor"
 					stroke-width="3"
 					stroke-linecap="square"
-					class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-900"
+					class="absolute top-1/2 left-4 -translate-y-1/2 text-neutral-900"
 					><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
 				>
 			</div>
@@ -157,7 +169,7 @@
 				<div
 					class="flex items-center gap-4 border-4 border-neutral-900 bg-[#FF90E8] px-6 py-3 shadow-[4px_4px_0px_0px_#171717]"
 				>
-					<span class="text-[14px] font-black uppercase tracking-widest text-neutral-900"
+					<span class="text-[14px] font-black tracking-widest text-neutral-900 uppercase"
 						>{selectedIds.length} SELECTED</span
 					>
 
@@ -203,7 +215,12 @@
 						<form
 							method="POST"
 							action="?/bulk-action"
-							onsubmit={(e) => openDeleteModal(e, `Delete ${selectedIds.length} projects?`, 'This will permanently remove these projects from your portfolio database.')}
+							onsubmit={(e) =>
+								openDeleteModal(
+									e,
+									`Delete ${selectedIds.length} projects?`,
+									'This will permanently remove these projects from your portfolio database.'
+								)}
 							use:enhance={() => {
 								bulkActionLoading = true;
 								return async ({ update }) => {
@@ -278,9 +295,9 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								class="lucide lucide-pencil"
-								><path
-									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-								/><path d="m15 5 4 4" /></svg
+								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
+									d="m15 5 4 4"
+								/></svg
 							>
 						</Button>
 
@@ -337,7 +354,12 @@
 						<form
 							method="POST"
 							action="?/delete"
-							onsubmit={(e) => openDeleteModal(e, `Delete "${project.title}"?`, 'This project will be permanently removed from your portfolio.')}
+							onsubmit={(e) =>
+								openDeleteModal(
+									e,
+									`Delete "${project.title}"?`,
+									'This project will be permanently removed from your portfolio.'
+								)}
 							use:enhance={() => {
 								return async ({ update }) => {
 									await update();
@@ -415,7 +437,7 @@
 		<!-- Backdrop -->
 		<button
 			type="button"
-			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
 			onclick={() => (editModalOpen = false)}
 			aria-label="Close modal"
 		></button>
@@ -435,10 +457,10 @@
 			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
 		>
 			<div class="mb-6">
-				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
 					Edit Project
 				</h2>
-				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
 					Update project information.
 				</p>
 			</div>
@@ -451,7 +473,9 @@
 				<div class="col-span-full">
 					<Input
 						value={editingProject.description || ''}
-						oninput={(e) => { if (editingProject) editingProject.description = (e.target as HTMLInputElement).value }}
+						oninput={(e) => {
+							if (editingProject) editingProject.description = (e.target as HTMLInputElement).value;
+						}}
 						name="description"
 						label="Description"
 						placeholder="Briefly describe what this project is about..."
@@ -459,28 +483,36 @@
 				</div>
 				<Input
 					value={editingProject.language || ''}
-					oninput={(e) => { if (editingProject) editingProject.language = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingProject) editingProject.language = (e.target as HTMLInputElement).value;
+					}}
 					name="language"
 					label="Primary Language"
 					placeholder="e.g., TypeScript, Python"
 				/>
 				<Input
 					value={editingProject.tags || ''}
-					oninput={(e) => { if (editingProject) editingProject.tags = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingProject) editingProject.tags = (e.target as HTMLInputElement).value;
+					}}
 					name="tags"
 					label="Tags"
 					placeholder="svelte, tailwind, etc. (comma separated)"
 				/>
 				<Input
 					value={editingProject.liveUrl || ''}
-					oninput={(e) => { if (editingProject) editingProject.liveUrl = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingProject) editingProject.liveUrl = (e.target as HTMLInputElement).value;
+					}}
 					name="liveUrl"
 					label="Live URL"
 					placeholder="https://yourapp.com"
 				/>
 				<Input
 					value={editingProject.repoUrl || ''}
-					oninput={(e) => { if (editingProject) editingProject.repoUrl = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingProject) editingProject.repoUrl = (e.target as HTMLInputElement).value;
+					}}
 					name="repoUrl"
 					label="Repository URL"
 					placeholder="https://github.com/..."

@@ -66,4 +66,4 @@ export const profile = sqliteTable('profile', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
-export * from './auth.schema.ts';
+export * from './auth.schema';

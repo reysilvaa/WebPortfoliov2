@@ -49,10 +49,12 @@
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
-	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+	<header
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">Experiences</h1>
-			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">Experiences</h1>
+			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
 				{m.dashboard_projects_description()}
 			</p>
 		</div>
@@ -60,20 +62,31 @@
 
 	<section class="space-y-10">
 		<Card title="Add Experience" description="Add a new experience.">
-			<form method="POST" action="?/add" use:enhance={() => {
-				loading = true;
-				return async ({ update }) => {
-					await update();
-					loading = false;
-					role = '';
-					company = '';
-					startDate = '';
-					endDate = '';
-					description = '';
-				};
-			}} class="space-y-6">
+			<form
+				method="POST"
+				action="?/add"
+				use:enhance={() => {
+					loading = true;
+					return async ({ update }) => {
+						await update();
+						loading = false;
+						role = '';
+						company = '';
+						startDate = '';
+						endDate = '';
+						description = '';
+					};
+				}}
+				class="space-y-6"
+			>
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-					<Input bind:value={role} name="role" label="Role" placeholder="e.g., Software Engineer" required />
+					<Input
+						bind:value={role}
+						name="role"
+						label="Role"
+						placeholder="e.g., Software Engineer"
+						required
+					/>
 					<Input
 						bind:value={company}
 						name="company"
@@ -81,14 +94,23 @@
 						placeholder="e.g., Google"
 						required
 					/>
-					<Input bind:value={startDate} name="startDate" label="Start Date" placeholder="e.g., Jan 2022" required />
+					<Input
+						bind:value={startDate}
+						name="startDate"
+						label="Start Date"
+						placeholder="e.g., Jan 2022"
+						required
+					/>
 					<Input bind:value={endDate} name="endDate" label="End Date" placeholder="e.g., Present" />
 				</div>
-				<Input bind:value={description} name="description" label="Description" placeholder="What did you do there?" />
+				<Input
+					bind:value={description}
+					name="description"
+					label="Description"
+					placeholder="What did you do there?"
+				/>
 				<div class="flex justify-end pt-2">
-					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
-						Add Experience
-					</Button>
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">Add Experience</Button>
 				</div>
 			</form>
 		</Card>
@@ -99,9 +121,15 @@
 					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
 					<div class="space-y-2 pr-4">
-						<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900">{exp.role}</h4>
-						<p class="text-[13px] font-bold uppercase tracking-widest text-[#FF90E8]">{exp.company}</p>
-						<p class="text-[11px] font-bold text-neutral-500 uppercase">{exp.startDate} - {exp.endDate || 'Present'}</p>
+						<h4 class="text-[16px] font-black tracking-tight text-neutral-900 uppercase">
+							{exp.role}
+						</h4>
+						<p class="text-[13px] font-bold tracking-widest text-[#FF90E8] uppercase">
+							{exp.company}
+						</p>
+						<p class="text-[11px] font-bold text-neutral-500 uppercase">
+							{exp.startDate} - {exp.endDate || 'Present'}
+						</p>
 					</div>
 					<div class="flex gap-2">
 						<Button
@@ -126,9 +154,9 @@
 								stroke-linecap="round"
 								stroke-linejoin="round"
 								class="lucide lucide-pencil"
-								><path
-									d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"
-								/><path d="m15 5 4 4" /></svg
+								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
+									d="m15 5 4 4"
+								/></svg
 							>
 						</Button>
 						<form
@@ -173,8 +201,12 @@
 					</div>
 				</div>
 			{:else}
-				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">No experiences found.</p>
+				<div
+					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+				>
+					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+						No experiences found.
+					</p>
 				</div>
 			{/each}
 		</div>
@@ -199,7 +231,7 @@
 		<!-- Backdrop -->
 		<button
 			type="button"
-			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
 			onclick={() => (editModalOpen = false)}
 			aria-label="Close modal"
 		></button>
@@ -219,10 +251,10 @@
 			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
 		>
 			<div class="mb-6">
-				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
 					Edit Experience
 				</h2>
-				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
 					Update experience details.
 				</p>
 			</div>
@@ -252,7 +284,9 @@
 				/>
 				<Input
 					value={editingExperience.endDate || ''}
-					oninput={(e) => { if (editingExperience) editingExperience.endDate = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingExperience) editingExperience.endDate = (e.target as HTMLInputElement).value;
+					}}
 					name="endDate"
 					label="End Date"
 					placeholder="e.g., Present"
@@ -260,7 +294,10 @@
 				<div class="col-span-full">
 					<Input
 						value={editingExperience.description || ''}
-						oninput={(e) => { if (editingExperience) editingExperience.description = (e.target as HTMLInputElement).value }}
+						oninput={(e) => {
+							if (editingExperience)
+								editingExperience.description = (e.target as HTMLInputElement).value;
+						}}
 						name="description"
 						label="Description"
 						placeholder="What did you do there?"

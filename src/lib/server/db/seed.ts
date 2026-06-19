@@ -1,6 +1,6 @@
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
-import * as schema from './schema.ts';
+import * as schema from './schema';
 import 'dotenv/config';
 
 if (!process.env.DATABASE_URL || !process.env.DATABASE_AUTH_TOKEN) {
@@ -68,8 +68,22 @@ async function main() {
 	await db
 		.insert(schema.experiences)
 		.values([
-			{ role: 'Full Stack Engineer', company: 'Google', startDate: '2023', endDate: 'Present', description: 'Working on core experimental features and internal tools.', order: 1 },
-			{ role: 'Frontend Intern', company: 'StartupX', startDate: '2022', endDate: '2023', description: 'Built an MVP from scratch using React and Tailwind.', order: 2 }
+			{
+				role: 'Full Stack Engineer',
+				company: 'Google',
+				startDate: '2023',
+				endDate: 'Present',
+				description: 'Working on core experimental features and internal tools.',
+				order: 1
+			},
+			{
+				role: 'Frontend Intern',
+				company: 'StartupX',
+				startDate: '2022',
+				endDate: '2023',
+				description: 'Built an MVP from scratch using React and Tailwind.',
+				order: 2
+			}
 		])
 		.onConflictDoNothing();
 

@@ -43,10 +43,14 @@
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
-	<header class="flex flex-col justify-between gap-6 md:flex-row md:items-end border-b-4 border-neutral-900 pb-6 mb-8 mt-2">
+	<header
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black uppercase tracking-tighter text-neutral-900">{m.dashboard_skills_title()}</h1>
-			<p class="text-[15px] font-bold text-neutral-500 uppercase tracking-widest">
+			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+				{m.dashboard_skills_title()}
+			</h1>
+			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
 				{m.dashboard_skills_description()}
 			</p>
 		</div>
@@ -54,17 +58,28 @@
 
 	<section class="space-y-10">
 		<Card title="Add Skill" description="Add a new technical capability.">
-			<form method="POST" action="?/add" use:enhance={() => {
-				loading = true;
-				return async ({ update }) => {
-					await update();
-					loading = false;
-					name = '';
-					category = '';
-				};
-			}} class="space-y-6">
+			<form
+				method="POST"
+				action="?/add"
+				use:enhance={() => {
+					loading = true;
+					return async ({ update }) => {
+						await update();
+						loading = false;
+						name = '';
+						category = '';
+					};
+				}}
+				class="space-y-6"
+			>
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-					<Input bind:value={name} name="name" label="Skill Name" placeholder="e.g., SvelteKit" required />
+					<Input
+						bind:value={name}
+						name="name"
+						label="Skill Name"
+						placeholder="e.g., SvelteKit"
+						required
+					/>
 					<Input
 						bind:value={category}
 						name="category"
@@ -74,9 +89,7 @@
 					/>
 				</div>
 				<div class="flex justify-end pt-2">
-					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">
-						Add Skill
-					</Button>
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">Add Skill</Button>
 				</div>
 			</form>
 		</Card>
@@ -86,14 +99,20 @@
 				<div
 					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
 				>
-					<div class="flex-1 space-y-2 mb-4 flex items-start justify-between">
+					<div class="mb-4 flex flex-1 items-start justify-between space-y-2">
 						<div>
-							<h4 class="text-[16px] font-black uppercase tracking-tight text-neutral-900 leading-tight">
+							<h4
+								class="text-[16px] leading-tight font-black tracking-tight text-neutral-900 uppercase"
+							>
 								{skill.name}
 							</h4>
-							<p class="text-[12px] font-bold uppercase tracking-widest text-[#FF90E8]">{skill.category}</p>
+							<p class="text-[12px] font-bold tracking-widest text-[#FF90E8] uppercase">
+								{skill.category}
+							</p>
 						</div>
-						<div class="bg-neutral-900 px-2 py-0.5 text-[10px] font-bold text-white uppercase shrink-0">
+						<div
+							class="shrink-0 bg-neutral-900 px-2 py-0.5 text-[10px] font-bold text-white uppercase"
+						>
 							{skill.level}%
 						</div>
 					</div>
@@ -168,8 +187,12 @@
 					</div>
 				</div>
 			{:else}
-				<div class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3">
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">No skills found.</p>
+				<div
+					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+				>
+					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+						No skills found.
+					</p>
 				</div>
 			{/each}
 		</div>
@@ -194,7 +217,7 @@
 		<!-- Backdrop -->
 		<button
 			type="button"
-			class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm border-none cursor-default w-full h-full"
+			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
 			onclick={() => (editModalOpen = false)}
 			aria-label="Close modal"
 		></button>
@@ -214,10 +237,10 @@
 			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
 		>
 			<div class="mb-6">
-				<h2 class="text-2xl font-black uppercase tracking-tighter text-neutral-900 mb-2">
+				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
 					Edit Skill
 				</h2>
-				<p class="text-[14px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
+				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
 					Update technical capability details.
 				</p>
 			</div>
@@ -227,7 +250,9 @@
 				<Input bind:value={editingSkill.name} name="name" label="Skill Name" required />
 				<Input
 					value={editingSkill.category || ''}
-					oninput={(e) => { if (editingSkill) editingSkill.category = (e.target as HTMLInputElement).value }}
+					oninput={(e) => {
+						if (editingSkill) editingSkill.category = (e.target as HTMLInputElement).value;
+					}}
 					name="category"
 					label="Category"
 					placeholder="e.g., Frontend, Backend"

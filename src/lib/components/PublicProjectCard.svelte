@@ -12,12 +12,10 @@
 		forks: number | null;
 	}
 
-	let { 
-		project, 
-		isHovered = false
-	}: { 
-		project: Project, 
-		isHovered?: boolean
+	let {
+		project
+	}: {
+		project: Project;
 	} = $props();
 
 	const snapshotUrl = $derived(project.liveUrl || project.repoUrl);
@@ -29,82 +27,135 @@
 	);
 </script>
 
-<!-- eslint-disable @inlang/paraglide-js/no-unresolved-href -->
 <a
 	href={project.liveUrl || project.repoUrl || '#'}
 	target="_blank"
-	rel="noopener noreferrer"
-	class="group relative flex aspect-square flex-col overflow-visible border-4 border-neutral-900 bg-white shadow-[6px_6px_0px_0px_#171717] transition-all duration-500 active:translate-x-1 active:translate-y-1 active:shadow-none
-		{isHovered ? 'z-50 -translate-y-4 shadow-[20px_20px_0px_0px_#171717] border-[#FF90E8]' : 'z-10'}"
+	rel="noopener noreferrer external"
+	class="group relative flex flex-col overflow-hidden rounded-3xl border border-neutral-200/60 bg-brand-surface text-brand-text transition-all duration-700 hover:scale-[1.02] hover:border-neutral-300 hover:shadow-xl"
 >
-	<!-- Project Photo Container (Adjusted for Square) -->
-	<div class="relative h-2/3 w-full overflow-hidden border-b-4 border-neutral-900 bg-[#FFDE59]/10">
+	<!-- Image Container -->
+	<div class="relative aspect-4/3 w-full overflow-hidden bg-neutral-200">
 		{#if previewUrl}
-			<img 
-				src={previewUrl} 
-				alt={project.title} 
-				class="h-full w-full object-cover transition-transform duration-700 {isHovered ? 'scale-110' : ''}" 
+			<img
+				src={previewUrl}
+				alt={project.title}
+				class="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
 			/>
 		{:else}
-			<div class="flex h-full w-full items-center justify-center bg-linear-to-br from-[#FFDE59] to-[#FF90E8] p-12 opacity-30">
-				<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="square" class="text-neutral-900 opacity-50"><path d="m20.2 11.2-.5 4.5c-.3 2.1-1.7 3.8-3.7 4.2l-4.5.5-4.5-.5c-2-.4-3.4-2.1-3.7-4.2l-.5-4.5.5-4.5c.3-2.1 1.7-3.8 3.7-4.2l4.5-.5 4.5.5c2 .4 3.4 2.1 3.7 4.2l.5 4.5Z"/><path d="M12 7v10"/><path d="M7 12h10"/></svg>
+			<div
+				class="flex h-full w-full items-center justify-center bg-brand-bg text-brand-surface-light opacity-90"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="48"
+					height="48"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="opacity-50"
+					><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle
+						cx="9"
+						cy="9"
+						r="2"
+					/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg
+				>
 			</div>
 		{/if}
 	</div>
 
-	<!-- Floating Detail Bubble (Avoidance implementation moves it higher) -->
-	<div class="pointer-events-none absolute -top-16 -right-4 -left-4 z-60 transition-all duration-500
-		{isHovered ? '-top-48 opacity-100 pointer-events-auto translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-90'}">
-		<div class="relative w-full bg-white p-6 border-4 border-neutral-900 shadow-[12px_12px_0px_0px_#171717]">
-			<!-- Speech Bubble Tail -->
-			<div class="absolute -bottom-4 left-1/2 -translate-x-1/2 h-8 w-8 rotate-45 border-r-4 border-b-4 border-neutral-900 bg-white"></div>
-			
-			<div class="space-y-4">
-				<div class="flex items-center justify-between border-b-2 border-neutral-900 pb-2">
-					<div class="flex gap-4">
-						<div class="flex items-center gap-1.5">
-							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" class="text-neutral-900"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-							<span class="text-[14px] font-black">{project.stars || 0}</span>
-						</div>
-						<div class="flex items-center gap-1.5">
-							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" class="text-neutral-900"><circle cx="12" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><circle cx="18" cy="6" r="3" /><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9" /><path d="M12 12v3" /></svg>
-							<span class="text-[14px] font-black">{project.forks || 0}</span>
-						</div>
-					</div>
-					{#if project.language}
-						<span class="bg-[#FFDE59] border-2 border-neutral-900 px-3 py-1 text-[11px] font-black uppercase tracking-widest shadow-[4px_4px_0px_0px_#171717]">
-							{project.language}
-						</span>
-					{/if}
-				</div>
-				<p class="text-[14px] font-bold leading-relaxed text-neutral-800 line-clamp-4">
-					{project.description || 'Discover more detail by exploring the repository or live site.'}
-				</p>
-			</div>
-		</div>
-	</div>
-
-	<!-- Main Title & Tags Area (Uniformly aligned at bottom) -->
-	<div class="flex flex-1 flex-col justify-between p-6">
-		<div class="space-y-3">
-			<div class="flex items-start justify-between">
-				<h3 class="text-[20px] font-black uppercase tracking-tighter text-neutral-900 group-hover:text-[#FF90E8] transition-colors line-clamp-2">
+	<!-- Content Container -->
+	<div class="flex flex-1 flex-col justify-between p-6 sm:p-8">
+		<div class="space-y-4">
+			<div class="flex items-start justify-between gap-4">
+				<h3 class="font-sans text-[20px] leading-tight font-semibold">
 					{project.title}
 				</h3>
-				<div class="mt-1 shrink-0 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M7 17L17 7M17 7H7M17 7V17" /></svg>
+				<div
+					class="shrink-0 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17" /></svg
+					>
 				</div>
 			</div>
+
+			<p class="line-clamp-3 text-[14px] leading-relaxed font-normal text-neutral-600">
+				{project.description || 'Discover more detail by exploring the repository or live site.'}
+			</p>
 		</div>
 
-		{#if project.tags}
-			<div class="mt-6 flex flex-wrap gap-2">
-				{#each (project.tags || '').split(',').map((t) => t.trim()).filter(Boolean).slice(0, 3) as tag (tag)}
-					<span class="border-2 border-neutral-900 bg-[#FF90E8]/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-neutral-500 group-hover:bg-[#FF90E8] group-hover:text-neutral-900 group-hover:shadow-[2px_2px_0px_0px_#171717] transition-all">
-						{tag}
-					</span>
-				{/each}
-			</div>
-		{/if}
+		<div class="mt-8 flex items-center justify-between">
+			{#if project.tags}
+				<div class="flex flex-wrap gap-2">
+					{#each (project.tags || '')
+						.split(',')
+						.map((t) => t.trim())
+						.filter(Boolean)
+						.slice(0, 2) as tag (tag)}
+						<span
+							class="rounded-full bg-neutral-900/10 px-3 py-1 text-[11px] font-medium tracking-wide"
+						>
+							{tag}
+						</span>
+					{/each}
+				</div>
+			{:else}
+				<div class="flex gap-4 text-neutral-500">
+					<div class="flex items-center gap-1.5">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><polygon
+								points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+							/></svg
+						>
+						<span class="text-[13px]">{project.stars || 0}</span>
+					</div>
+					<div class="flex items-center gap-1.5">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							><circle cx="12" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><circle
+								cx="18"
+								cy="6"
+								r="3"
+							/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9" /><path d="M12 12v3" /></svg
+						>
+						<span class="text-[13px]">{project.forks || 0}</span>
+					</div>
+				</div>
+			{/if}
+
+			{#if project.language}
+				<span class="text-[12px] font-medium text-neutral-500">
+					{project.language}
+				</span>
+			{/if}
+		</div>
 	</div>
 </a>
