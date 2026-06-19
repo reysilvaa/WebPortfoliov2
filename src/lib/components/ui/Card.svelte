@@ -20,20 +20,18 @@
 	}: Props = $props();
 </script>
 
-<div
-	class="overflow-hidden border-4 border-neutral-900 bg-white shadow-[8px_8px_0px_0px_#171717] {className}"
->
+<div class="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm {className}">
 	{#if title || description || headerSnippet}
-		<div class="border-b-4 border-neutral-900 bg-[#FF90E8]/10 px-6 py-5">
+		<div class="border-b border-neutral-100 bg-white px-6 py-5">
 			<div class="flex items-center justify-between gap-4">
 				<div class="space-y-1">
 					{#if title}
-						<h3 class="text-[18px] font-black tracking-tight text-neutral-900 uppercase">
+						<h3 class="text-[16px] font-semibold text-brand-text">
 							{title}
 						</h3>
 					{/if}
 					{#if description}
-						<p class="text-[14px] font-medium text-neutral-500">{description}</p>
+						<p class="text-[14px] text-neutral-500">{description}</p>
 					{/if}
 				</div>
 				{#if headerSnippet}
@@ -48,7 +46,7 @@
 	</div>
 
 	{#if footerSnippet}
-		<div class="flex justify-end border-t-2 border-neutral-900 bg-neutral-100 p-5 px-6">
+		<div class="flex justify-end border-t border-neutral-100 bg-neutral-50/50 p-5 px-6">
 			{@render footerSnippet()}
 		</div>
 	{/if}

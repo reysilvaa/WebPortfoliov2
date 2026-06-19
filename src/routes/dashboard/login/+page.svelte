@@ -29,29 +29,24 @@
 </svelte:head>
 
 <div
-	class="relative flex min-h-screen items-center justify-center bg-[#fafafa] p-6 font-sans text-neutral-900 selection:bg-[#FFDE59] selection:text-neutral-900"
+	class="relative flex min-h-screen items-center justify-center bg-brand-surface p-6 font-sans text-brand-text selection:bg-brand-text selection:text-brand-bg"
 >
-	<!-- Minimalist Grid Background -->
-	<div
-		class="pointer-events-none fixed inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#e5e5e5_2px,transparent_2px),linear-gradient(to_bottom,#e5e5e5_2px,transparent_2px)] bg-size-[4rem_4rem]"
-	></div>
-
 	<main class="w-full max-w-[400px]">
 		<div
-			class="space-y-8 border-4 border-neutral-900 bg-white p-10 shadow-[10px_10px_0px_0px_#171717]"
+			class="space-y-8 rounded-2xl border border-neutral-200 bg-white p-10 shadow-sm"
 		>
-			<div class="space-y-3 pb-4">
-				<h1 class="text-3xl leading-none font-black tracking-tighter text-neutral-900 uppercase">
+			<div class="space-y-2 pb-4">
+				<h1 class="text-[28px] leading-none font-semibold tracking-tight text-brand-text">
 					{m.public_admin()}
 				</h1>
-				<p class="truncate text-[14px] font-bold tracking-widest text-neutral-500 uppercase">
+				<p class="text-[14px] text-neutral-500">
 					Please authenticate to continue.
 				</p>
 			</div>
 
 			{#if error}
 				<div
-					class="border-2 border-neutral-900 bg-red-50 p-4 text-[13px] font-bold text-red-600 shadow-[4px_4px_0px_0px_#171717]"
+					class="rounded-lg bg-red-50 p-4 text-[13px] font-medium text-red-700"
 				>
 					{error}
 				</div>
@@ -60,7 +55,7 @@
 			<Button
 				onclick={loginWithGithub}
 				isLoading={loading}
-				class="h-14 w-full gap-3 bg-[#FFDE59]"
+				class="h-12 w-full gap-3"
 				size="lg"
 			>
 				{#if !loading}
@@ -84,9 +79,9 @@
 			<div class="pt-4 text-center">
 				<a
 					href={resolve('/')}
-					class="inline-block border-b-2 border-transparent text-[14px] font-black tracking-widest text-neutral-400 uppercase transition-all hover:border-neutral-900 hover:text-neutral-900"
+					class="inline-block border-b border-transparent text-[14px] font-medium text-neutral-400 transition-all hover:border-neutral-900 hover:text-neutral-900"
 				>
-					← Back Home
+					&larr; Back Home
 				</a>
 			</div>
 		</div>

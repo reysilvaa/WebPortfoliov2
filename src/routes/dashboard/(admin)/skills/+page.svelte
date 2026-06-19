@@ -44,13 +44,13 @@
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
 	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
 	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
 				{m.dashboard_skills_title()}
 			</h1>
-			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
+			<p class="text-[14px] text-neutral-500">
 				{m.dashboard_skills_description()}
 			</p>
 		</div>
@@ -97,27 +97,27 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.skills as skill (skill.id)}
 				<div
-					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
+					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div class="mb-4 flex flex-1 items-start justify-between space-y-2">
 						<div>
 							<h4
-								class="text-[16px] leading-tight font-black tracking-tight text-neutral-900 uppercase"
+								class="text-[16px] font-medium text-brand-text"
 							>
 								{skill.name}
 							</h4>
-							<p class="text-[12px] font-bold tracking-widest text-[#FF90E8] uppercase">
+							<p class="text-[13px] text-neutral-500">
 								{skill.category}
 							</p>
 						</div>
 						<div
-							class="shrink-0 bg-neutral-900 px-2 py-0.5 text-[10px] font-bold text-white uppercase"
+							class="shrink-0 rounded bg-brand-text px-2 py-0.5 text-[10px] font-medium text-brand-bg uppercase"
 						>
 							{skill.level}%
 						</div>
 					</div>
 
-					<div class="flex items-center justify-end gap-2 border-t-2 border-neutral-50 pt-4">
+					<div class="flex items-center justify-end gap-2 border-t border-neutral-100 pt-4">
 						<Button
 							variant="outline"
 							size="icon"
@@ -188,9 +188,9 @@
 				</div>
 			{:else}
 				<div
-					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+					<p class="text-[14px] font-medium text-neutral-500">
 						No skills found.
 					</p>
 				</div>
@@ -234,13 +234,13 @@
 					loading = false;
 				};
 			}}
-			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Skill
 				</h2>
-				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
+				<p class="text-[14px] text-neutral-500">
 					Update technical capability details.
 				</p>
 			</div>

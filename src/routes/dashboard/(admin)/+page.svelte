@@ -35,13 +35,13 @@
 
 <div class="space-y-12">
 	<header
-		class="mt-2 mb-8 flex flex-col gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end md:justify-between"
+		class="mt-2 mb-8 flex flex-col gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end md:justify-between"
 	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
 				{m.dashboard_settings_title()}
 			</h1>
-			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
+			<p class="text-[14px] text-neutral-500">
 				{m.dashboard_settings_description()}
 			</p>
 		</div>
@@ -80,10 +80,10 @@
 	<Card title={m.dashboard_profile_section()} description={m.dashboard_settings_description()}>
 		{#if profileMessage.text}
 			<div
-				class="mb-8 border-4 p-4 text-[13px] font-black tracking-widest uppercase {profileMessage.type ===
+				class="mb-8 rounded-lg p-4 text-[13px] font-medium {profileMessage.type ===
 				'success'
-					? 'border-neutral-900 bg-[#FFDE59] text-neutral-900 shadow-[4px_4px_0px_0px_#171717]'
-					: 'border-neutral-900 bg-[#FF90E8] text-neutral-900 shadow-[4px_4px_0px_0px_#171717]'}"
+					? 'bg-green-50 text-green-700'
+					: 'bg-red-50 text-red-700'}"
 			>
 				{profileMessage.text}
 			</div>
@@ -110,7 +110,7 @@
 			<div class="flex flex-col items-start gap-8 sm:flex-row">
 				<div class="shrink-0">
 					<div
-						class="size-32 overflow-hidden border-4 border-neutral-900 bg-neutral-100 shadow-[4px_4px_0px_0px_#171717]"
+						class="size-32 overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 shadow-sm"
 					>
 						{#if avatarUrl}
 							<img src={avatarUrl} alt={name} class="h-full w-full object-cover" />

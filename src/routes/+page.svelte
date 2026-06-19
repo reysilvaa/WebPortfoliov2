@@ -43,7 +43,7 @@
 					}
 				});
 			},
-			{ rootMargin: '-20% 0px -60% 0px', threshold: 0.1 }
+			{ rootMargin: '-50% 0px -50% 0px', threshold: 0 }
 		);
 
 		document.querySelectorAll('header[id], section[id]').forEach((sec) => {
@@ -69,7 +69,7 @@
 				class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'home' ||
 				activeSection === ''
 					? 'text-brand-text opacity-100'
-					: 'text-neutral-500 opacity-0 group-hover:opacity-100'}">Home</span
+					: 'text-neutral-400 group-hover:text-neutral-900'}">Home</span
 			>
 			<div
 				class="h-px transition-all {activeSection === 'home' || activeSection === ''
@@ -87,7 +87,7 @@
 					class="text-[11px] tracking-widest uppercase transition-all {activeSection ===
 					'experience'
 						? 'text-brand-text opacity-100'
-						: 'text-neutral-500 opacity-0 group-hover:opacity-100'}">Experience</span
+						: 'text-neutral-400 group-hover:text-neutral-900'}">Experience</span
 				>
 				<div
 					class="h-px transition-all {activeSection === 'experience'
@@ -104,7 +104,7 @@
 			<span
 				class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'projects'
 					? 'text-brand-text opacity-100'
-					: 'text-neutral-500 opacity-0 group-hover:opacity-100'}">Projects</span
+					: 'text-neutral-400 group-hover:text-neutral-900'}">Projects</span
 			>
 			<div
 				class="h-px transition-all {activeSection === 'projects'
@@ -122,7 +122,7 @@
 					class="text-[11px] tracking-widest uppercase transition-all {activeSection ===
 					'credentials'
 						? 'text-brand-text opacity-100'
-						: 'text-neutral-500 opacity-0 group-hover:opacity-100'}">Credentials</span
+						: 'text-neutral-400 group-hover:text-neutral-900'}">Credentials</span
 				>
 				<div
 					class="h-px transition-all {activeSection === 'credentials'
@@ -140,7 +140,7 @@
 				<span
 					class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'skills'
 						? 'text-brand-text opacity-100'
-						: 'text-neutral-500 opacity-0 group-hover:opacity-100'}">Stack</span
+						: 'text-neutral-400 group-hover:text-neutral-900'}">Stack</span
 				>
 				<div
 					class="h-px transition-all {activeSection === 'skills'

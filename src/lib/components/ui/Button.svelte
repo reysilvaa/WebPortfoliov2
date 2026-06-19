@@ -22,26 +22,26 @@
 
 	const variants = {
 		primary:
-			'border-2 border-neutral-900 bg-neutral-900 text-white shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+			'bg-brand-text text-brand-bg hover:bg-neutral-800 border border-transparent rounded-lg',
 		secondary:
-			'border-2 border-neutral-900 bg-neutral-100 text-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+			'bg-brand-surface-light text-brand-text hover:bg-neutral-200 border border-transparent rounded-lg',
 		ghost:
-			'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 active:translate-x-1 active:translate-y-1',
+			'text-neutral-600 hover:bg-brand-surface-light hover:text-brand-text rounded-lg',
 		danger:
-			'border-2 border-neutral-900 bg-[#FF90E8] text-neutral-900 shadow-[4px_4px_0px_0px_#171717] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none',
+			'bg-red-50 text-red-600 hover:bg-red-100 border border-transparent rounded-lg',
 		outline:
-			'border-2 border-neutral-900 bg-transparent text-neutral-900 hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#171717] active:translate-x-1 active:translate-y-1 active:shadow-none'
+			'border border-neutral-200 bg-transparent text-brand-text hover:bg-brand-surface-light rounded-lg'
 	};
 
 	const sizes = {
 		sm: 'h-8 px-4 text-[12px]',
-		md: 'h-11 px-6 text-[14px]',
-		lg: 'h-14 px-8 text-[16px]',
+		md: 'h-10 px-5 text-[14px]',
+		lg: 'h-12 px-6 text-[15px]',
 		icon: 'h-10 w-10 flex items-center justify-center p-0'
 	};
 
 	const baseClass =
-		'inline-flex items-center justify-center font-bold uppercase tracking-widest transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed';
+		'inline-flex items-center justify-center font-medium tracking-wide transition-all focus:outline-none focus:ring-2 focus:ring-brand-text focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 </script>
 
 <button

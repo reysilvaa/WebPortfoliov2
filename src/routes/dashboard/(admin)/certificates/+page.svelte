@@ -48,13 +48,13 @@
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
 	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
 	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
 				{m.dashboard_credentials_title()}
 			</h1>
-			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
+			<p class="text-[14px] text-neutral-500">
 				{m.dashboard_credentials_description()}
 			</p>
 		</div>
@@ -109,9 +109,9 @@
 							? displayUrl
 							: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 					<div class="space-y-4">
-						<p class="text-[12px] font-bold tracking-widest text-neutral-500 uppercase">Preview</p>
+						<p class="text-[12px] font-medium text-neutral-500">Preview</p>
 						<div
-							class="relative aspect-video w-full overflow-hidden border-4 border-neutral-900 bg-neutral-100 shadow-[4px_4px_0px_0px_#171717]"
+							class="relative aspect-video w-full overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 shadow-sm"
 						>
 							<img
 								src={previewUrl}
@@ -130,15 +130,15 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.certificates as cert (cert.id)}
 				<div
-					class="flex flex-col border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
+					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div class="mb-4 flex-1 space-y-2">
 						<h4
-							class="text-[16px] leading-tight font-black tracking-tight text-neutral-900 uppercase"
+							class="text-[16px] font-medium text-brand-text"
 						>
 							{cert.name}
 						</h4>
-						<p class="text-[13px] font-bold tracking-widest text-[#FF90E8] uppercase">
+						<p class="text-[13px] text-neutral-500">
 							{cert.issuer}
 						</p>
 					</div>
@@ -154,13 +154,13 @@
 								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 
 						<div
-							class="mb-6 aspect-video w-full overflow-hidden rounded-lg border-2 border-neutral-900 bg-neutral-50 shadow-[2px_2px_0px_0px_#171717]"
+							class="mb-6 aspect-video w-full overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 shadow-sm"
 						>
 							<img src={previewUrl} alt="Preview" class="h-full w-full object-cover" />
 						</div>
 					{/if}
 
-					<div class="flex items-center justify-end gap-2 border-t-2 border-neutral-50 pt-4">
+					<div class="flex items-center justify-end gap-2 border-t border-neutral-100 pt-4">
 						<Button
 							variant="outline"
 							size="icon"
@@ -231,9 +231,9 @@
 				</div>
 			{:else}
 				<div
-					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+					<p class="text-[14px] font-medium text-neutral-500">
 						No credentials found.
 					</p>
 				</div>
@@ -277,13 +277,13 @@
 					loading = false;
 				};
 			}}
-			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Credential
 				</h2>
-				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
+				<p class="text-[14px] text-neutral-500">
 					Update certification details.
 				</p>
 			</div>
@@ -330,7 +330,7 @@
 								? displayUrl
 								: `https://api.microlink.io?url=${encodeURIComponent(displayUrl)}&screenshot=true&meta=false&embed=screenshot.url`}
 						<div
-							class="relative aspect-video w-full overflow-hidden border-4 border-neutral-900 bg-neutral-100 shadow-[4px_4px_0px_0px_#171717]"
+							class="relative aspect-video w-full overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 shadow-sm"
 						>
 							<img
 								src={previewUrl}

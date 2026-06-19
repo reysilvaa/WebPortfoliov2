@@ -50,11 +50,11 @@
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
 	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
 	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">Experiences</h1>
-			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
+			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">Experiences</h1>
+			<p class="text-[14px] text-neutral-500">
 				{m.dashboard_projects_description()}
 			</p>
 		</div>
@@ -118,16 +118,16 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.experiences as exp (exp.id)}
 				<div
-					class="flex items-center justify-between border-4 border-neutral-900 bg-white p-6 shadow-[6px_6px_0px_0px_#171717] transition-all hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_#171717]"
+					class="flex items-center justify-between rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
 				>
 					<div class="space-y-2 pr-4">
-						<h4 class="text-[16px] font-black tracking-tight text-neutral-900 uppercase">
+						<h4 class="text-[16px] font-medium text-brand-text">
 							{exp.role}
 						</h4>
-						<p class="text-[13px] font-bold tracking-widest text-[#FF90E8] uppercase">
+						<p class="text-[13px] text-neutral-500">
 							{exp.company}
 						</p>
-						<p class="text-[11px] font-bold text-neutral-500 uppercase">
+						<p class="text-[12px] text-neutral-400">
 							{exp.startDate} - {exp.endDate || 'Present'}
 						</p>
 					</div>
@@ -202,9 +202,9 @@
 				</div>
 			{:else}
 				<div
-					class="py-16 text-center border-4 border-dashed border-neutral-300 bg-white sm:col-span-2 lg:col-span-3"
+					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-bold uppercase tracking-widest text-neutral-400">
+					<p class="text-[14px] font-medium text-neutral-500">
 						No experiences found.
 					</p>
 				</div>
@@ -248,13 +248,13 @@
 					loading = false;
 				};
 			}}
-			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Experience
 				</h2>
-				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
+				<p class="text-[14px] text-neutral-500">
 					Update experience details.
 				</p>
 			</div>

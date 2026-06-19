@@ -43,71 +43,71 @@
 </script>
 
 <div
-	class="flex min-h-screen bg-white font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white"
+	class="flex min-h-screen bg-brand-bg font-sans text-brand-text antialiased selection:bg-brand-text selection:text-brand-bg"
 >
 	<!-- Left Sidebar Navigation -->
 	<aside
-		class="hidden w-64 shrink-0 flex-col justify-between border-r-4 border-neutral-900 bg-[#FFDE59] md:flex"
+		class="hidden w-64 shrink-0 flex-col justify-between border-r border-neutral-200 bg-brand-surface md:flex"
 	>
 		<div>
-			<div class="flex h-24 items-center border-b-4 border-neutral-900 bg-white px-6">
+			<div class="flex h-24 items-center px-8">
 				<a
 					href={resolve('/')}
-					class="flex items-center gap-2 text-[20px] font-black tracking-tighter uppercase"
+					class="flex items-center gap-2 text-[16px] font-semibold tracking-tight text-brand-text"
 				>
 					{data.profile?.name || 'REY SILVA'}
 					<span
-						class="border-2 border-neutral-900 bg-neutral-900 px-2 py-0.5 text-[10px] tracking-widest text-white uppercase shadow-[3px_3px_0px_0px_#FF90E8]"
+						class="rounded bg-brand-text px-1.5 py-0.5 text-[9px] tracking-widest text-brand-bg uppercase"
 						>Admin</span
 					>
 				</a>
 			</div>
-			<nav class="space-y-3 p-6">
+			<nav class="space-y-1 px-4">
 				{#each links as link (link.href)}
 					<a
 						href={resolve(link.href)}
-						class="block border-2 border-neutral-900 px-4 py-3 text-[14px] font-bold tracking-widest uppercase transition-all
+						class="block rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all
 							{isActive(link.href)
-							? '-translate-y-0.5 bg-neutral-900 text-[#FFDE59] shadow-[4px_4px_0px_0px_#171717]'
-							: 'bg-white text-neutral-900 hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_#171717]'}"
+							? 'bg-neutral-200/50 text-brand-text'
+							: 'text-neutral-600 hover:bg-neutral-100 hover:text-brand-text'}"
 					>
 						{link.label}
 					</a>
 				{/each}
 			</nav>
 		</div>
-		<div class="border-t-4 border-neutral-900 bg-white p-6">
-			<Button variant="danger" size="md" class="w-full" onclick={logout} isLoading={logoutLoading}>
+		<div class="border-t border-neutral-200 bg-brand-surface p-4">
+			<Button variant="ghost" size="md" class="w-full text-red-600 hover:bg-red-50 hover:text-red-700" onclick={logout} isLoading={logoutLoading}>
 				{logoutLoading ? 'Signing Out...' : 'Sign Out'}
 			</Button>
 		</div>
 	</aside>
 
 	<!-- Main Content Area -->
-	<main class="flex h-screen flex-1 flex-col overflow-hidden">
+	<main class="flex h-screen flex-1 flex-col overflow-hidden bg-brand-surface-light">
 		<!-- Mobile Header (Hidden on Desktop) -->
 		<header
-			class="flex h-16 shrink-0 items-center justify-between border-b-4 border-neutral-900 bg-[#FFDE59] px-4 md:hidden"
+			class="flex h-16 shrink-0 items-center justify-between border-b border-neutral-200 bg-brand-surface px-4 md:hidden"
 		>
 			<a
 				href={resolve('/')}
-				class="border-2 border-neutral-900 bg-white px-2 py-1 text-[15px] font-black tracking-tighter uppercase shadow-[2px_2px_0px_0px_#171717]"
+				class="text-[15px] font-semibold tracking-tight text-brand-text"
 			>
 				{data.profile?.name || 'REY SILVA'}
 			</a>
-			<Button variant="danger" size="sm" onclick={logout} isLoading={logoutLoading}>Out</Button>
+			<Button variant="ghost" size="sm" class="text-red-600" onclick={logout} isLoading={logoutLoading}>Out</Button>
 		</header>
 
 		<!-- Mobile Nav (Temp Solution) -->
-		<nav class="flex shrink-0 overflow-x-auto border-b-4 border-neutral-900 bg-white md:hidden">
+		<nav class="flex shrink-0 overflow-x-auto border-b border-neutral-200 bg-brand-surface md:hidden">
 			{#each links as link (link.href)}
 				<a
 					href={resolve(link.href)}
-					class="shrink-0 border-r-2 border-neutral-900 px-4 py-3 text-[12px] leading-none font-bold tracking-widest uppercase {isActive(
+					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(
 						link.href
 					)
-						? 'bg-neutral-900 text-[#FFDE59]'
-						: 'text-neutral-900'}"
+						? 'border-b-2 border-brand-text text-brand-text'
+						: 'text-neutral-600'}"
 				>
 					{link.label}
 				</a>
@@ -115,7 +115,7 @@
 		</nav>
 
 		<!-- Content scrollable area -->
-		<div class="flex-1 overflow-y-auto bg-neutral-50/30 p-4 md:p-8 lg:p-12">
+		<div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12">
 			<div class="mx-auto max-w-6xl">
 				{@render children()}
 			</div>

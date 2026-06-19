@@ -94,13 +94,13 @@
 
 <div class="mx-auto max-w-5xl space-y-10 pb-20">
 	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b-4 border-neutral-900 pb-6 md:flex-row md:items-end"
+		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
 	>
 		<div class="space-y-2">
-			<h1 class="text-3xl font-black tracking-tighter text-neutral-900 uppercase">
+			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
 				{m.dashboard_projects_title()}
 			</h1>
-			<p class="text-[15px] font-bold tracking-widest text-neutral-500 uppercase">
+			<p class="text-[14px] text-neutral-500">
 				{m.dashboard_projects_description()}
 			</p>
 		</div>
@@ -142,7 +142,7 @@
 	</header>
 
 	<div
-		class="sticky top-0 z-10 mb-8 border-b-4 border-neutral-900 bg-white/95 pt-4 pb-6 backdrop-blur-md"
+		class="sticky top-0 z-10 mb-8 border-b border-neutral-200 bg-white/95 pt-4 pb-6 backdrop-blur-md"
 	>
 		<div class="flex flex-col items-center justify-between gap-6 md:flex-row">
 			<div class="relative w-full md:max-w-md">
@@ -158,18 +158,19 @@
 					viewBox="0 0 24 24"
 					fill="none"
 					stroke="currentColor"
-					stroke-width="3"
-					stroke-linecap="square"
-					class="absolute top-1/2 left-4 -translate-y-1/2 text-neutral-900"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="absolute top-1/2 left-4 -translate-y-1/2 text-neutral-400"
 					><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
 				>
 			</div>
 
 			{#if selectedIds.length > 0}
 				<div
-					class="flex items-center gap-4 border-4 border-neutral-900 bg-[#FF90E8] px-6 py-3 shadow-[4px_4px_0px_0px_#171717]"
+					class="flex items-center gap-4 rounded-lg bg-blue-50 px-6 py-3"
 				>
-					<span class="text-[14px] font-black tracking-widest text-neutral-900 uppercase"
+					<span class="text-[14px] font-medium text-blue-700"
 						>{selectedIds.length} SELECTED</span
 					>
 
@@ -260,10 +261,10 @@
 		</div>
 
 		<div
-			class="divide-y-4 divide-neutral-900 overflow-hidden border-4 border-neutral-900 bg-white shadow-[8px_8px_0px_0px_#171717]"
+			class="divide-y divide-neutral-200 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-sm"
 		>
 			{#each filteredProjects as project (project.id)}
-				<div class="group flex items-center p-6 transition-all hover:bg-neutral-50/50">
+				<div class="group flex items-center p-6 transition-all hover:bg-neutral-50">
 					<div class="mr-4 flex w-10 justify-center">
 						<input
 							type="checkbox"
@@ -454,13 +455,13 @@
 					bulkActionLoading = false;
 				};
 			}}
-			class="relative w-full max-w-2xl border-4 border-neutral-900 bg-white p-8 shadow-[12px_12px_0px_0px_#171717]"
+			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-2xl font-black tracking-tighter text-neutral-900 uppercase">
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Project
 				</h2>
-				<p class="text-[14px] leading-relaxed font-bold tracking-widest text-neutral-500 uppercase">
+				<p class="text-[14px] text-neutral-500">
 					Update project information.
 				</p>
 			</div>
