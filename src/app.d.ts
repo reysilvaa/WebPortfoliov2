@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import type { User, Session } from 'better-auth/minimal';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
