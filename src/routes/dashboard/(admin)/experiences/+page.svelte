@@ -118,7 +118,7 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.experiences as exp (exp.id)}
 				<div
-					class="flex items-center justify-between rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+					class="flex items-center justify-between rounded-xl border border-neutral-200 bg-white p-6 shadow-sm"
 				>
 					<div class="space-y-2 pr-4">
 						<h4 class="text-[16px] font-medium text-brand-text">

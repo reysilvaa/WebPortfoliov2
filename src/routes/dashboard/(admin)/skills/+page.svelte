@@ -97,7 +97,7 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.skills as skill (skill.id)}
 				<div
-					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm"
 				>
 					<div class="mb-4 flex flex-1 items-start justify-between space-y-2">
 						<div>

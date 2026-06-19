@@ -24,7 +24,7 @@
 		</h4>
 		{#if project.isHidden}
 			<span
-				class="inline-flex items-center border border-neutral-900 bg-neutral-200 px-2 py-0.5 text-[10px] font-black tracking-widest text-neutral-600 uppercase"
+				class="inline-flex items-center rounded bg-neutral-100 px-2 py-0.5 text-[10px] font-medium text-neutral-600 uppercase"
 				>Hidden</span
 			>
 		{/if}
@@ -37,7 +37,7 @@
 	<div class="flex flex-wrap items-center gap-1.5">
 		{#if project.language}
 			<span
-				class="inline-flex items-center border border-neutral-900 bg-[#FFDE59] px-2 py-0.5 text-[11px] font-black tracking-widest text-neutral-900 uppercase"
+				class="inline-flex items-center rounded bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-700"
 			>
 				{project.language}
 			</span>
@@ -45,7 +45,7 @@
 		{#each (project.tags || '').split(',').slice(0, 3) as tag (tag)}
 			{#if tag.trim()}
 				<span
-					class="inline-flex items-center border border-neutral-900 bg-white px-2 py-0.5 text-[11px] font-bold tracking-widest text-neutral-400 uppercase"
+					class="inline-flex items-center rounded border border-neutral-200 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-500"
 				>
 					#{tag.trim()}
 				</span>
