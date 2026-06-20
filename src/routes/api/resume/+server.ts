@@ -49,47 +49,72 @@ export const GET: RequestHandler = async () => {
 			.filter(Boolean);
 	};
 
+	const contactInfo = [
+		safeProfile.email,
+		safeProfile.linkedin,
+		safeProfile.github
+	].filter(Boolean).join('  |  ');
+
 	const docDefinition: TDocumentDefinitions = {
 		content: [
-			{ text: safeProfile.name, style: 'header' },
+			{ text: safeProfile.name.toUpperCase(), style: 'header', alignment: 'center' },
 			{
-				text: `${safeProfile.role} | ${safeProfile.email} | ${safeProfile.linkedin} | ${safeProfile.github}`,
-				style: 'subheader'
+				text: `${safeProfile.role}\n${contactInfo}`,
+				style: 'subheader',
+				alignment: 'center'
 			},
-			{ text: safeProfile.bio, margin: [0, 10, 0, 20] }
+			{ text: safeProfile.bio, style: 'bio' }
 		],
 		styles: {
 			header: {
-				fontSize: 24,
+				fontSize: 22,
 				bold: true,
-				margin: [0, 0, 0, 5]
+				margin: [0, 0, 0, 4]
 			},
 			subheader: {
-				fontSize: 12,
-				margin: [0, 0, 0, 10]
+				fontSize: 10,
+				margin: [0, 0, 0, 15],
+				color: '#444444'
+			},
+			bio: {
+				fontSize: 10,
+				margin: [0, 0, 0, 15],
+				lineHeight: 1.3
 			},
 			sectionHeader: {
-				fontSize: 16,
+				fontSize: 14,
 				bold: true,
-				margin: [0, 15, 0, 8]
+				color: '#000000',
+				margin: [0, 15, 0, 5]
 			},
 			jobTitle: {
 				fontSize: 12,
-				bold: true
+				bold: true,
+				margin: [0, 5, 0, 2]
 			},
-			companyDate: {
-				fontSize: 10,
+			companyName: {
+				fontSize: 11,
 				italics: true,
 				margin: [0, 0, 0, 5]
 			},
-			projectTitle: {
-				fontSize: 12,
-				bold: true
+			dateText: {
+				fontSize: 10,
+				margin: [0, 5, 0, 2]
 			},
-			skillCategory: {
+			listText: {
+				fontSize: 10,
+				lineHeight: 1.3
+			},
+			projectTitle: {
 				fontSize: 11,
 				bold: true,
 				margin: [0, 5, 0, 2]
+			},
+			projectTags: {
+				fontSize: 9,
+				italics: true,
+				color: '#555555',
+				margin: [0, 0, 0, 5]
 			}
 		},
 		defaultStyle: {
@@ -101,18 +126,30 @@ export const GET: RequestHandler = async () => {
 
 	const docContent = docDefinition.content as any[];
 
+	const addDivider = () => {
+		docContent.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }], margin: [0, 0, 0, 10] });
+	};
+
 	// Add Experience
 	if (experiences && experiences.length > 0) {
 		docContent.push({ text: 'EXPERIENCE', style: 'sectionHeader' });
+		addDivider();
+		
 		experiences.forEach((exp) => {
-			docContent.push(
-				{ text: exp.role, style: 'jobTitle' },
-				{ text: `${exp.company} | ${exp.startDate} - ${exp.endDate}`, style: 'companyDate' }
-			);
+			docContent.push({
+				columns: [
+					{ text: exp.role, style: 'jobTitle' },
+					{ text: `${exp.startDate} - ${exp.endDate || 'Present'}`, alignment: 'right', style: 'dateText' }
+				]
+			});
+			docContent.push({ text: exp.company, style: 'companyName' });
+
 			if (exp.description) {
+				const bulletPoints = exp.description.split('\n').map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
 				docContent.push({
-					text: exp.description,
-					margin: [0, 0, 0, 10]
+					ul: bulletPoints,
+					margin: [0, 2, 0, 10],
+					style: 'listText'
 				});
 			} else {
 				docContent.push({ text: '', margin: [0, 0, 0, 10] });
@@ -123,16 +160,20 @@ export const GET: RequestHandler = async () => {
 	// Add Projects
 	if (projects && projects.length > 0) {
 		docContent.push({ text: 'PROJECTS', style: 'sectionHeader' });
+		addDivider();
+
 		projects.forEach((proj) => {
 			const tags = parseTags(proj.tags).join(', ');
 			docContent.push(
 				{ text: proj.title, style: 'projectTitle' },
-				{ text: tags ? `Technologies: ${tags}` : '', style: 'companyDate' }
+				{ text: tags ? `Technologies: ${tags}` : '', style: 'projectTags' }
 			);
 			if (proj.description) {
+				const bulletPoints = proj.description.split('\n').map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
 				docContent.push({
-					text: proj.description,
-					margin: [0, 0, 0, 10]
+					ul: bulletPoints,
+					margin: [0, 2, 0, 10],
+					style: 'listText'
 				});
 			} else {
 				docContent.push({ text: '', margin: [0, 0, 0, 10] });
@@ -143,19 +184,31 @@ export const GET: RequestHandler = async () => {
 	// Add Skills
 	if (skills && skills.length > 0) {
 		docContent.push({ text: 'SKILLS', style: 'sectionHeader' });
+		addDivider();
 
 		// Group skills by category
 		const skillsByCategory: Record<string, string[]> = {};
 		skills.forEach((skill) => {
-			const cat = skill.category || 'Other';
-			if (!skillsByCategory[cat]) skillsByCategory[cat] = [];
-			skillsByCategory[cat].push(skill.name);
+			const cats = (skill.category || 'Other')
+				.split(',')
+				.map((c) => c.trim())
+				.filter(Boolean);
+			if (cats.length === 0) cats.push('Other');
+			
+			cats.forEach((cat) => {
+				if (!skillsByCategory[cat]) skillsByCategory[cat] = [];
+				skillsByCategory[cat].push(skill.name);
+			});
 		});
 
 		for (const [category, skillNames] of Object.entries(skillsByCategory)) {
 			docContent.push({
-				text: `${category}: ${skillNames.join(', ')}`,
-				margin: [0, 2, 0, 2]
+				text: [
+					{ text: `${category}: `, bold: true },
+					{ text: skillNames.join(', ') }
+				],
+				margin: [0, 2, 0, 2],
+				fontSize: 10
 			});
 		}
 		docContent.push({ text: '', margin: [0, 0, 0, 10] });
@@ -164,11 +217,13 @@ export const GET: RequestHandler = async () => {
 	// Add Certificates
 	if (certificates && certificates.length > 0) {
 		docContent.push({ text: 'CERTIFICATES', style: 'sectionHeader' });
-		certificates.forEach((cert) => {
-			docContent.push(
-				{ text: cert.name, style: 'projectTitle' },
-				{ text: cert.issuer, margin: [0, 0, 0, 5] }
-			);
+		addDivider();
+
+		const certsList = certificates.map((cert) => `${cert.name} - ${cert.issuer}`);
+		docContent.push({
+			ul: certsList,
+			margin: [0, 2, 0, 10],
+			style: 'listText'
 		});
 	}
 

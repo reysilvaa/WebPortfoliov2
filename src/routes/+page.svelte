@@ -33,12 +33,25 @@
 	let activeCategory = $state('All');
 	const categories = $derived([
 		'All',
-		...new Set(items.skills.map((s) => s.category || 'Other').filter(Boolean))
+		...new Set(
+			items.skills.flatMap((s) =>
+				(s.category || 'Other')
+					.split(',')
+					.map((c) => c.trim())
+					.filter(Boolean)
+			)
+		)
 	]);
 	const filteredSkills = $derived(
 		activeCategory === 'All'
 			? items.skills
-			: items.skills.filter((s) => (s.category || 'Other') === activeCategory)
+			: items.skills.filter((s) => {
+					const cats = (s.category || 'Other')
+						.split(',')
+						.map((c) => c.trim())
+						.filter(Boolean);
+					return cats.includes(activeCategory);
+				})
 	);
 
 	function parseTags(tags: string | string[] | null | undefined): string[] {
