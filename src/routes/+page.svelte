@@ -78,7 +78,13 @@
 		});
 
 		tick().then(() => {
-			document.querySelectorAll('.k-anim, section[id]').forEach((el) => io.observe(el));
+			document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
+				io.observe(el);
+				const rect = el.getBoundingClientRect();
+				if (rect.top < window.innerHeight && rect.bottom > 0) {
+					el.classList.add('is-visible');
+				}
+			});
 			mo.observe(document.body, { childList: true, subtree: true });
 		});
 

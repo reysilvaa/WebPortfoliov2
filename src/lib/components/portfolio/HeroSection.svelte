@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { onMount } from 'svelte';
+
 	type Profile = {
 		name: string;
 		role: string;
@@ -10,6 +12,27 @@
 		linkedin?: string | null;
 	};
 	let { profile, scrollY }: { profile: Profile; scrollY: number } = $props();
+
+	const roles = [
+		'Full Stack Engineer',
+		'Software Engineer',
+		'Backend Engineer',
+		'Frontend Engineer'
+	];
+
+	let roleIndex = $state(0);
+	let visible = $state(true);
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			visible = false;
+			setTimeout(() => {
+				roleIndex = (roleIndex + 1) % roles.length;
+				visible = true;
+			}, 400);
+		}, 2800);
+		return () => clearInterval(interval);
+	});
 </script>
 
 <section id="hero" class="relative flex min-h-[90vh] flex-col justify-center pt-10 pb-20">
@@ -33,7 +56,13 @@
 					class="inline-block border-b-2 border-[#222] pb-1 text-sm font-bold tracking-[0.2em] text-[#222] uppercase sm:text-base"
 					style="font-family: 'Inconsolata', monospace;"
 				>
-					{profile.role}
+					<span
+						style="display: inline-block; transition: opacity 0.3s ease, transform 0.3s ease; opacity: {visible
+							? 1
+							: 0}; transform: translateY({visible ? '0' : '-6px'})"
+					>
+						{roles[roleIndex]}
+					</span>
 				</p>
 			</div>
 
