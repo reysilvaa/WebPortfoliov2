@@ -1,18 +1,14 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import * as m from '$lib/paraglide/messages';
-	import PublicProjectCard from '$lib/components/PublicProjectCard.svelte';
-	import Section from '$lib/components/Section.svelte';
 
 	let { data }: { data: PageData } = $props();
 
 	// Fallback if DB is empty
 	const fallbackProfile = {
 		name: 'Rey Silva.',
-		role: 'Full Stack Engineer & Designer',
-		bio: 'Crafting digital experiences with precision. Specializing in highly performant architectures, minimal aesthetics, and scalable engineering.',
+		role: 'Full Stack Engineer',
+		bio: 'Translating intricate business requirements into robust, high-performing code. I build resilient systems and lead technical workflows with a systematic approach focused on efficiency and impact.',
 		avatarUrl: 'https://github.com/reysilvaa.png',
 		email: 'contact@reysilva.com',
 		github: 'https://github.com/reysilvaa',
@@ -26,375 +22,584 @@
 
 	const items = $derived({
 		projects: data.projects || [],
-		pagination: data.pagination,
 		certificates: data.certificates || [],
 		skills: data.skills || [],
 		experiences: data.experiences || []
 	});
 
-	let activeSection = $state('home');
+	let projectsLimit = $state(6);
+	const displayedProjects = $derived(items.projects.slice(0, projectsLimit));
 
-	onMount(() => {
+	let activeCategory = $state('All');
+	const categories = $derived(['All', ...new Set(items.skills.map((s) => s.category || 'Other').filter(Boolean))]);
+	const filteredSkills = $derived(
+		activeCategory === 'All'
+			? items.skills
+			: items.skills.filter((s) => (s.category || 'Other') === activeCategory)
+	);
+
+	function parseTags(tags: string | string[] | null | undefined): string[] {
+		if (!tags) return [];
+		if (typeof tags !== 'string') return Array.isArray(tags) ? tags : [String(tags)];
+		const trimmed = tags.trim();
+		if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+			try {
+				const parsed = JSON.parse(trimmed);
+				return Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
+			} catch {
+				// fallback
+			}
+		}
+		return trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+	}
+
+	let scrollY = $state(0);
+	let activeSection = $state('hero');
+
+	$effect(() => {
+		// Reference items that change the DOM structure so animations re-trigger
+		void items;
+		void displayedProjects;
+		void filteredSkills;
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
-						activeSection = entry.target.id;
+						entry.target.classList.add('is-visible');
+						if (entry.target.id && ['hero', 'work', 'projects', 'skills', 'certificates'].includes(entry.target.id)) {
+							activeSection = entry.target.id;
+						}
 					}
 				});
 			},
-			{ rootMargin: '-50% 0px -50% 0px', threshold: 0 }
+			{ rootMargin: '-20% 0px -20% 0px', threshold: 0.1 }
 		);
 
-		document.querySelectorAll('header[id], section[id]').forEach((sec) => {
-			observer.observe(sec);
+		document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
+			observer.observe(el);
 		});
 
 		return () => observer.disconnect();
 	});
 </script>
 
+<svelte:window bind:scrollY={scrollY} />
+
 <svelte:head>
-	<title>{profile.name}</title>
-	<meta name="description" content={profile.bio} />
+	<title>{profile.name} | Portfolio</title>
+	<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap" rel="stylesheet">
 </svelte:head>
 
-<div class="relative min-h-screen overflow-x-hidden pb-32">
-	<!-- Minimalist Navigation (Right Side or Top) -->
-	<nav
-		class="pointer-events-auto fixed top-1/2 right-8 z-50 hidden -translate-y-1/2 flex-col gap-8 lg:flex xl:right-16"
-	>
-		<a href="{resolve('/')}#home" class="group flex items-center justify-end gap-3 transition-all">
-			<span
-				class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'home' ||
-				activeSection === ''
-					? 'text-brand-text opacity-100'
-					: 'text-neutral-400 group-hover:text-neutral-900'}">Home</span
-			>
-			<div
-				class="h-px transition-all {activeSection === 'home' || activeSection === ''
-					? 'w-8 bg-brand-text'
-					: 'w-4 bg-neutral-300 group-hover:w-6 group-hover:bg-neutral-500'}"
-			></div>
-		</a>
+<div class="kalso-theme relative min-h-screen w-full bg-[#f3edde] text-[#222222] selection:bg-[#222] selection:text-[#f3edde] overflow-x-hidden">
+	
+	<!-- Cardboard Noise Overlay -->
+	<div
+		class="pointer-events-none fixed inset-0 z-50 opacity-40 mix-blend-multiply"
+		style="background-image: url('https://assets.website-files.com/632362a86148e65d0023fa79/632362a86148e6223d23fad9_cardboard.png'); background-size: 400px;"
+	></div>
 
-		{#if items.experiences && items.experiences.length > 0}
-			<a
-				href="{resolve('/')}#experience"
-				class="group flex items-center justify-end gap-3 transition-all"
-			>
-				<span
-					class="text-[11px] tracking-widest uppercase transition-all {activeSection ===
-					'experience'
-						? 'text-brand-text opacity-100'
-						: 'text-neutral-400 group-hover:text-neutral-900'}">Experience</span
-				>
-				<div
-					class="h-px transition-all {activeSection === 'experience'
-						? 'w-8 bg-brand-text'
-						: 'w-4 bg-neutral-300 group-hover:w-6 group-hover:bg-neutral-500'}"
-				></div>
+	<!-- KALSO-STYLE TIMELINE (Fixed Right) -->
+	<nav class="pointer-events-auto fixed top-1/2 right-6 z-40 hidden -translate-y-1/2 flex-col items-center gap-3 xl:flex">
+		<span class="mb-4 font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-[#222]/40">Start</span>
+		
+		<a href="{resolve('/')}#hero" aria-label="Go to Hero" class="group relative flex h-10 w-8 items-center justify-center">
+			<span class="absolute right-8 mr-2 font-mono text-[9px] font-black uppercase tracking-widest text-[#222] border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap shadow-[3px_3px_0_#222] z-50">
+				Intro
+			</span>
+			<div class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection === 'hero' ? 'bg-[#222] scale-110' : 'bg-[#f3edde] opacity-50 group-hover:opacity-100 group-hover:scale-110'}"></div>
+		</a>
+		
+		{#if items.experiences.length > 0}
+			<div class="h-6 border-l border-dashed border-[#222]/25"></div>
+			<a href="{resolve('/')}#work" aria-label="Go to Experience" class="group relative flex h-10 w-8 items-center justify-center">
+				<span class="absolute right-8 mr-2 font-mono text-[9px] font-black uppercase tracking-widest text-[#222] border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap shadow-[3px_3px_0_#222] z-50">
+					Experience
+				</span>
+				<div class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection === 'work' ? 'bg-[#222] scale-110' : 'bg-[#f3edde] opacity-50 group-hover:opacity-100 group-hover:scale-110'}"></div>
 			</a>
 		{/if}
-
-		<a
-			href="{resolve('/')}#projects"
-			class="group flex items-center justify-end gap-3 transition-all"
-		>
-			<span
-				class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'projects'
-					? 'text-brand-text opacity-100'
-					: 'text-neutral-400 group-hover:text-neutral-900'}">Projects</span
-			>
-			<div
-				class="h-px transition-all {activeSection === 'projects'
-					? 'w-8 bg-brand-text'
-					: 'w-4 bg-neutral-300 group-hover:w-6 group-hover:bg-neutral-500'}"
-			></div>
-		</a>
-
-		{#if items.certificates.length > 0}
-			<a
-				href="{resolve('/')}#credentials"
-				class="group flex items-center justify-end gap-3 transition-all"
-			>
-				<span
-					class="text-[11px] tracking-widest uppercase transition-all {activeSection ===
-					'credentials'
-						? 'text-brand-text opacity-100'
-						: 'text-neutral-400 group-hover:text-neutral-900'}">Credentials</span
-				>
-				<div
-					class="h-px transition-all {activeSection === 'credentials'
-						? 'w-8 bg-brand-text'
-						: 'w-4 bg-neutral-300 group-hover:w-6 group-hover:bg-neutral-500'}"
-				></div>
+		
+		{#if items.projects.length > 0}
+			<div class="h-6 border-l border-dashed border-[#222]/25"></div>
+			<a href="{resolve('/')}#projects" aria-label="Go to Projects" class="group relative flex h-10 w-8 items-center justify-center">
+				<span class="absolute right-8 mr-2 font-mono text-[9px] font-black uppercase tracking-widest text-[#222] border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap shadow-[3px_3px_0_#222] z-50">
+					Projects
+				</span>
+				<div class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection === 'projects' ? 'bg-[#222] scale-110' : 'bg-[#f3edde] opacity-50 group-hover:opacity-100 group-hover:scale-110'}"></div>
 			</a>
 		{/if}
-
+		
 		{#if items.skills.length > 0}
-			<a
-				href="{resolve('/')}#skills"
-				class="group flex items-center justify-end gap-3 transition-all"
-			>
-				<span
-					class="text-[11px] tracking-widest uppercase transition-all {activeSection === 'skills'
-						? 'text-brand-text opacity-100'
-						: 'text-neutral-400 group-hover:text-neutral-900'}">Stack</span
-				>
-				<div
-					class="h-px transition-all {activeSection === 'skills'
-						? 'w-8 bg-brand-text'
-						: 'w-4 bg-neutral-300 group-hover:w-6 group-hover:bg-neutral-500'}"
-				></div>
+			<div class="h-6 border-l border-dashed border-[#222]/25"></div>
+			<a href="{resolve('/')}#skills" aria-label="Go to Skills" class="group relative flex h-10 w-8 items-center justify-center">
+				<span class="absolute right-8 mr-2 font-mono text-[9px] font-black uppercase tracking-widest text-[#222] border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap shadow-[3px_3px_0_#222] z-50">
+					Toolbox
+				</span>
+				<div class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection === 'skills' ? 'bg-[#222] scale-110' : 'bg-[#f3edde] opacity-50 group-hover:opacity-100 group-hover:scale-110'}"></div>
 			</a>
 		{/if}
+		
+		{#if items.certificates.length > 0}
+			<div class="h-6 border-l border-dashed border-[#222]/25"></div>
+			<a href="{resolve('/')}#certificates" aria-label="Go to Credentials" class="group relative flex h-10 w-8 items-center justify-center">
+				<span class="absolute right-8 mr-2 font-mono text-[9px] font-black uppercase tracking-widest text-[#222] border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-2 group-hover:translate-x-0 whitespace-nowrap shadow-[3px_3px_0_#222] z-50">
+					Credentials
+				</span>
+				<div class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection === 'certificates' ? 'bg-[#222] scale-110' : 'bg-[#f3edde] opacity-50 group-hover:opacity-100 group-hover:scale-110'}"></div>
+			</a>
+		{/if}
+
+		<span class="mt-4 font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-[#222]/40">Now</span>
 	</nav>
 
-	<!-- Main Content Area -->
-	<main class="mx-auto max-w-5xl px-6 pt-24 sm:pt-32 lg:pr-32">
-		<header id="home" class="mb-32 flex flex-col items-start gap-12">
-			{#if profile.avatarUrl}
-				<div class="h-24 w-24 overflow-hidden rounded-full ring-1 ring-black/5 sm:h-32 sm:w-32">
-					<img
-						src={profile.avatarUrl}
-						alt={profile.name}
-						class="h-full w-full object-cover opacity-90 transition-all duration-700 hover:opacity-100"
-					/>
-				</div>
+	<!-- Fixed Logo and Contact Link -->
+	<div class="fixed top-8 left-8 z-40 flex flex-col items-start gap-1">
+		<a href="#hero" class="font-mono text-2xl font-black tracking-tighter hover:opacity-70 transition-opacity">{profile.name.split(' ')[0]}.</a>
+		<a href="mailto:{profile.email}" class="border-b border-[#222] pb-0.5 font-mono text-[10px] font-bold tracking-[0.2em] uppercase hover:tracking-[0.3em] hover:text-[#555] transition-all">Contact</a>
+	</div>
+
+	<!-- GIANT BACKGROUND TEXT (Changes based on section) -->
+	<div class="fixed inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden">
+		<h2 class="text-[25vw] font-black leading-none text-[#222] opacity-[0.03] transition-all duration-1000 ease-out" style="font-family: 'Inconsolata', monospace; letter-spacing: -0.05em;">
+			{#if activeSection === 'hero'}
+				HELLO
+			{:else if activeSection === 'work'}
+				WORK
+			{:else if activeSection === 'projects'}
+				PROJ
+			{:else if activeSection === 'skills'}
+				TOOL
+			{:else if activeSection === 'certificates'}
+				CERT
 			{/if}
+		</h2>
+	</div>
 
-			<div class="max-w-2xl space-y-6">
-				<h1
-					class="font-sans text-5xl leading-tight font-medium tracking-tight text-brand-text sm:text-7xl"
-				>
-					{profile.name}
-				</h1>
-				<p class="text-[18px] font-medium tracking-wide text-neutral-600">
-					{profile.role}
-				</p>
-				<p class="text-[16px] leading-relaxed text-balance text-brand-text-muted">
-					{profile.bio}
-				</p>
+	<main class="relative z-10 mx-auto max-w-6xl px-6 pt-32 pb-32 sm:px-12 md:px-24">
+		
+		<!-- HERO SECTION -->
+		<section id="hero" class="relative flex min-h-[90vh] flex-col justify-center pb-20 pt-10">
+
+			<div class="relative grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+				
+				<!-- Left Text Side -->
+				<div class="md:col-span-7 flex flex-col items-start text-left z-10">
+					<div class="k-anim slide-right delay-1 mb-4">
+						<p class="font-mono text-[10px] font-bold tracking-[0.3em] uppercase text-[#555]">Welcome to the portfolio of</p>
+					</div>
+
+					<h1 class="k-anim mask-up delay-2 font-mono text-5xl font-black uppercase tracking-tighter sm:text-7xl md:text-8xl lg:text-[110px] leading-[0.9] text-[#222]">
+						{profile.name}
+					</h1>
+					
+					<div class="k-anim slide-up delay-3 mt-4 mb-8">
+						<p class="text-sm font-bold uppercase tracking-[0.2em] sm:text-base border-b-2 border-[#222] pb-1 inline-block text-[#222]" style="font-family: 'Inconsolata', monospace;">
+							{profile.role}
+						</p>
+					</div>
+
+					<div class="k-anim fade-up delay-4 max-w-xl">
+						<p class="text-base leading-relaxed text-[#444] sm:text-lg font-sans font-medium">
+							{profile.bio}
+						</p>
+					</div>
+					
+					<div class="k-anim slide-up delay-5 mt-10 flex gap-6">
+						<a href="#work" class="border border-[#222] bg-[#222] px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-[#f3edde] transition-all hover:bg-transparent hover:text-[#222]">
+							View Work
+						</a>
+						<a href="mailto:{profile.email}" class="border border-[#222]/20 px-6 py-2.5 font-mono text-xs font-bold uppercase tracking-widest text-[#222] transition-all hover:border-[#222] hover:bg-[#222]/5">
+							Contact
+						</a>
+					</div>
+				</div>
+
+				<!-- Right Image Side -->
+				{#if profile.avatarUrl}
+					<div class="md:col-span-5 relative z-0 mt-12 md:mt-0 flex justify-center md:justify-end">
+						<!-- Decorative Elements Behind Image -->
+						<div class="absolute -top-10 -right-10 -z-10 opacity-20" style="transform: translateY({scrollY * -0.1}px) rotate({scrollY * 0.05}deg)">
+							<svg width="200" height="200" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="50" r="48" stroke="#222" stroke-width="0.5" stroke-dasharray="2 4"/></svg>
+						</div>
+						
+						<div class="k-anim scale-up delay-4 overflow-hidden border border-[#222]/15 bg-white/40 p-3 shadow-[8px_8px_0_rgba(34,34,34,0.03)]" style="transform: translateY({scrollY * -0.03}px) rotate(2deg)">
+							<img src={profile.avatarUrl} alt="Avatar" class="aspect-3/4 w-64 md:w-80 object-cover grayscale transition-all duration-700 hover:grayscale-0" />
+						</div>
+					</div>
+				{/if}
 			</div>
+		</section>
 
-			<div class="flex items-center gap-6 pt-6">
-				<a
-					href="mailto:{profile.email}"
-					rel="external"
-					class="group flex items-center gap-3 text-sm font-medium text-neutral-500 transition-colors hover:text-brand-text"
-					title="Email"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="transition-transform group-hover:-translate-y-0.5"
-						><rect width="20" height="16" x="2" y="4" rx="2" /><path
-							d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
-						/></svg
-					>
-					<span class="hidden sm:inline">Email</span>
-				</a>
-				<a
-					href={profile.github}
-					target="_blank"
-					rel="noopener noreferrer external"
-					class="group flex items-center gap-3 text-sm font-medium text-neutral-500 transition-colors hover:text-brand-text"
-					title="GitHub"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="transition-transform group-hover:-translate-y-0.5"
-						><path
-							d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"
-						/><path d="M9 18c-4.51 2-5-2-7-2" /></svg
-					>
-					<span class="hidden sm:inline">GitHub</span>
-				</a>
-				<a
-					href={profile.linkedin}
-					target="_blank"
-					rel="noopener noreferrer external"
-					class="group flex items-center gap-3 text-sm font-medium text-neutral-500 transition-colors hover:text-brand-text"
-					title="LinkedIn"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20"
-						height="20"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="1.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="transition-transform group-hover:-translate-y-0.5"
-						><path
-							d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
-						/><rect width="4" height="12" x="2" y="9" /><circle cx="4" cy="4" r="2" /></svg
-					>
-					<span class="hidden sm:inline">LinkedIn</span>
-				</a>
-			</div>
-		</header>
+		<!-- WORK SECTION -->
+		{#if items.experiences.length > 0}
+			<section id="work" class="mt-40">
+				<div class="mb-32">
+					<h2 class="k-anim mask-up font-mono text-4xl font-black uppercase tracking-tighter sm:text-6xl text-center md:text-left">
+						Experience
+					</h2>
+					<div class="k-anim stretch-out delay-2 mt-6 h-px w-full bg-[#222]/20 relative">
+						<div class="absolute left-0 top-0 h-full w-24 bg-[#222]"></div>
+					</div>
+				</div>
 
-		<!-- Experience Section -->
-		{#if items.experiences && items.experiences.length > 0}
-			<Section id="experience" title="Experience">
-				<div class="flex flex-col gap-10">
-					{#each items.experiences as exp (exp.id)}
-						<div class="group flex flex-col gap-3 transition-opacity">
-							<div class="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between">
-								<h3 class="text-[18px] font-medium text-brand-text">{exp.role}</h3>
-								<div class="flex items-center gap-3">
-									<span class="text-[14px] text-neutral-400">{exp.company}</span>
-									<span class="text-[12px] tracking-wide text-neutral-600"
-										>{exp.startDate} - {exp.endDate}</span
-									>
+				<!-- Editorial Timeline Layout -->
+				<div class="relative border-l border-[#222]/20 pl-8 md:pl-16 ml-4 md:ml-12">
+					{#each items.experiences as exp, i (exp.id || i)}
+						<div class="k-anim fade-up group relative mb-20 last:mb-0" style="transition-delay: {(i%3)*100}ms">
+							
+							<!-- Node (rotated square) -->
+							<div class="absolute -left-[36.5px] md:-left-[68.5px] top-2.5 h-2.5 w-2.5 rotate-45 border border-[#222] bg-[#f3edde] ring-4 ring-[#f3edde] group-hover:bg-[#222] group-hover:scale-110 transition-all duration-300"></div>
+							
+							<!-- Horizontal connector line that grows on hover -->
+							<div class="absolute -left-8 md:-left-16 top-3.5 h-[1px] w-8 md:w-16 bg-[#222]/15 group-hover:bg-[#222]/40 transition-colors duration-300"></div>
+
+							<div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start p-4 -m-4 rounded hover:bg-white/20 transition-all duration-300">
+								<div class="md:col-span-4 flex flex-col items-start gap-2">
+									<span class="inline-block border border-[#222]/25 bg-white/40 px-3 py-1 font-mono text-[9px] font-bold tracking-[0.2em] text-[#222] uppercase shadow-[2px_2px_0_rgba(34,34,34,0.05)]">
+										{exp.startDate} — {exp.endDate}
+									</span>
+									<h3 class="font-mono text-2xl font-black uppercase tracking-tight mt-2 leading-none text-[#222]">{exp.company}</h3>
+								</div>
+								
+								<div class="md:col-span-8 border-l border-[#222]/10 pl-6 md:pl-8">
+									<h4 class="text-lg font-bold uppercase tracking-wide text-[#222]">{exp.role}</h4>
+									{#if exp.description}
+										<p class="mt-4 text-sm leading-relaxed text-[#555] font-sans">
+											{exp.description}
+										</p>
+									{/if}
 								</div>
 							</div>
-							{#if exp.description}
-								<p class="max-w-3xl text-[15px] leading-relaxed text-neutral-500">
-									{exp.description}
-								</p>
-							{/if}
 						</div>
 					{/each}
 				</div>
-			</Section>
+			</section>
 		{/if}
 
-		<!-- Projects Section -->
-		<Section id="projects" title={m.public_projects()}>
-			<div class="grid grid-cols-1 gap-8 transition-all duration-700 md:grid-cols-2">
-				{#each items.projects as project (project.id)}
-					<article class="h-full">
-						<PublicProjectCard {project} />
-					</article>
-				{/each}
-			</div>
+		<!-- PROJECTS SECTION -->
+		{#if items.projects.length > 0}
+			<section id="projects" class="mt-40">
+				<div class="mb-32 text-right">
+					<h2 class="k-anim mask-up font-mono text-4xl font-black uppercase tracking-tighter sm:text-6xl">
+						Selected Works
+					</h2>
+					<div class="k-anim stretch-out delay-2 mt-6 h-px w-full bg-[#222]/20 relative">
+						<div class="absolute right-0 top-0 h-full w-24 bg-[#222]"></div>
+					</div>
+				</div>
 
-			{#if items.pagination && items.pagination.totalPages > 1}
-				<div class="mt-16 flex flex-wrap items-center justify-center gap-2">
-					{#each Array.from({ length: items.pagination.totalPages }, (_, i) => i + 1) as p (p)}
-						<a
-							href="{resolve('/')}?page={p}#projects"
-							class="flex h-10 w-10 items-center justify-center rounded-full text-[14px] transition-all
-								{items.pagination.page === p
-								? 'border border-neutral-200 bg-brand-surface-light font-medium text-brand-text'
-								: 'text-neutral-500 hover:bg-black/5 hover:text-brand-text'}"
-						>
-							{p}
-						</a>
+				<div class="flex flex-col gap-40">
+					{#each displayedProjects as proj, i (proj.id || i)}
+						<div class="group relative grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+							
+							<!-- Image (Large alternating left/right) -->
+							<div class="md:col-span-7 md:row-start-1 k-anim zoom-in {i % 2 === 0 ? 'md:col-start-1' : 'md:col-start-6'} relative z-0">
+								<a href={proj.liveUrl || proj.repoUrl || '#'} target="_blank" aria-label="View Project" class="block w-full overflow-hidden border border-[#222]/20 p-2 shadow-sm transition-all duration-700 hover:shadow-2xl hover:-translate-y-2 bg-white/50">
+									{#if proj.imageUrl}
+										<div class="overflow-hidden aspect-video w-full">
+											<img src={proj.imageUrl} alt={proj.title} class="h-full w-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" />
+										</div>
+									{:else}
+										<div class="flex aspect-video w-full items-center justify-center bg-[#222] text-[#f3edde] font-mono text-sm tracking-widest uppercase transition-transform duration-700 group-hover:scale-105">
+											No Image
+										</div>
+									{/if}
+								</a>
+							</div>
+
+							<!-- Text Overlapping Block -->
+							<div class="md:col-span-6 md:row-start-1 k-anim {i % 2 === 0 ? 'slide-left md:col-start-7 md:-ml-16' : 'slide-right md:col-start-1 md:-mr-16'} relative z-10 md:mt-24 bg-[#f3edde]/95 p-8 border border-[#222]/20 shadow-[8px_8px_0_rgba(34,34,34,0.08)] hover:shadow-[12px_12px_0_#222] hover:-translate-x-1 hover:-translate-y-1 transition-all duration-500 backdrop-blur-md">
+
+								
+								<div class="font-mono text-[10px] font-bold tracking-[0.2em] text-[#555] uppercase mb-4">
+									Project {i + 1}
+								</div>
+								<h3 class="font-mono text-3xl font-black uppercase tracking-tighter sm:text-4xl text-[#222] transition-colors duration-300">
+									{proj.title}
+								</h3>
+								<p class="mt-6 text-sm leading-relaxed text-[#444] font-sans">
+									{proj.description}
+								</p>
+								
+								<div class="mt-8 flex flex-wrap gap-2">
+									{#each parseTags(proj.tags) as tag, t (tag)}
+										<span class="k-anim fade-up border border-[#222]/20 bg-white/55 px-3 py-1 font-mono text-[9px] font-bold tracking-[0.2em] uppercase transition-all hover:bg-[#222] hover:text-[#f3edde] hover:-translate-y-0.5 hover:shadow-[2px_2px_0_#222]" style="transition-delay: {(t*50)}ms">
+											{tag}
+										</span>
+									{/each}
+								</div>
+
+								<div class="mt-8 flex gap-5 border-t border-[#222]/10 pt-6">
+									{#if proj.liveUrl}
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+										<a href={proj.liveUrl} target="_blank" class="group/btn flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-[0.15em] text-[#222] hover:text-[#666] transition-colors">
+											<span>Live Demo</span>
+											<svg class="h-3.5 w-3.5 transform transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+											</svg>
+										</a>
+									{/if}
+									{#if proj.repoUrl}
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+										<a href={proj.repoUrl} target="_blank" class="group/btn flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-[0.15em] text-[#222]/70 hover:text-[#222] transition-colors">
+											<span>Repository</span>
+											<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+												<path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.579.688.481C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/>
+											</svg>
+										</a>
+									{/if}
+								</div>
+							</div>
+
+						</div>
 					{/each}
 				</div>
-			{/if}
-		</Section>
 
-		<!-- Credentials Section -->
-		{#if items.certificates.length > 0}
-			<Section id="credentials" title={m.public_credentials()}>
-				<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-					{#each items.certificates as cert (cert.id)}
-						{@const url = cert.imageUrl || cert.credentialUrl || ''}
-						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
-						{@const isDirectImage = url.match(/\.(jpg|jpeg|png|webp|gif|svg)(\?.*)?$/i)}
-						{@const previewUrl = udemyMatch
-							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
-							: isDirectImage
-								? url
-								: `https://api.microlink.io?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url`}
-
-						<div
-							class="group flex cursor-pointer flex-col gap-4 rounded-3xl border border-neutral-200/60 bg-brand-surface p-6 transition-all hover:border-neutral-300 hover:bg-brand-surface-light"
+				<!-- SHOW MORE CONTROLS -->
+				{#if projectsLimit < items.projects.length}
+					<div class="mt-32 flex justify-center items-center gap-8 k-anim fade-up border-t border-[#222]/10 pt-10">
+						<button 
+							onclick={() => projectsLimit += 6}
+							class="group relative overflow-hidden border border-[#222]/20 bg-white/50 px-8 py-3 font-mono text-xs font-bold uppercase tracking-[0.2em] transition-all cursor-pointer"
 						>
-							{#if cert.credentialUrl}
-								<a
-									href={cert.credentialUrl}
-									target="_blank"
-									rel="noopener noreferrer external"
-									class="relative aspect-16/10 w-full overflow-hidden rounded-2xl bg-neutral-100"
-								>
-									<img
-										src={previewUrl}
-										alt={cert.name}
-										class="h-full w-full object-cover opacity-90 transition-all duration-700 group-hover:opacity-100"
-									/>
-								</a>
-							{/if}
+							<span class="relative z-10 transition-colors group-hover:text-[#f3edde]">Show More</span>
+							<div class="absolute inset-0 z-0 h-full w-full origin-bottom scale-y-0 bg-[#222] transition-transform duration-300 ease-out group-hover:scale-y-100"></div>
+						</button>
+					</div>
+				{/if}
+			</section>
+		{/if}
 
-							<div class="mt-2 flex flex-col gap-1">
-								<h3 class="line-clamp-1 text-[16px] font-medium">{cert.name}</h3>
-								<span class="text-[13px] text-neutral-500 group-hover:text-neutral-600"
-									>{cert.issuer}</span
-								>
+		<!-- SKILLS / TOOLBOX SECTION -->
+		{#if items.skills.length > 0}
+			<section id="skills" class="mt-40">
+				<div class="mb-24 text-center">
+					<h2 class="k-anim mask-up font-mono text-4xl font-black uppercase tracking-tighter sm:text-6xl">
+						Toolbox
+					</h2>
+					<div class="k-anim stretch-out delay-2 mx-auto mt-6 h-px w-24 bg-[#222]"></div>
+				</div>
+
+				<!-- Category Filter Tabs -->
+				<div class="k-anim fade-up mb-12 flex flex-wrap justify-center gap-3">
+					{#each categories as cat (cat)}
+						<button
+							onclick={() => activeCategory = cat}
+							class="border px-6 py-2 font-mono text-xs font-bold uppercase tracking-[0.2em] transition-all active:scale-95 cursor-pointer {activeCategory === cat ? 'bg-[#222] text-[#f3edde] border-[#222] shadow-[4px_4px_0_#222]' : 'border-[#222]/25 bg-white/30 text-[#555] hover:border-[#222] hover:bg-[#222]/5 hover:text-[#222]'}"
+						>
+							{cat}
+						</button>
+					{/each}
+				</div>
+
+				<!-- Skills Grid -->
+				<div class="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4">
+					{#each filteredSkills as skill, i (skill.id || skill.name)}
+						<div
+							class="k-anim fade-up group relative flex h-32 flex-col justify-between border border-[#222]/15 bg-white/40 p-5 shadow-[4px_4px_0_rgba(34,34,34,0.04)] hover:shadow-[6px_6px_0_#222] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:border-[#222] transition-all duration-300"
+							style="transition-delay: {(i%4)*75}ms"
+						>
+							<div class="flex items-start justify-between">
+								<span class="font-mono text-[10px] font-bold tracking-widest text-[#222]/40">
+									[{String(i + 1).padStart(2, '0')}]
+								</span>
+								<span class="rounded bg-[#222]/5 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider text-[#555] uppercase">
+									{skill.category || 'Skill'}
+								</span>
+							</div>
+
+							<div>
+								<h3 class="font-mono text-base font-black uppercase tracking-tight text-[#222] group-hover:text-[#666] transition-colors duration-300">
+									{skill.name}
+								</h3>
+
 							</div>
 						</div>
 					{/each}
 				</div>
-			</Section>
+			</section>
 		{/if}
 
-		<!-- Skills Section -->
-		{#if items.skills.length > 0}
-			<Section id="skills" title={m.public_stack()}>
-				<div class="flex flex-wrap gap-3">
-					{#each items.skills as skill (skill.id)}
-						<div
-							class="flex items-center rounded-full border border-neutral-200/60 bg-brand-surface px-4 py-2 transition-colors hover:border-neutral-300 hover:bg-black/5"
-						>
-							<span class="text-[13px] font-medium text-brand-text">
-								{skill.name}
-							</span>
-							{#if skill.category}
-								<span class="ml-3 text-[11px] tracking-widest text-neutral-500 uppercase">
-									{skill.category}
-								</span>
-							{/if}
+		<!-- CERTIFICATES SECTION -->
+		{#if items.certificates.length > 0}
+			<section id="certificates" class="mt-40">
+				<div class="mb-32 text-center">
+					<h2 class="k-anim mask-up font-mono text-4xl font-black uppercase tracking-tighter sm:text-6xl">
+						Credentials
+					</h2>
+					<div class="k-anim stretch-out delay-2 mx-auto mt-6 h-px w-24 bg-[#222]"></div>
+				</div>
+
+				<div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+					{#each items.certificates as cert, i (cert.id || i)}
+						{@const url = cert.imageUrl || cert.credentialUrl || ''}
+						{@const udemyMatch = url.match(/udemy\.com\/certificate\/(UC-[\w-]+)/)}
+						{@const previewUrl = udemyMatch
+							? `https://udemy-certificate.s3.amazonaws.com/image/${udemyMatch[1]}.jpg`
+							: url}
+
+						<div class="k-anim flip-up group flex flex-col border border-[#222]/15 bg-white/40 p-4 shadow-[4px_4px_0_rgba(34,34,34,0.04)] hover:shadow-[8px_8px_0_#222] hover:-translate-x-1 hover:-translate-y-1 hover:border-[#222] transition-all duration-300" style="transition-delay: {(i%3)*100}ms">
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+							<a href={cert.credentialUrl || '#'} target="_blank" aria-label="View Credential" class="block overflow-hidden bg-white/50 border border-[#222]/10">
+								{#if previewUrl}
+									<div class="overflow-hidden aspect-4/3 w-full">
+										<img src={previewUrl} alt={cert.name} class="h-full w-full object-cover grayscale transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-105" />
+									</div>
+								{:else}
+									<div class="flex aspect-4/3 w-full items-center justify-center bg-[#222] text-[#f3edde] font-mono text-[10px] tracking-widest uppercase">
+										No Document
+									</div>
+								{/if}
+							</a>
+							<div class="mt-5 flex flex-col justify-between grow">
+								<h4 class="font-mono text-sm font-black uppercase leading-snug tracking-tight text-[#222] group-hover:text-[#666] transition-colors line-clamp-2">
+									{cert.name}
+								</h4>
+								<div class="mt-6 flex items-center justify-between border-t border-[#222]/10 pt-4 font-mono text-[9px] font-bold tracking-[0.2em] text-[#555] uppercase">
+									<span>{cert.issuer}</span>
+								</div>
+							</div>
 						</div>
 					{/each}
 				</div>
-			</Section>
+			</section>
 		{/if}
 
-		<!-- Footer -->
-		<footer class="mt-40 flex flex-col items-center justify-between gap-6 py-8 sm:flex-row">
-			<p class="text-[13px] text-neutral-500">© {new Date().getFullYear()} — {profile.name}</p>
-
-			<a
-				href={resolve('/dashboard')}
-				class="group flex items-center gap-2 text-[13px] text-neutral-500 transition-colors hover:text-brand-text"
-			>
-				<span>{m.public_admin()}</span>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="14"
-					height="14"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="1.5"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					class="transition-transform group-hover:translate-x-1"
-					><path d="M5 12h14M12 5l7 7-7 7" /></svg
-				>
+		<!-- FOOTER -->
+		<footer class="mt-40 flex flex-col items-center justify-between gap-6 border-t border-[#222]/20 pt-10 sm:flex-row">
+			<span class="font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-[#555]">
+				© {new Date().getFullYear()} {profile.name}
+			</span>
+			<a href={resolve('/dashboard')} class="k-anim slide-left font-mono text-[10px] font-bold tracking-[0.2em] uppercase text-[#222] hover:underline hover:tracking-[0.3em] transition-all">
+				Admin Dashboard
 			</a>
 		</footer>
 	</main>
 </div>
+
+<style>
+	/* Custom Fonts & Base */
+	.kalso-theme {
+		font-family: 'Inconsolata', monospace;
+	}
+	.font-sans {
+		font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	}
+
+	/* Animations Engine */
+	.k-anim {
+		will-change: transform, opacity, filter;
+	}
+
+	/* 1. Mask Up (For Headers) */
+	.mask-up {
+		clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+		transform: translateY(40px);
+		transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.mask-up.is-visible) {
+		clip-path: polygon(0 -20%, 100% -20%, 100% 120%, 0 120%);
+		transform: translateY(0);
+	}
+
+	/* 2. Fade Up (For Cards/Sections) */
+	.fade-up {
+		opacity: 0;
+		transform: translateY(40px);
+		transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.fade-up.is-visible) {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+
+
+	/* 4. Scale Up (For Avatar) */
+	.scale-up {
+		opacity: 0;
+		transform: scale(0.8) translateY(20px);
+		transition: opacity 1s ease-out, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.scale-up.is-visible) {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+
+	/* 5. Zoom In (For Project Pictures) */
+	.zoom-in {
+		opacity: 0;
+		transform: scale(0.95);
+		transition: opacity 1s ease-out, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.zoom-in.is-visible) {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	/* 6. Slide Right (For Left-side items) */
+	.slide-right {
+		opacity: 0;
+		transform: translateX(-40px);
+		transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.slide-right.is-visible) {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	/* 7. Slide Left (For Right-side items) */
+	.slide-left {
+		opacity: 0;
+		transform: translateX(40px);
+		transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.slide-left.is-visible) {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+
+	/* 9. Stretch Out (For dividers) */
+	.stretch-out {
+		transform: scaleX(0);
+		transform-origin: center;
+		transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.stretch-out.is-visible) {
+		transform: scaleX(1);
+	}
+
+
+
+	/* 11. Flip Up (For Certificates) */
+	.flip-up {
+		opacity: 0;
+		transform: perspective(1000px) rotateX(-20deg) translateY(30px);
+		transform-origin: bottom;
+		transition: opacity 0.8s ease-out, transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.flip-up.is-visible) {
+		opacity: 1;
+		transform: perspective(1000px) rotateX(0) translateY(0);
+	}
+
+	/* 12. Slide Up */
+	.slide-up {
+		opacity: 0;
+		transform: translateY(20px);
+		transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	:global(.slide-up.is-visible) {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Utility Delays */
+	:global(.delay-1) { transition-delay: 100ms; }
+	:global(.delay-2) { transition-delay: 200ms; }
+	:global(.delay-3) { transition-delay: 300ms; }
+	:global(.delay-4) { transition-delay: 400ms; }
+	:global(.delay-5) { transition-delay: 500ms; }
+</style>

@@ -23,6 +23,10 @@
 	.section-container {
 		@apply mx-auto max-w-2xl px-6;
 	}
+
+	.app-shell {
+		display: contents;
+	}
 }
 
 /* Custom smooth easing */

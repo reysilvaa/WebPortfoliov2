@@ -65,7 +65,7 @@
 			<nav class="space-y-1 px-4">
 				{#each links as link (link.href)}
 					<a
-						href={resolve(link.href)}
+						href={resolve(link.href as any)}
 						class="block rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all
 							{isActive(link.href)
 							? 'bg-neutral-200/50 text-brand-text'
@@ -102,7 +102,7 @@
 		<nav class="flex shrink-0 overflow-x-auto border-b border-neutral-200 bg-brand-surface md:hidden">
 			{#each links as link (link.href)}
 				<a
-					href={resolve(link.href)}
+					href={resolve(link.href as any)}
 					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(
 						link.href
 					)
