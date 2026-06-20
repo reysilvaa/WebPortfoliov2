@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { parseTags } from '$lib/utils/portfolio';
 
 	type Project = {
@@ -15,6 +16,17 @@
 
 	let projectsLimit = $state(6);
 	const displayedProjects = $derived(items.projects.slice(0, projectsLimit));
+
+	$effect(() => {
+		void displayedProjects;
+		tick().then(() => {
+			document.querySelectorAll('#projects .k-anim:not(.is-visible)').forEach((el) => {
+				if (el.getBoundingClientRect().top < window.innerHeight) {
+					el.classList.add('is-visible');
+				}
+			});
+		});
+	});
 </script>
 
 {#if items.projects.length > 0}

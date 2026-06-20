@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 
 	let {
 		items,
@@ -13,118 +12,45 @@
 		};
 		activeSection: string;
 	} = $props();
+
+	const navItems = $derived(
+		[
+			{ id: 'hero', label: 'Intro', show: true },
+			{ id: 'work', label: 'Experience', show: items.experiences.length > 0 },
+			{ id: 'projects', label: 'Projects', show: items.projects.length > 0 },
+			{ id: 'skills', label: 'Toolbox', show: items.skills.length > 0 },
+			{ id: 'certificates', label: 'Credentials', show: items.certificates.length > 0 }
+		].filter((n) => n.show)
+	);
 </script>
 
 <nav
-	class="pointer-events-auto fixed top-1/2 right-6 z-40 hidden -translate-y-1/2 flex-col items-center gap-3 xl:flex"
+	aria-label="Portfolio sections"
+	class="pointer-events-auto fixed top-1/2 right-8 z-40 hidden -translate-y-1/2 flex-col items-end xl:flex"
 >
-	<span class="mb-4 font-mono text-[10px] font-bold tracking-[0.2em] text-[#222]/40 uppercase"
-		>Start</span
-	>
-
-	<a
-		href="{resolve('/')}#hero"
-		aria-label="Go to Hero"
-		class="group relative flex h-10 w-8 items-center justify-center"
-	>
-		<span
-			class="pointer-events-none absolute right-8 z-50 mr-2 translate-x-2 border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 font-mono text-[9px] font-black tracking-widest whitespace-nowrap text-[#222] uppercase opacity-0 shadow-[3px_3px_0_#222] transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-		>
-			Intro
-		</span>
-		<div
-			class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection ===
-			'hero'
-				? 'scale-110 bg-[#222]'
-				: 'bg-[#f3edde] opacity-50 group-hover:scale-110 group-hover:opacity-100'}"
-		></div>
-	</a>
-
-	{#if items.experiences.length > 0}
-		<div class="h-6 border-l border-dashed border-[#222]/25"></div>
+	{#each navItems as item (item.id)}
+		{@const isActive = activeSection === item.id}
 		<a
-			href="{resolve('/')}#work"
-			aria-label="Go to Experience"
-			class="group relative flex h-10 w-8 items-center justify-center"
+			href={`#${item.id}`}
+			aria-label="Go to {item.label}"
+			aria-current={isActive ? 'true' : undefined}
+			class="group flex items-center gap-3 py-5"
 		>
+			<!-- Label -->
 			<span
-				class="pointer-events-none absolute right-8 z-50 mr-2 translate-x-2 border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 font-mono text-[9px] font-black tracking-widest whitespace-nowrap text-[#222] uppercase opacity-0 shadow-[3px_3px_0_#222] transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+				class="font-mono text-[10px] font-black tracking-[0.2em] uppercase transition-all duration-300 {isActive
+					? 'text-[#222] opacity-100'
+					: 'text-[#222] opacity-0 group-hover:opacity-50'}"
 			>
-				Experience
+				{item.label}
 			</span>
-			<div
-				class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection ===
-				'work'
-					? 'scale-110 bg-[#222]'
-					: 'bg-[#f3edde] opacity-50 group-hover:scale-110 group-hover:opacity-100'}"
-			></div>
-		</a>
-	{/if}
 
-	{#if items.projects.length > 0}
-		<div class="h-6 border-l border-dashed border-[#222]/25"></div>
-		<a
-			href="{resolve('/')}#projects"
-			aria-label="Go to Projects"
-			class="group relative flex h-10 w-8 items-center justify-center"
-		>
+			<!-- Line indicator -->
 			<span
-				class="pointer-events-none absolute right-8 z-50 mr-2 translate-x-2 border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 font-mono text-[9px] font-black tracking-widest whitespace-nowrap text-[#222] uppercase opacity-0 shadow-[3px_3px_0_#222] transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-			>
-				Projects
-			</span>
-			<div
-				class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection ===
-				'projects'
-					? 'scale-110 bg-[#222]'
-					: 'bg-[#f3edde] opacity-50 group-hover:scale-110 group-hover:opacity-100'}"
-			></div>
+				class="block h-0.5 origin-right transition-all duration-300 {isActive
+					? 'w-8 bg-[#222]'
+					: 'w-3 bg-[#222]/25 group-hover:w-5 group-hover:bg-[#222]/60'}"
+			></span>
 		</a>
-	{/if}
-
-	{#if items.skills.length > 0}
-		<div class="h-6 border-l border-dashed border-[#222]/25"></div>
-		<a
-			href="{resolve('/')}#skills"
-			aria-label="Go to Skills"
-			class="group relative flex h-10 w-8 items-center justify-center"
-		>
-			<span
-				class="pointer-events-none absolute right-8 z-50 mr-2 translate-x-2 border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 font-mono text-[9px] font-black tracking-widest whitespace-nowrap text-[#222] uppercase opacity-0 shadow-[3px_3px_0_#222] transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-			>
-				Toolbox
-			</span>
-			<div
-				class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection ===
-				'skills'
-					? 'scale-110 bg-[#222]'
-					: 'bg-[#f3edde] opacity-50 group-hover:scale-110 group-hover:opacity-100'}"
-			></div>
-		</a>
-	{/if}
-
-	{#if items.certificates.length > 0}
-		<div class="h-6 border-l border-dashed border-[#222]/25"></div>
-		<a
-			href="{resolve('/')}#certificates"
-			aria-label="Go to Credentials"
-			class="group relative flex h-10 w-8 items-center justify-center"
-		>
-			<span
-				class="pointer-events-none absolute right-8 z-50 mr-2 translate-x-2 border border-[#222]/20 bg-[#f3edde]/95 px-2.5 py-1 font-mono text-[9px] font-black tracking-widest whitespace-nowrap text-[#222] uppercase opacity-0 shadow-[3px_3px_0_#222] transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
-			>
-				Credentials
-			</span>
-			<div
-				class="h-3 w-3 rotate-45 border-2 border-[#222] transition-all duration-300 {activeSection ===
-				'certificates'
-					? 'scale-110 bg-[#222]'
-					: 'bg-[#f3edde] opacity-50 group-hover:scale-110 group-hover:opacity-100'}"
-			></div>
-		</a>
-	{/if}
-
-	<span class="mt-4 font-mono text-[10px] font-bold tracking-[0.2em] text-[#222]/40 uppercase"
-		>Now</span
-	>
+	{/each}
 </nav>

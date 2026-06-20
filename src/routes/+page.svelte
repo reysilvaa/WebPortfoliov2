@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
 	import './portfolio.css';
@@ -59,8 +60,10 @@
 			{ rootMargin: '-20% 0px -20% 0px', threshold: 0.1 }
 		);
 
-		document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
-			observer.observe(el);
+		tick().then(() => {
+			document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
+				observer.observe(el);
+			});
 		});
 
 		return () => observer.disconnect();
