@@ -49,11 +49,9 @@ export const GET: RequestHandler = async () => {
 			.filter(Boolean);
 	};
 
-	const contactInfo = [
-		safeProfile.email,
-		safeProfile.linkedin,
-		safeProfile.github
-	].filter(Boolean).join('  |  ');
+	const contactInfo = [safeProfile.email, safeProfile.linkedin, safeProfile.github]
+		.filter(Boolean)
+		.join('  |  ');
 
 	const docDefinition: TDocumentDefinitions = {
 		content: [
@@ -124,28 +122,38 @@ export const GET: RequestHandler = async () => {
 		}
 	};
 
-	const docContent = docDefinition.content as any[];
+	const docContent = docDefinition.content as unknown as Record<string, unknown>[];
 
 	const addDivider = () => {
-		docContent.push({ canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }], margin: [0, 0, 0, 10] });
+		docContent.push({
+			canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }],
+			margin: [0, 0, 0, 10]
+		});
 	};
 
 	// Add Experience
 	if (experiences && experiences.length > 0) {
 		docContent.push({ text: 'EXPERIENCE', style: 'sectionHeader' });
 		addDivider();
-		
+
 		experiences.forEach((exp) => {
 			docContent.push({
 				columns: [
 					{ text: exp.role, style: 'jobTitle' },
-					{ text: `${exp.startDate} - ${exp.endDate || 'Present'}`, alignment: 'right', style: 'dateText' }
+					{
+						text: `${exp.startDate} - ${exp.endDate || 'Present'}`,
+						alignment: 'right',
+						style: 'dateText'
+					}
 				]
 			});
 			docContent.push({ text: exp.company, style: 'companyName' });
 
 			if (exp.description) {
-				const bulletPoints = exp.description.split('\n').map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
+				const bulletPoints = exp.description
+					.split('\n')
+					.map((s) => s.replace(/^[-*•]\s*/, '').trim())
+					.filter(Boolean);
 				docContent.push({
 					ul: bulletPoints,
 					margin: [0, 2, 0, 10],
@@ -169,7 +177,10 @@ export const GET: RequestHandler = async () => {
 				{ text: tags ? `Technologies: ${tags}` : '', style: 'projectTags' }
 			);
 			if (proj.description) {
-				const bulletPoints = proj.description.split('\n').map(s => s.replace(/^[-*•]\s*/, '').trim()).filter(Boolean);
+				const bulletPoints = proj.description
+					.split('\n')
+					.map((s) => s.replace(/^[-*•]\s*/, '').trim())
+					.filter(Boolean);
 				docContent.push({
 					ul: bulletPoints,
 					margin: [0, 2, 0, 10],
@@ -194,7 +205,7 @@ export const GET: RequestHandler = async () => {
 				.map((c) => c.trim())
 				.filter(Boolean);
 			if (cats.length === 0) cats.push('Other');
-			
+
 			cats.forEach((cat) => {
 				if (!skillsByCategory[cat]) skillsByCategory[cat] = [];
 				skillsByCategory[cat].push(skill.name);
@@ -203,10 +214,7 @@ export const GET: RequestHandler = async () => {
 
 		for (const [category, skillNames] of Object.entries(skillsByCategory)) {
 			docContent.push({
-				text: [
-					{ text: `${category}: `, bold: true },
-					{ text: skillNames.join(', ') }
-				],
+				text: [{ text: `${category}: `, bold: true }, { text: skillNames.join(', ') }],
 				margin: [0, 2, 0, 2],
 				fontSize: 10
 			});

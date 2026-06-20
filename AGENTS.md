@@ -1,3 +1,61 @@
+<!-- Generated: 2026-06-20 | Updated: 2026-06-20 -->
+
+# portofolio
+
+## Purpose
+
+A web application portfolio built with SvelteKit, integrating various services and a dashboard for content management.
+
+## Key Files
+
+| File                | Description                      |
+| ------------------- | -------------------------------- |
+| `package.json`      | Project dependencies and scripts |
+| `svelte.config.js`  | SvelteKit configuration          |
+| `vite.config.ts`    | Vite bundler configuration       |
+| `drizzle.config.ts` | Drizzle ORM configuration        |
+| `eslint.config.js`  | ESLint configuration             |
+
+## Subdirectories
+
+| Directory         | Purpose                                       |
+| ----------------- | --------------------------------------------- |
+| `src/`            | Application source code (see `src/AGENTS.md`) |
+| `static/`         | Static assets (see `static/AGENTS.md`)        |
+| `project.inlang/` | Inlang translation configuration              |
+| `drizzle/`        | Database migrations and schemas               |
+
+## For AI Agents
+
+### Working In This Directory
+
+- Check `package.json` for available scripts (`pnpm dev`, `pnpm build`, etc.)
+- This is the root of the workspace. Always respect `.prettierrc` and ESLint configurations.
+- Use `pnpm` for package management.
+
+### Testing Requirements
+
+- Check `vitest` configuration if applicable.
+
+### Common Patterns
+
+- This directory contains primarily configuration files. Keep configuration changes minimal and test them across the stack.
+
+## Dependencies
+
+### Internal
+
+- `src/` components and routes
+
+### External
+
+- SvelteKit
+- Drizzle ORM
+- TailwindCSS
+- Paraglide (i18n)
+
+<!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->
+
 ## Project Configuration
 
 - **Language**: TypeScript
