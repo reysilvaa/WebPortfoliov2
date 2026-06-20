@@ -78,9 +78,7 @@ export class PortfolioService {
 				stars: repo.stargazers_count,
 				forks: repo.forks_count,
 				language: repo.language,
-				tags: Array.from(new Set([...(repo.topics || []), repo.owner.login]))
-					.filter((t) => t !== 'reysilvaa')
-					.join(', '),
+				tags: Array.from(new Set([...(repo.topics || [])])).join(', '),
 				updatedAt: new Date(repo.updated_at)
 			};
 

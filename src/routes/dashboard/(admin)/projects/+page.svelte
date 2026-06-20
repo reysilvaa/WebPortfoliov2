@@ -167,12 +167,8 @@
 			</div>
 
 			{#if selectedIds.length > 0}
-				<div
-					class="flex items-center gap-4 rounded-lg bg-blue-50 px-6 py-3"
-				>
-					<span class="text-[14px] font-medium text-blue-700"
-						>{selectedIds.length} SELECTED</span
-					>
+				<div class="flex items-center gap-4 rounded-lg bg-blue-50 px-6 py-3">
+					<span class="text-[14px] font-medium text-blue-700">{selectedIds.length} SELECTED</span>
 
 					<div class="flex items-center gap-2">
 						<form
@@ -458,12 +454,8 @@
 			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
-					Edit Project
-				</h2>
-				<p class="text-[14px] text-neutral-500">
-					Update project information.
-				</p>
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">Edit Project</h2>
+				<p class="text-[14px] text-neutral-500">Update project information.</p>
 			</div>
 
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">

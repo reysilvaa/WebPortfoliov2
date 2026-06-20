@@ -12,11 +12,11 @@
 	let { children, data } = $props();
 
 	const links = [
-		{ href: '/dashboard', label: m.dashboard_settings_title() },
-		{ href: '/dashboard/projects', label: m.dashboard_projects_title() },
-		{ href: '/dashboard/experiences', label: 'Experiences' },
-		{ href: '/dashboard/certificates', label: m.dashboard_credentials_title() },
-		{ href: '/dashboard/skills', label: m.dashboard_skills_title() }
+		{ href: '/dashboard' as const, label: m.dashboard_settings_title() },
+		{ href: '/dashboard/projects' as const, label: m.dashboard_projects_title() },
+		{ href: '/dashboard/experiences' as const, label: 'Experiences' },
+		{ href: '/dashboard/certificates' as const, label: m.dashboard_credentials_title() },
+		{ href: '/dashboard/skills' as const, label: m.dashboard_skills_title() }
 	];
 
 	function isActive(href: string) {
@@ -65,7 +65,7 @@
 			<nav class="space-y-1 px-4">
 				{#each links as link (link.href)}
 					<a
-						href={resolve(link.href as any)}
+						href={resolve(link.href)}
 						class="block rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all
 							{isActive(link.href)
 							? 'bg-neutral-200/50 text-brand-text'
@@ -77,7 +77,13 @@
 			</nav>
 		</div>
 		<div class="border-t border-neutral-200 bg-brand-surface p-4">
-			<Button variant="ghost" size="md" class="w-full text-red-600 hover:bg-red-50 hover:text-red-700" onclick={logout} isLoading={logoutLoading}>
+			<Button
+				variant="ghost"
+				size="md"
+				class="w-full text-red-600 hover:bg-red-50 hover:text-red-700"
+				onclick={logout}
+				isLoading={logoutLoading}
+			>
 				{logoutLoading ? 'Signing Out...' : 'Sign Out'}
 			</Button>
 		</div>
@@ -89,23 +95,26 @@
 		<header
 			class="flex h-16 shrink-0 items-center justify-between border-b border-neutral-200 bg-brand-surface px-4 md:hidden"
 		>
-			<a
-				href={resolve('/')}
-				class="text-[15px] font-semibold tracking-tight text-brand-text"
-			>
+			<a href={resolve('/')} class="text-[15px] font-semibold tracking-tight text-brand-text">
 				{data.profile?.name || 'REY SILVA'}
 			</a>
-			<Button variant="ghost" size="sm" class="text-red-600" onclick={logout} isLoading={logoutLoading}>Out</Button>
+			<Button
+				variant="ghost"
+				size="sm"
+				class="text-red-600"
+				onclick={logout}
+				isLoading={logoutLoading}>Out</Button
+			>
 		</header>
 
 		<!-- Mobile Nav (Temp Solution) -->
-		<nav class="flex shrink-0 overflow-x-auto border-b border-neutral-200 bg-brand-surface md:hidden">
+		<nav
+			class="flex shrink-0 overflow-x-auto border-b border-neutral-200 bg-brand-surface md:hidden"
+		>
 			{#each links as link (link.href)}
 				<a
-					href={resolve(link.href as any)}
-					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(
-						link.href
-					)
+					href={resolve(link.href)}
+					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(link.href)
 						? 'border-b-2 border-brand-text text-brand-text'
 						: 'text-neutral-600'}"
 				>

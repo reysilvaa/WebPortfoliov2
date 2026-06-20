@@ -80,8 +80,7 @@
 	<Card title={m.dashboard_profile_section()} description={m.dashboard_settings_description()}>
 		{#if profileMessage.text}
 			<div
-				class="mb-8 rounded-lg p-4 text-[13px] font-medium {profileMessage.type ===
-				'success'
+				class="mb-8 rounded-lg p-4 text-[13px] font-medium {profileMessage.type === 'success'
 					? 'bg-green-50 text-green-700'
 					: 'bg-red-50 text-red-700'}"
 			>

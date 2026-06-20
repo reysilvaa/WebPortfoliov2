@@ -31,33 +31,22 @@
 <div
 	class="relative flex min-h-screen items-center justify-center bg-brand-surface p-6 font-sans text-brand-text selection:bg-brand-text selection:text-brand-bg"
 >
-	<main class="w-full max-w-[400px]">
-		<div
-			class="space-y-8 rounded-2xl border border-neutral-200 bg-white p-10 shadow-sm"
-		>
+	<main class="w-full max-w-100">
+		<div class="space-y-8 rounded-2xl border border-neutral-200 bg-white p-10 shadow-sm">
 			<div class="space-y-2 pb-4">
 				<h1 class="text-[28px] leading-none font-semibold tracking-tight text-brand-text">
 					{m.public_admin()}
 				</h1>
-				<p class="text-[14px] text-neutral-500">
-					Please authenticate to continue.
-				</p>
+				<p class="text-[14px] text-neutral-500">Please authenticate to continue.</p>
 			</div>
 
 			{#if error}
-				<div
-					class="rounded-lg bg-red-50 p-4 text-[13px] font-medium text-red-700"
-				>
+				<div class="rounded-lg bg-red-50 p-4 text-[13px] font-medium text-red-700">
 					{error}
 				</div>
 			{/if}
 
-			<Button
-				onclick={loginWithGithub}
-				isLoading={loading}
-				class="h-12 w-full gap-3"
-				size="lg"
-			>
+			<Button onclick={loginWithGithub} isLoading={loading} class="h-12 w-full gap-3" size="lg">
 				{#if !loading}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

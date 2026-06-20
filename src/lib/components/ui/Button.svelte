@@ -25,10 +25,8 @@
 			'bg-brand-text text-brand-bg hover:bg-neutral-800 border border-transparent rounded-lg',
 		secondary:
 			'bg-brand-surface-light text-brand-text hover:bg-neutral-200 border border-transparent rounded-lg',
-		ghost:
-			'text-neutral-600 hover:bg-brand-surface-light hover:text-brand-text rounded-lg',
-		danger:
-			'bg-red-50 text-red-600 hover:bg-red-100 border border-transparent rounded-lg',
+		ghost: 'text-neutral-600 hover:bg-brand-surface-light hover:text-brand-text rounded-lg',
+		danger: 'bg-red-50 text-red-600 hover:bg-red-100 border border-transparent rounded-lg',
 		outline:
 			'border border-neutral-200 bg-transparent text-brand-text hover:bg-brand-surface-light rounded-lg'
 	};

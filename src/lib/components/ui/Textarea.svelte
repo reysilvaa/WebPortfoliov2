@@ -17,8 +17,7 @@
 
 	const baseClass =
 		'h-32 w-full rounded-lg border border-neutral-200 bg-white px-4 py-3 text-[14px] transition-all outline-none focus:border-brand-text focus:ring-1 focus:ring-brand-text placeholder:text-neutral-400';
-	const errorClass =
-		'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50';
+	const errorClass = 'border-red-500 focus:border-red-500 focus:ring-red-500 bg-red-50';
 </script>
 
 <div class="w-full space-y-2">

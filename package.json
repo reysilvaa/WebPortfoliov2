@@ -59,6 +59,7 @@
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.2.1",
 		"@types/node": "^24.12.0",
+		"@types/pdfmake": "^0.3.3",
 		"@vitest/coverage-v8": "4.0.18",
 		"better-auth": "~1.4.21",
 		"dotenv": "^17.4.2",
@@ -88,6 +89,7 @@
 		"svelte"
 	],
 	"dependencies": {
-		"@vitest/browser-playwright": "^4.0.18"
+		"@vitest/browser-playwright": "^4.0.18",
+		"pdfmake": "^0.3.11"
 	}
 }

@@ -96,14 +96,10 @@
 
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.skills as skill (skill.id)}
-				<div
-					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm"
-				>
+				<div class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
 					<div class="mb-4 flex flex-1 items-start justify-between space-y-2">
 						<div>
-							<h4
-								class="text-[16px] font-medium text-brand-text"
-							>
+							<h4 class="text-[16px] font-medium text-brand-text">
 								{skill.name}
 							</h4>
 							<p class="text-[13px] text-neutral-500">
@@ -190,9 +186,7 @@
 				<div
 					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-medium text-neutral-500">
-						No skills found.
-					</p>
+					<p class="text-[14px] font-medium text-neutral-500">No skills found.</p>
 				</div>
 			{/each}
 		</div>
@@ -237,12 +231,8 @@
 			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
 		>
 			<div class="mb-6">
-				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
-					Edit Skill
-				</h2>
-				<p class="text-[14px] text-neutral-500">
-					Update technical capability details.
-				</p>
+				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">Edit Skill</h2>
+				<p class="text-[14px] text-neutral-500">Update technical capability details.</p>
 			</div>
 
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">

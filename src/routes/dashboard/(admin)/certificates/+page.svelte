@@ -129,13 +129,9 @@
 
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.certificates as cert (cert.id)}
-				<div
-					class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm"
-				>
+				<div class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
 					<div class="mb-4 flex-1 space-y-2">
-						<h4
-							class="text-[16px] font-medium text-brand-text"
-						>
+						<h4 class="text-[16px] font-medium text-brand-text">
 							{cert.name}
 						</h4>
 						<p class="text-[13px] text-neutral-500">
@@ -233,9 +229,7 @@
 				<div
 					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-medium text-neutral-500">
-						No credentials found.
-					</p>
+					<p class="text-[14px] font-medium text-neutral-500">No credentials found.</p>
 				</div>
 			{/each}
 		</div>
@@ -283,9 +277,7 @@
 				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Credential
 				</h2>
-				<p class="text-[14px] text-neutral-500">
-					Update certification details.
-				</p>
+				<p class="text-[14px] text-neutral-500">Update certification details.</p>
 			</div>
 
 			<div class="space-y-6">

@@ -204,9 +204,7 @@
 				<div
 					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
 				>
-					<p class="text-[14px] font-medium text-neutral-500">
-						No experiences found.
-					</p>
+					<p class="text-[14px] font-medium text-neutral-500">No experiences found.</p>
 				</div>
 			{/each}
 		</div>
@@ -254,9 +252,7 @@
 				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">
 					Edit Experience
 				</h2>
-				<p class="text-[14px] text-neutral-500">
-					Update experience details.
-				</p>
+				<p class="text-[14px] text-neutral-500">Update experience details.</p>
 			</div>
 
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
