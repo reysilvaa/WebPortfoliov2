@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { tick } from 'svelte';
 	type Skill = {
 		id: string;
 		name: string;
@@ -31,17 +30,6 @@
 					return cats.includes(activeCategory);
 				})
 	);
-
-	$effect(() => {
-		void filteredSkills;
-		tick().then(() => {
-			document.querySelectorAll('#skills .k-anim:not(.is-visible)').forEach((el) => {
-				if (el.getBoundingClientRect().top < window.innerHeight) {
-					el.classList.add('is-visible');
-				}
-			});
-		});
-	});
 </script>
 
 {#if items.skills.length > 0}

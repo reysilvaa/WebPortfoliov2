@@ -43,7 +43,7 @@
 		// Reference items that change the DOM structure so animations re-trigger
 		void items;
 
-		const observer = new IntersectionObserver(
+		const io = new IntersectionObserver(
 			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
@@ -60,13 +60,32 @@
 			{ rootMargin: '-20% 0px -20% 0px', threshold: 0.1 }
 		);
 
-		tick().then(() => {
-			document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
-				observer.observe(el);
+		// Observe an element if it's a k-anim or section[id]
+		const observeEl = (el: Element) => {
+			if (el.classList.contains('k-anim') || (el.tagName === 'SECTION' && el.id)) {
+				io.observe(el);
+			}
+			el.querySelectorAll('.k-anim, section[id]').forEach((child) => io.observe(child));
+		};
+
+		// Auto-observe any new elements added to the DOM (Show More, skill filter, etc.)
+		const mo = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				mutation.addedNodes.forEach((node) => {
+					if (node instanceof Element) observeEl(node);
+				});
 			});
 		});
 
-		return () => observer.disconnect();
+		tick().then(() => {
+			document.querySelectorAll('.k-anim, section[id]').forEach((el) => io.observe(el));
+			mo.observe(document.body, { childList: true, subtree: true });
+		});
+
+		return () => {
+			io.disconnect();
+			mo.disconnect();
+		};
 	});
 </script>
 
