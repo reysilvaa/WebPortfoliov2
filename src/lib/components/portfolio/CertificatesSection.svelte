@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { scrollAnimation } from '$lib/actions/scroll-animation';
+
 	type Certificate = {
 		id: string;
 		name: string;
@@ -14,11 +16,15 @@
 	<section id="certificates" class="mt-40">
 		<div class="mb-32 text-center">
 			<h2
+				use:scrollAnimation
 				class="k-anim mask-up font-mono text-4xl font-black tracking-tighter uppercase sm:text-6xl"
 			>
 				Credentials
 			</h2>
-			<div class="k-anim stretch-out mx-auto mt-6 h-px w-24 bg-[#222] delay-2"></div>
+			<div
+				use:scrollAnimation={{ rootMargin: '-5% 0px -5% 0px' }}
+				class="k-anim stretch-out mx-auto mt-6 h-px w-24 bg-[#222] delay-2"
+			></div>
 		</div>
 
 		<div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
@@ -30,6 +36,7 @@
 					: url}
 
 				<div
+					use:scrollAnimation
 					class="k-anim flip-up group flex flex-col border border-[#222]/15 bg-white/40 p-4 shadow-[4px_4px_0_rgba(34,34,34,0.04)] transition-all duration-300 hover:-translate-x-1 hover:-translate-y-1 hover:border-[#222] hover:shadow-[8px_8px_0_#222]"
 					style="transition-delay: {(i % 3) * 100}ms"
 				>

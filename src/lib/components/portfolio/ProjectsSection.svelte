@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { scrollAnimation } from '$lib/actions/scroll-animation';
 	import { parseTags } from '$lib/utils/portfolio';
 
 	type Project = {
@@ -21,11 +22,15 @@
 	<section id="projects" class="mt-40">
 		<div class="mb-32 text-right">
 			<h2
+				use:scrollAnimation
 				class="k-anim mask-up font-mono text-4xl font-black tracking-tighter uppercase sm:text-6xl"
 			>
 				Selected Works
 			</h2>
-			<div class="k-anim stretch-out relative mt-6 h-px w-full bg-[#222]/20 delay-2">
+			<div
+				use:scrollAnimation={{ rootMargin: '-5% 0px -5% 0px' }}
+				class="k-anim stretch-out relative mt-6 h-px w-full bg-[#222]/20 delay-2"
+			>
 				<div class="absolute top-0 right-0 h-full w-24 bg-[#222]"></div>
 			</div>
 		</div>
@@ -33,8 +38,9 @@
 		<div class="flex flex-col gap-40">
 			{#each displayedProjects as proj, i (proj.id || i)}
 				<div class="group relative grid grid-cols-1 items-center gap-8 md:grid-cols-12">
-					<!-- Image (Large alternating left/right) -->
+					<!-- Image -->
 					<div
+						use:scrollAnimation
 						class="k-anim zoom-in md:col-span-7 md:row-start-1 {i % 2 === 0
 							? 'md:col-start-1'
 							: 'md:col-start-6'} relative z-0"
@@ -64,8 +70,9 @@
 						</a>
 					</div>
 
-					<!-- Text Overlapping Block -->
+					<!-- Text Block -->
 					<div
+						use:scrollAnimation
 						class="k-anim md:col-span-6 md:row-start-1 {i % 2 === 0
 							? 'slide-left md:col-start-7 md:-ml-16'
 							: 'slide-right md:col-start-1 md:-mr-16'} relative z-10 border border-[#222]/20 bg-[#f3edde]/95 p-8 shadow-[8px_8px_0_rgba(34,34,34,0.08)] backdrop-blur-md transition-all duration-500 hover:-translate-x-1 hover:-translate-y-1 hover:shadow-[12px_12px_0_#222] md:mt-24"
@@ -87,6 +94,7 @@
 						<div class="mt-8 flex flex-wrap gap-2">
 							{#each parseTags(proj.tags) as tag, t (tag)}
 								<span
+									use:scrollAnimation
 									class="k-anim fade-up border border-[#222]/20 bg-white/55 px-3 py-1 font-mono text-[9px] font-bold tracking-[0.2em] uppercase transition-all hover:-translate-y-0.5 hover:bg-[#222] hover:text-[#f3edde] hover:shadow-[2px_2px_0_#222]"
 									style="transition-delay: {t * 50}ms"
 								>
@@ -98,7 +106,7 @@
 						<div class="mt-8 flex gap-5 border-t border-[#222]/10 pt-6">
 							{#if proj.liveUrl}
 								<a
-									href={proj.liveUrl || ''}
+									href={proj.liveUrl}
 									target="_blank"
 									rel="external noopener noreferrer"
 									class="group/btn flex items-center gap-2 font-mono text-[11px] font-black tracking-[0.15em] text-[#222] uppercase transition-colors hover:text-[#666]"
@@ -121,7 +129,7 @@
 							{/if}
 							{#if proj.repoUrl}
 								<a
-									href={proj.repoUrl || ''}
+									href={proj.repoUrl}
 									target="_blank"
 									rel="external noopener noreferrer"
 									class="group/btn flex items-center gap-2 font-mono text-[11px] font-black tracking-[0.15em] text-[#222]/70 uppercase transition-colors hover:text-[#222]"
@@ -142,9 +150,10 @@
 			{/each}
 		</div>
 
-		<!-- SHOW MORE CONTROLS -->
+		<!-- SHOW MORE -->
 		{#if projectsLimit < items.projects.length}
 			<div
+				use:scrollAnimation
 				class="k-anim fade-up mt-32 flex items-center justify-center gap-8 border-t border-[#222]/10 pt-10"
 			>
 				<button

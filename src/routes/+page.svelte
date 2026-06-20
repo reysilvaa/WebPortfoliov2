@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
 	import './portfolio.css';
 
+	import { createSectionObserver } from '$lib/actions/scroll-animation';
 	import TimelineNav from '$lib/components/portfolio/TimelineNav.svelte';
 	import HeroSection from '$lib/components/portfolio/HeroSection.svelte';
 	import ExperienceSection from '$lib/components/portfolio/ExperienceSection.svelte';
@@ -39,59 +40,15 @@
 	let scrollY = $state(0);
 	let activeSection = $state('hero');
 
-	$effect(() => {
-		// Reference items that change the DOM structure so animations re-trigger
-		void items;
+	const SECTION_IDS = ['hero', 'work', 'projects', 'skills', 'certificates'];
 
-		const io = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add('is-visible');
-						if (
-							entry.target.id &&
-							['hero', 'work', 'projects', 'skills', 'certificates'].includes(entry.target.id)
-						) {
-							activeSection = entry.target.id;
-						}
-					}
-				});
-			},
-			{ rootMargin: '-20% 0px -20% 0px', threshold: 0.1 }
-		);
-
-		// Observe an element if it's a k-anim or section[id]
-		const observeEl = (el: Element) => {
-			if (el.classList.contains('k-anim') || (el.tagName === 'SECTION' && el.id)) {
-				io.observe(el);
-			}
-			el.querySelectorAll('.k-anim, section[id]').forEach((child) => io.observe(child));
-		};
-
-		// Auto-observe any new elements added to the DOM (Show More, skill filter, etc.)
-		const mo = new MutationObserver((mutations) => {
-			mutations.forEach((mutation) => {
-				mutation.addedNodes.forEach((node) => {
-					if (node instanceof Element) observeEl(node);
-				});
-			});
-		});
-
-		tick().then(() => {
-			document.querySelectorAll('.k-anim, section[id]').forEach((el) => {
-				io.observe(el);
-				const rect = el.getBoundingClientRect();
-				if (rect.top < window.innerHeight && rect.bottom > 0) {
-					el.classList.add('is-visible');
-				}
-			});
-			mo.observe(document.body, { childList: true, subtree: true });
-		});
-
-		return () => {
-			io.disconnect();
-			mo.disconnect();
-		};
+	// Track active section for the side nav.
+	// Uses a lightweight dedicated observer (no animation coupling).
+	onMount(() => {
+		const { destroy } = createSectionObserver((id) => {
+			activeSection = id;
+		}, SECTION_IDS);
+		return destroy;
 	});
 </script>
 
@@ -169,7 +126,7 @@
 			</span>
 			<a
 				href={resolve('/dashboard')}
-				class="k-anim slide-left font-mono text-[10px] font-bold tracking-[0.2em] text-[#222] uppercase transition-all hover:tracking-[0.3em] hover:underline"
+				class="font-mono text-[10px] font-bold tracking-[0.2em] text-[#222] uppercase transition-all hover:tracking-[0.3em] hover:underline"
 			>
 				Admin Dashboard
 			</a>
