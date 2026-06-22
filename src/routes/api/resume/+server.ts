@@ -1,5 +1,6 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { RequestHandler } from './$types';
+import { parseTags } from '$lib/utils/portfolio';
 import pdfmake from 'pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
@@ -30,24 +31,6 @@ export const GET: RequestHandler = async () => {
 	};
 
 	const safeProfile = { ...fallbackProfile, ...(profile || {}) };
-
-	const parseTags = (tags: string | string[] | null | undefined): string[] => {
-		if (!tags) return [];
-		if (typeof tags !== 'string') return Array.isArray(tags) ? tags : [String(tags)];
-		const trimmed = tags.trim();
-		if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-			try {
-				const parsed = JSON.parse(trimmed);
-				return Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
-			} catch {
-				// fallback
-			}
-		}
-		return trimmed
-			.split(',')
-			.map((s) => s.trim())
-			.filter(Boolean);
-	};
 
 	const contactInfo = [safeProfile.email, safeProfile.linkedin, safeProfile.github]
 		.filter(Boolean)

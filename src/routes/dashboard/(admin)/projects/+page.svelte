@@ -6,6 +6,9 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import ProjectItem from '$lib/components/ProjectItem.svelte';
 	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
+	import EditProjectModal from '$lib/components/portfolio/EditProjectModal.svelte';
+	import DashboardHeader from '$lib/components/dashboard/DashboardHeader.svelte';
+	import DeleteForm from '$lib/components/dashboard/DeleteForm.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -93,18 +96,10 @@
 </script>
 
 <div class="mx-auto max-w-5xl space-y-10 pb-20">
-	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
+	<DashboardHeader
+		title={m.dashboard_projects_title()}
+		description={m.dashboard_projects_description()}
 	>
-		<div class="space-y-2">
-			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
-				{m.dashboard_projects_title()}
-			</h1>
-			<p class="text-[14px] text-neutral-500">
-				{m.dashboard_projects_description()}
-			</p>
-		</div>
-
 		<form
 			method="POST"
 			action="?/sync-github"
@@ -139,7 +134,7 @@
 				{m.projects_sync_github()}
 			</Button>
 		</form>
-	</header>
+	</DashboardHeader>
 
 	<div
 		class="sticky top-0 z-10 mb-8 border-b border-neutral-200 bg-white/95 pt-4 pb-6 backdrop-blur-md"
@@ -348,45 +343,11 @@
 							</Button>
 						</form>
 
-						<form
-							method="POST"
-							action="?/delete"
-							onsubmit={(e) =>
-								openDeleteModal(
-									e,
-									`Delete "${project.title}"?`,
-									'This project will be permanently removed from your portfolio.'
-								)}
-							use:enhance={() => {
-								return async ({ update }) => {
-									await update();
-								};
-							}}
-						>
-							<input type="hidden" name="id" value={project.id} />
-							<Button variant="danger" size="icon" type="submit" class="text-red-300">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="18"
-									height="18"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									class="lucide lucide-trash-2"
-									><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
-										d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-									/><line x1="10" x2="10" y1="11" y2="17" /><line
-										x1="14"
-										x2="14"
-										y1="11"
-										y2="17"
-									/></svg
-								>
-							</Button>
-						</form>
+						<DeleteForm
+							id={project.id}
+							modalTitle={`Delete "${project.title}"?`}
+							modalMessage="This project will be permanently removed from your portfolio."
+						/>
 					</div>
 				</div>
 			{:else}
@@ -425,99 +386,10 @@
 	isLoading={bulkActionLoading}
 />
 
-{#if editModalOpen && editingProject}
-	<div
-		role="dialog"
-		aria-modal="true"
-		class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-	>
-		<!-- Backdrop -->
-		<button
-			type="button"
-			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
-			onclick={() => (editModalOpen = false)}
-			aria-label="Close modal"
-		></button>
-
-		<!-- Modal -->
-		<form
-			method="POST"
-			action="?/update"
-			use:enhance={() => {
-				bulkActionLoading = true;
-				return async ({ update }) => {
-					await update();
-					editModalOpen = false;
-					bulkActionLoading = false;
-				};
-			}}
-			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
-		>
-			<div class="mb-6">
-				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">Edit Project</h2>
-				<p class="text-[14px] text-neutral-500">Update project information.</p>
-			</div>
-
-			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-				<input type="hidden" name="id" value={editingProject.id} />
-				<div class="col-span-full">
-					<Input bind:value={editingProject.title} name="title" label="Title" required />
-				</div>
-				<div class="col-span-full">
-					<Input
-						value={editingProject.description || ''}
-						oninput={(e) => {
-							if (editingProject) editingProject.description = (e.target as HTMLInputElement).value;
-						}}
-						name="description"
-						label="Description"
-						placeholder="Briefly describe what this project is about..."
-					/>
-				</div>
-				<Input
-					value={editingProject.language || ''}
-					oninput={(e) => {
-						if (editingProject) editingProject.language = (e.target as HTMLInputElement).value;
-					}}
-					name="language"
-					label="Primary Language"
-					placeholder="e.g., TypeScript, Python"
-				/>
-				<Input
-					value={editingProject.tags || ''}
-					oninput={(e) => {
-						if (editingProject) editingProject.tags = (e.target as HTMLInputElement).value;
-					}}
-					name="tags"
-					label="Tags"
-					placeholder="svelte, tailwind, etc. (comma separated)"
-				/>
-				<Input
-					value={editingProject.liveUrl || ''}
-					oninput={(e) => {
-						if (editingProject) editingProject.liveUrl = (e.target as HTMLInputElement).value;
-					}}
-					name="liveUrl"
-					label="Live URL"
-					placeholder="https://yourapp.com"
-				/>
-				<Input
-					value={editingProject.repoUrl || ''}
-					oninput={(e) => {
-						if (editingProject) editingProject.repoUrl = (e.target as HTMLInputElement).value;
-					}}
-					name="repoUrl"
-					label="Repository URL"
-					placeholder="https://github.com/..."
-				/>
-			</div>
-
-			<div class="mt-8 flex justify-end gap-4">
-				<Button variant="outline" type="button" onclick={() => (editModalOpen = false)}>
-					Cancel
-				</Button>
-				<Button type="submit" isLoading={bulkActionLoading}>Save Changes</Button>
-			</div>
-		</form>
-	</div>
-{/if}
+<EditProjectModal
+	bind:isOpen={editModalOpen}
+	project={editingProject}
+	onSave={() => {
+		editModalOpen = false;
+	}}
+/>

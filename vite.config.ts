@@ -41,7 +41,12 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						headless: true,
-						provider: playwright({}),
+						provider: playwright({
+							launchOptions: {
+								executablePath:
+									'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe'
+							}
+						}),
 						instances: [
 							{
 								browser: 'chromium'

@@ -5,7 +5,9 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
-	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
+	import DashboardHeader from '$lib/components/dashboard/DashboardHeader.svelte';
+	import DashboardEmptyState from '$lib/components/dashboard/DashboardEmptyState.svelte';
+	import DeleteForm from '$lib/components/dashboard/DeleteForm.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -19,42 +21,14 @@
 		category: string | null;
 	} | null>(null);
 
-	// Modal State
-	let deleteModalOpen = $state(false);
 	let editModalOpen = $state(false);
-	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
-	let deleteModalTitle = $state('');
-	let deleteModalMessage = $state('');
-
-	function openDeleteModal(e: Event, title: string, message: string) {
-		e.preventDefault();
-		pendingDeleteForm = e.target as HTMLFormElement;
-		deleteModalTitle = title;
-		deleteModalMessage = message;
-		deleteModalOpen = true;
-	}
-
-	function handleConfirm() {
-		if (pendingDeleteForm) {
-			pendingDeleteForm.requestSubmit();
-		}
-		deleteModalOpen = false;
-	}
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
-	<header
-		class="mt-2 mb-8 flex flex-col justify-between gap-6 border-b border-neutral-200 pb-6 md:flex-row md:items-end"
-	>
-		<div class="space-y-2">
-			<h1 class="text-[28px] font-medium tracking-tight text-brand-text">
-				{m.dashboard_skills_title()}
-			</h1>
-			<p class="text-[14px] text-neutral-500">
-				{m.dashboard_skills_description()}
-			</p>
-		</div>
-	</header>
+	<DashboardHeader
+		title={m.dashboard_skills_title()}
+		description={m.dashboard_skills_description()}
+	/>
 
 	<section class="space-y-10">
 		<Card title="Add Skill" description="Add a new technical capability.">
@@ -141,66 +115,19 @@
 								/></svg
 							>
 						</Button>
-						<form
-							method="POST"
-							action="?/delete"
-							onsubmit={(e) =>
-								openDeleteModal(
-									e,
-									`Delete skill "${skill.name}"?`,
-									'This will remove this skill from your tech stack showcase.'
-								)}
-							use:enhance={() => {
-								return async ({ update }) => {
-									await update();
-								};
-							}}
-						>
-							<input type="hidden" name="id" value={skill.id} />
-							<Button variant="danger" size="icon" type="submit">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									width="16"
-									height="16"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									class="lucide lucide-trash-2"
-									><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path
-										d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-									/><line x1="10" x2="10" y1="11" y2="17" /><line
-										x1="14"
-										x2="14"
-										y1="11"
-										y2="17"
-									/></svg
-								>
-							</Button>
-						</form>
+						<DeleteForm
+							id={skill.id}
+							modalTitle={`Delete skill "${skill.name}"?`}
+							modalMessage="This will remove this skill from your tech stack showcase."
+						/>
 					</div>
 				</div>
 			{:else}
-				<div
-					class="py-16 text-center border-2 border-dashed border-neutral-200 rounded-xl bg-white sm:col-span-2 lg:col-span-3"
-				>
-					<p class="text-[14px] font-medium text-neutral-500">No skills found.</p>
-				</div>
+				<DashboardEmptyState message="No skills found." />
 			{/each}
 		</div>
 	</section>
 </div>
-
-<ConfirmModal
-	isOpen={deleteModalOpen}
-	title={deleteModalTitle}
-	message={deleteModalMessage}
-	onConfirm={handleConfirm}
-	onCancel={() => (deleteModalOpen = false)}
-	isLoading={loading}
-/>
 
 {#if editModalOpen && editingSkill}
 	<div
