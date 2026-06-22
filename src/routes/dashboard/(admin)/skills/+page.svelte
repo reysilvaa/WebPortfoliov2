@@ -5,9 +5,7 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
-	import DashboardHeader from '$lib/components/dashboard/DashboardHeader.svelte';
-	import DashboardEmptyState from '$lib/components/dashboard/DashboardEmptyState.svelte';
-	import DeleteForm from '$lib/components/dashboard/DeleteForm.svelte';
+	import { DashboardHeader, DashboardEmptyState, DeleteForm } from '$lib/components/dashboard';
 
 	let { data }: { data: PageData } = $props();
 

@@ -7,8 +7,7 @@
 	import ProjectItem from '$lib/components/ProjectItem.svelte';
 	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 	import EditProjectModal from '$lib/components/portfolio/EditProjectModal.svelte';
-	import DashboardHeader from '$lib/components/dashboard/DashboardHeader.svelte';
-	import DeleteForm from '$lib/components/dashboard/DeleteForm.svelte';
+	import { DashboardHeader, DeleteForm } from '$lib/components/dashboard';
 
 	let { data }: { data: PageData } = $props();
 
