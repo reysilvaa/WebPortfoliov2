@@ -4,7 +4,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
-	import ProjectItem from '$lib/components/ProjectItem.svelte';
+	import ProjectItem from '$lib/components/portfolio/ProjectItem.svelte';
 	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 	import EditProjectModal from '$lib/components/portfolio/EditProjectModal.svelte';
 	import { DashboardHeader, DeleteForm } from '$lib/components/dashboard';
