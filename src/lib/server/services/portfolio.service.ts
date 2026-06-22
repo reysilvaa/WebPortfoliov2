@@ -58,8 +58,8 @@ export class PortfolioService {
 		const githubRepos = await GithubService.getAllRepositories();
 		const existingProjects = await db.select().from(projects);
 		const existingGithubIds = existingProjects
-			.filter((p) => p.githubId !== null)
-			.map((p) => p.githubId as number);
+			.filter((p: typeof projects.$inferSelect) => p.githubId !== null)
+			.map((p: typeof projects.$inferSelect) => p.githubId as number);
 
 		const results = [];
 
@@ -116,7 +116,7 @@ export class PortfolioService {
 	}
 
 	static async getProfile() {
-		const result = await db.select().from(profile).where(eq(profile.id, 'main')).limit(1);
+		const result = await db.select().from(profile).where(eq(profile.id,'main')).limit(1);
 		return result[0] || null;
 	}
 
