@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 
-	let { 
-		title, 
-		description, 
-		children 
-	}: { 
+	let {
+		title,
+		description,
+		children
+	}: {
 		title: string;
 		description?: string;
 		children?: Snippet;

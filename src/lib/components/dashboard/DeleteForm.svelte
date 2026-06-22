@@ -4,12 +4,12 @@
 	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 	import type { Snippet } from 'svelte';
 
-	let { 
-		id, 
-		action = '?/delete', 
-		modalTitle, 
-		modalMessage, 
-		children 
+	let {
+		id,
+		action = '?/delete',
+		modalTitle,
+		modalMessage,
+		children
 	}: {
 		id: string;
 		action?: string;

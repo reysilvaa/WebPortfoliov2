@@ -29,10 +29,7 @@
 </script>
 
 <div class="mx-auto max-w-6xl space-y-12 pb-20">
-	<DashboardHeader
-		title="Experiences"
-		description={m.dashboard_projects_description()}
-	/>
+	<DashboardHeader title="Experiences" description={m.dashboard_projects_description()} />
 
 	<section class="space-y-10">
 		<Card title="Add Experience" description="Add a new experience.">
