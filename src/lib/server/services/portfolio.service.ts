@@ -116,7 +116,7 @@ export class PortfolioService {
 	}
 
 	static async getProfile() {
-		const result = await db.select().from(profile).where(eq(profile.id,'main')).limit(1);
+		const result = await db.select().from(profile).where(eq(profile.id, 'main')).limit(1);
 		return result[0] || null;
 	}
 
