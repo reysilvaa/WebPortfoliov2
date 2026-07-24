@@ -62,6 +62,17 @@ A web application portfolio built with SvelteKit, integrating various services a
 - **Package Manager**: pnpm
 - **Add-ons**: prettier, eslint, tailwindcss, sveltekit-adapter, drizzle, better-auth, storybook, mcp, paraglide, mdsvex
 
+### Architecture & Integration Rules
+
+- **Svelte 5 Runes & Better-Auth**:
+  - Direct reactive auth state must use Svelte 5 Runes (`$state`, `$derived`) rather than legacy Svelte 4 stores.
+  - Isolate server-side auth logic in `src/lib/server/auth.ts`.
+- **Svelte 5 & Paraglide (i18n)**:
+  - Import translated messages using Paraglide's `m.*` functions.
+  - Wrap dynamic localized strings with `$derived(...)` when reacting to state or locale changes.
+- **Deployment**:
+  - Vercel Adapter (`@sveltejs/adapter-vercel`) is enabled for deployment. Ensure server-only database code remains strictly inside `src/lib/server/`.
+
 ---
 
 You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
@@ -87,3 +98,7 @@ You MUST use this tool whenever writing Svelte code before sending it to the use
 
 Generates a Svelte Playground link with the provided code.
 After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
+
+
+## Sequential Thinking Rule
+- MUST use MCP tool sequentialthinking when facing highly complex architecture decisions, multi-step debugging, non-trivial refactoring, or intricate system design before executing changes.

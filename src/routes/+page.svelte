@@ -60,6 +60,16 @@
 		href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap"
 		rel="stylesheet"
 	/>
+	<title>{profile.name} — {profile.role}</title>
+	<meta name="description" content={profile.bio} />
+	<meta property="og:title" content="{profile.name} — {profile.role}" />
+	<meta property="og:description" content={profile.bio} />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content={profile.avatarUrl} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="{profile.name} — {profile.role}" />
+	<meta name="twitter:description" content={profile.bio} />
+	<meta name="twitter:image" content={profile.avatarUrl} />
 </svelte:head>
 
 <div
