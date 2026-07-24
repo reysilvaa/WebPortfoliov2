@@ -15,8 +15,16 @@ export default defineConfig({
 		})
 	],
 	build: {
+		target: 'esnext',
+		minify: 'esbuild',
+		cssMinify: true,
 		rollupOptions: {
-			external: ['encoding', 'bufferutil', 'utf-8-validate']
+			external: ['encoding', 'bufferutil', 'utf-8-validate'],
+			output: {
+				manualChunks: {
+					vendor: ['better-auth', 'drizzle-orm']
+				}
+			}
 		}
 	}
 });
