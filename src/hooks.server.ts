@@ -1,8 +1,32 @@
 import { auth } from '$lib/server/auth';
 import { env } from '$env/dynamic/private';
+import { dev } from '$app/environment';
 import type { Handle } from '@sveltejs/kit';
 
+// Strict CSP only in production — dev (Vite HMR/eval) breaks under it.
+// Whitelists exactly the origins the site loads: own bundle, Google Fonts,
+// GitHub avatars, and the certificate preview hosts.
+const SECURITY_HEADERS: Record<string, string> = {
+	'Content-Security-Policy': [
+		"default-src 'self'",
+		"script-src 'self'",
+		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+		"font-src 'self' https://fonts.gstatic.com",
+		"img-src 'self' data: https://github.com https://api.microlink.io https://assets.website-files.com https://udemy-certificate.s3.amazonaws.com",
+		"connect-src 'self'",
+		"object-src 'none'",
+		"base-uri 'self'",
+		"frame-ancestors 'none'",
+		"form-action 'self'"
+	].join('; '),
+	'X-Content-Type-Options': 'nosniff',
+	'X-Frame-Options': 'DENY',
+	'Referrer-Policy': 'strict-origin-when-cross-origin'
+};
+
 export const handle: Handle = async ({ event, resolve }) => {
+	event.setHeaders(dev ? { 'X-Content-Type-Options': 'nosniff' } : SECURITY_HEADERS);
+
 	// Skip session check for auth API routes to avoid overhead
 	if (event.url.pathname.startsWith('/api/auth')) {
 		return resolve(event);
@@ -11,12 +35,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const session = await auth.api.getSession({ headers: event.request.headers });
 
 	if (session) {
-		// Restriction: Only allow the owner (identified by email or name)
-		const ALLOWED_EMAILS = [env.GITHUB_EMAIL];
-		const isOwner =
-			ALLOWED_EMAILS.includes(session.user.email) || session.user.name === 'Rey Silva';
-
-		if (isOwner) {
+		if (env.GITHUB_EMAIL && session.user.email === env.GITHUB_EMAIL) {
 			event.locals.session = session.session;
 			event.locals.user = session.user;
 		}

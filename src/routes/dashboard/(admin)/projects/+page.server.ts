@@ -1,5 +1,5 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
-import { createCrudActions } from '$lib/server/actions';
+import { createCrudActions, requireOwner } from '$lib/server/actions';
 import { projects } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -15,19 +15,22 @@ export const actions: Actions = {
 			PortfolioService.updateProject(id, data),
 		remove: (id: string) => PortfolioService.deleteProject(id)
 	}),
-	'sync-github': async () => {
+	'sync-github': async (event) => {
+		requireOwner(event);
 		await PortfolioService.syncGithubProjects();
 		return { success: true };
 	},
-	'toggle-visibility': async ({ request }) => {
-		const formData = await request.formData();
+	'toggle-visibility': async (event) => {
+		requireOwner(event);
+		const formData = await event.request.formData();
 		const id = formData.get('id') as string;
 		const isHidden = formData.get('isHidden') === 'true';
 		await PortfolioService.toggleProjectVisibility(id, isHidden);
 		return { success: true };
 	},
-	'bulk-action': async ({ request }) => {
-		const formData = await request.formData();
+	'bulk-action': async (event) => {
+		requireOwner(event);
+		const formData = await event.request.formData();
 		const ids = JSON.parse(formData.get('ids') as string) as string[];
 		const action = formData.get('type') as string;
 
