@@ -32,7 +32,7 @@ interface SearchIssue {
 interface CommitItem {
 	html_url: string;
 	repository: { full_name: string };
-	commit: { message: string };
+	commit: { message: string; committer?: { date?: string } };
 }
 
 export class GithubService {
@@ -69,7 +69,6 @@ export class GithubService {
 			this.fetchRepos(GITHUB_TOKEN_ORGANIZATION, '?type=all&sort=updated&per_page=100')
 		]);
 
-		// Merge and deduplicate by ID
 		const allRepos = [...personalRepos, ...orgRepos];
 		const uniqueRepos = Array.from(new Map(allRepos.map((repo) => [repo.id, repo])).values());
 
@@ -77,13 +76,10 @@ export class GithubService {
 	}
 
 	private static async search<T>(path: string): Promise<T | null> {
-		// Anonymous on purpose: fine-grained PATs can't use the Search API, but
-		// anonymous works (10 req/min/IP) — enough for a 10-min-cached section.
 		try {
 			const response = await fetch(`https://api.github.com${path}`, {					headers: {
-						// search/commits requires this preview Accept header
-						Accept: 'application/vnd.github+json',
-						'User-Agent': 'reysilvaa-portfolio'
+					Accept: 'application/vnd.github+json',
+					'User-Agent': 'reysilvaa-portfolio'
 					}
 			});
 			if (!response.ok) {
@@ -97,22 +93,33 @@ export class GithubService {
 		}
 	}
 
-	/**
-	 * My merged PRs + recent authored commits in repos that are NOT mine or my org's.
-	 * Full history via the Search API (anonymous). "merged" only — the code
-	 * demonstrably landed in other projects.
-	 */
 	static async getExternalContributions(): Promise<{
 		contributions: { repo: string; title: string; url: string; mergedAt: string | null }[];
-		commits: { repo: string; message: string; url: string }[];
+		commits: { repo: string; message: string; url: string; date: string }[];
 	}> {
-		const ownOwners = new Set((await this.getAllRepositories()).map((r) => r.owner.login));
+		// "Mine" = my personal account + orgs I own — NOT every repo the
+		// default /user/repos call returns (its default affiliation also lists
+		// repos I merely collaborate on, which silently filtered out real
+		// external PRs like PBL_SportCenter and SIKEP).
+		const [ownRepos, orgOwnedRepos] = await Promise.all([
+			this.fetchRepos(GITHUB_TOKEN_PERSONAL, '?affiliation=owner&per_page=100'),
+			this.fetchRepos(GITHUB_TOKEN_ORGANIZATION, '?affiliation=owner&per_page=100')
+		]);
+		const ownOwners = new Set<string>([
+			GITHUB_USERNAME,
+			...ownRepos.map((r) => r.owner.login),
+			...orgOwnedRepos.map((r) => r.owner.login)
+		]);
 		const isExternal = (fullName: string) => {
 			const owner = fullName.split('/')[0];
 			return !!owner && !ownOwners.has(owner);
 		};
 
-		// Merged pull requests I authored in other repos.
+		// External repos discovered from the merged-PR sweep — reused below to
+		// fetch every commit I pushed there (repo-scoped, dodging the 1000-
+		// result cap of an author-wide commit search).
+		const externalRepos = new Set<string>();
+
 		const seen = new Set<string>();
 		const contributions: {
 			repo: string;
@@ -123,13 +130,14 @@ export class GithubService {
 		const prQuery = encodeURIComponent(`author:${GITHUB_USERNAME} is:pr is:merged`);
 		for (let page = 1; page <= 2; page++) {
 			const data = await this.search<{ items?: SearchIssue[] }>(
-				`/search/issues?q=${prQuery}&per_page=100&page=${page}`
+				`/search/issues?q=${prQuery}&sort=updated&order=desc&per_page=100&page=${page}`
 			);
 			const items = data?.items ?? [];
 			if (items.length === 0) break;
 			for (const issue of items) {
 				const repo = issue.repository_url.replace('https://api.github.com/repos/', '');
 				if (!isExternal(repo)) continue;
+				externalRepos.add(repo);
 				const key = `${repo}#${issue.number}`;
 				if (seen.has(key)) continue;
 				seen.add(key);
@@ -143,22 +151,29 @@ export class GithubService {
 			if (items.length < 100) break;
 		}
 
-		// Recent commits I authored in external repos — my code lines wherever they are.
-		const commits: { repo: string; message: string; url: string }[] = [];
-		const commitQuery = encodeURIComponent(`author:${GITHUB_USERNAME}`);
-		const commitData = await this.search<{ items?: CommitItem[] }>(
-			`/search/commits?q=${commitQuery}&sort=committer-date&order=desc&per_page=100`
-		);
-		for (const item of commitData?.items ?? []) {
-			const repo = item.repository?.full_name;
-			if (!repo || !isExternal(repo)) continue;
-			commits.push({
-				repo,
-				message: item.commit?.message.split('\n')[0].slice(0, 80),
-				url: item.html_url
-			});
-			if (commits.length >= 8) break;
+		// Every commit I authored in the external repos found above, newest
+		// first. No artificial cap — SIKEP alone has 70 of them.
+		const commits: { repo: string; message: string; url: string; date: string }[] = [];
+		for (const repo of externalRepos) {
+			const q = encodeURIComponent(`author:${GITHUB_USERNAME} repo:${repo}`);
+			for (let page = 1; page <= 2; page++) {
+				const commitData = await this.search<{ items?: CommitItem[] }>(
+					`/search/commits?q=${q}&sort=committer-date&order=desc&per_page=100&page=${page}`
+				);
+				const items = commitData?.items ?? [];
+				if (items.length === 0) break;
+				for (const item of items) {
+					commits.push({
+						repo,
+						message: item.commit?.message.split('\n')[0].slice(0, 80),
+						url: item.html_url,
+						date: item.commit?.committer?.date ?? ''
+					});
+				}
+				if (items.length < 100) break;
+			}
 		}
+		commits.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
 		return { contributions, commits };
 	}
