@@ -59,14 +59,12 @@
 		};
 	}
 
-	// Modal State
 	let deleteModalOpen = $state(false);
 	let editModalOpen = $state(false);
 	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
 	let deleteModalTitle = $state('');
 	let deleteModalMessage = $state('');
 
-	// Edit State
 	let editingProject = $state<{
 		id: string;
 		title: string;

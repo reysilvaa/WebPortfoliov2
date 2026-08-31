@@ -89,7 +89,6 @@ export class PortfolioService {
 			};
 
 			if (existingGithubIds.includes(repo.id)) {
-				// Update existing
 				const updated = await db
 					.update(projects)
 					.set(projectData)
@@ -97,7 +96,6 @@ export class PortfolioService {
 					.returning();
 				results.push(...updated);
 			} else {
-				// Insert new
 				const inserted = await db
 					.insert(projects)
 					.values({

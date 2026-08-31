@@ -33,8 +33,6 @@
 
 	const SECTION_IDS = ['hero', 'work', 'projects', 'skills', 'certificates'];
 
-	// Track active section for the side nav.
-	// Uses a lightweight dedicated observer (no animation coupling).
 	onMount(() => {
 		const { destroy } = createSectionObserver((id) => {
 			activeSection = id;

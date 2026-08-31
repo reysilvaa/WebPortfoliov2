@@ -1,13 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GithubService } from './github.service';
 
-// Mock the environment variables used by GithubService
 vi.mock('$env/static/private', () => ({
 	GITHUB_TOKEN_PERSONAL: 'mock_personal_token',
 	GITHUB_TOKEN_ORGANIZATION: 'mock_org_token'
 }));
 
-// Mock global fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 

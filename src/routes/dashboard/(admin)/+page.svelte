@@ -20,7 +20,6 @@
 	let github = $state('');
 	let linkedin = $state('');
 
-	// Safe sync from SvelteKit page data changes (like actions/navigation)
 	$effect(() => {
 		name = data.profile?.name ?? '';
 		role = data.profile?.role ?? '';

@@ -37,8 +37,8 @@ export const skills = sqliteTable('skills', {
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
 	name: text('name').notNull(),
-	category: text('category'), // e.g., 'Frontend', 'Backend', 'Tools'
-	level: integer('level').default(1), // 1-5 or similar
+	category: text('category'),
+	level: integer('level').default(1),
 	order: integer('order').default(0)
 });
 
@@ -55,7 +55,7 @@ export const experiences = sqliteTable('experiences', {
 });
 
 export const profile = sqliteTable('profile', {
-	id: text('id').primaryKey(), // We'll just use 'main' as ID
+	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	role: text('role').notNull(),
 	bio: text('bio').notNull(),

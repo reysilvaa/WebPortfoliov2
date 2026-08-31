@@ -104,7 +104,6 @@ export const GET: RequestHandler = async () => {
 		});
 	};
 
-	// Add Experience
 	if (experiences && experiences.length > 0) {
 		docContent.push({ text: 'EXPERIENCE', style: 'sectionHeader' });
 		addDivider();
@@ -138,7 +137,6 @@ export const GET: RequestHandler = async () => {
 		});
 	}
 
-	// Add Projects
 	if (projects && projects.length > 0) {
 		docContent.push({ text: 'PROJECTS', style: 'sectionHeader' });
 		addDivider();
@@ -165,12 +163,10 @@ export const GET: RequestHandler = async () => {
 		});
 	}
 
-	// Add Skills
 	if (skills && skills.length > 0) {
 		docContent.push({ text: 'SKILLS', style: 'sectionHeader' });
 		addDivider();
 
-		// Group skills by category
 		const skillsByCategory: Record<string, string[]> = {};
 		skills.forEach((skill) => {
 			const cats = (skill.category || 'Other')
@@ -195,7 +191,6 @@ export const GET: RequestHandler = async () => {
 		docContent.push({ text: '', margin: [0, 0, 0, 10] });
 	}
 
-	// Add Certificates
 	if (certificates && certificates.length > 0) {
 		docContent.push({ text: 'CERTIFICATES', style: 'sectionHeader' });
 		addDivider();

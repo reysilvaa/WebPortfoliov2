@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PortfolioService } from './portfolio.service';
 import { db } from '$lib/server/db';
 
-// Mock the drizzle db instance
 vi.mock('$lib/server/db', () => {
 	return {
 		db: {
@@ -33,7 +32,6 @@ describe('PortfolioService', () => {
 	});
 
 	it('should get a profile', async () => {
-		// Basic mock setup for a query
 		vi.mocked((db as any).limit).mockResolvedValueOnce([{ id: 'main', name: 'John Doe' }] as any);
 
 		const result = await PortfolioService.getProfile();
@@ -118,8 +116,8 @@ describe('PortfolioService', () => {
 
 	describe('Other missing methods', () => {
 		it('should get all content', async () => {
-			vi.mocked((db as any).limit).mockResolvedValue([{}] as any); // mock getProfile inner logic
-			vi.mocked((db as any).orderBy).mockResolvedValue([] as any); // mock lists
+			vi.mocked((db as any).limit).mockResolvedValue([{}] as any);
+			vi.mocked((db as any).orderBy).mockResolvedValue([] as any);
 
 			const content = await PortfolioService.getAllContent();
 			expect(content).toBeDefined();
@@ -129,7 +127,7 @@ describe('PortfolioService', () => {
 		it('should update profile', async () => {
 			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: 'main' }] as any);
 			await PortfolioService.updateProfile({ name: 'Rey' });
-			expect((db as any).insert).toHaveBeenCalled(); // updateProfile uses INSERT ON CONFLICT
+			expect((db as any).insert).toHaveBeenCalled();
 		});
 
 		it('should get paginated projects', async () => {

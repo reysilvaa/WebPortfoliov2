@@ -7,7 +7,6 @@ export const GET: RequestHandler = async () => {
 	return new Response(JSON.stringify({ contributions, commits }), {
 		headers: {
 			'Content-Type': 'application/json',
-			// 10 min shared cache so the homepage doesn't hammer the GitHub API
 			'Cache-Control': 'public, max-age=600, s-maxage=600'
 		}
 	});

@@ -30,7 +30,6 @@
 		repoUrl: ''
 	});
 
-	// React to project prop changes
 	$effect(() => {
 		if (project) {
 			editData = {

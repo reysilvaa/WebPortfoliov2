@@ -3,14 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GET } from './+server';
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 
-// Mock the PortfolioService
 vi.mock('$lib/server/services/portfolio.service', () => ({
 	PortfolioService: {
 		getAllContent: vi.fn()
 	}
 }));
 
-// Mock pdfmake
 vi.mock('pdfmake', () => ({
 	default: {
 		setFonts: vi.fn(),

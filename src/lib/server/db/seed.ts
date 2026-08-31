@@ -17,11 +17,6 @@ const db = drizzle(client, { schema });
 async function main() {
 	console.log('🌱 Seeding database...');
 
-	// Clear existing data (be careful with this in production!)
-	// await db.delete(schema.projects);
-	// await db.delete(schema.certificates);
-	// await db.delete(schema.skills);
-
 	console.log('Inserting projects...');
 	await db
 		.insert(schema.projects)

@@ -14,9 +14,7 @@ export function parseTags(tags: string | string[] | null | undefined): string[] 
 		try {
 			const parsed = JSON.parse(trimmed);
 			return Array.isArray(parsed) ? parsed.map(String) : [String(parsed)];
-		} catch {
-			// fallback
-		}
+		} catch { /* empty */ }
 	}
 	return trimmed
 		.split(',')

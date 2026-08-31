@@ -9,12 +9,6 @@ export function requireOwner(event: AdminEvent): void {
 	if (!event.locals.user) redirect(303, '/dashboard/login');
 }
 
-/**
- * Builds the standard add/update/delete form actions shared by the dashboard
- * CRUD pages. Parses form data for the given field lists and delegates to
- * the provided service callbacks. Every action re-checks ownership — never
- * rely on the layout load redirect to guard data mutations.
- */
 export function createCrudActions<
 	TAdd extends Record<string, unknown>,
 	TUpdate extends Record<string, unknown>

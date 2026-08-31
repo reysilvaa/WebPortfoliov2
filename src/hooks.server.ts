@@ -3,9 +3,6 @@ import { env } from '$env/dynamic/private';
 import { dev } from '$app/environment';
 import type { Handle } from '@sveltejs/kit';
 
-// Strict CSP only in production — dev (Vite HMR/eval) breaks under it.
-// Whitelists exactly the origins the site loads: own bundle, Google Fonts,
-// GitHub avatars, and the certificate preview hosts.
 const SECURITY_HEADERS: Record<string, string> = {
 	'Content-Security-Policy': [
 		"default-src 'self'",
@@ -27,7 +24,6 @@ const SECURITY_HEADERS: Record<string, string> = {
 export const handle: Handle = async ({ event, resolve }) => {
 	event.setHeaders(dev ? { 'X-Content-Type-Options': 'nosniff' } : SECURITY_HEADERS);
 
-	// Skip session check for auth API routes to avoid overhead
 	if (event.url.pathname.startsWith('/api/auth')) {
 		return resolve(event);
 	}
