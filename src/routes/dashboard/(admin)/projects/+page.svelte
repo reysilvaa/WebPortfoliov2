@@ -16,7 +16,7 @@
 	let searchQuery = $state('');
 	let selectedIds = $state<string[]>([]);
 
-	const filteredProjects = $derived(
+	const filteredProjects = $derived<PageData['projects']>(
 		data.projects.filter(
 			(p) =>
 				p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -154,11 +154,7 @@
 					<span class="text-[14px] font-medium text-blue-700">{selectedIds.length} SELECTED</span>
 
 					<div class="flex items-center gap-2">
-						<form
-							method="POST"
-							action="?/bulk-action"
-						use:enhance={bulkActionEnhance()}
-						>
+						<form method="POST" action="?/bulk-action" use:enhance={bulkActionEnhance()}>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="show" />
 							<Button variant="outline" size="sm" type="submit" disabled={bulkActionLoading}
@@ -166,11 +162,7 @@
 							>
 						</form>
 
-						<form
-							method="POST"
-							action="?/bulk-action"
-						use:enhance={bulkActionEnhance()}
-						>
+						<form method="POST" action="?/bulk-action" use:enhance={bulkActionEnhance()}>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="hide" />
 							<Button variant="outline" size="sm" type="submit" disabled={bulkActionLoading}
@@ -187,7 +179,7 @@
 									`Delete ${selectedIds.length} projects?`,
 									'This will permanently remove these projects from your portfolio database.'
 								)}
-						use:enhance={bulkActionEnhance()}
+							use:enhance={bulkActionEnhance()}
 						>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="delete" />
@@ -243,7 +235,7 @@
 							onclick={() => openEditModal(project)}
 							title="Edit"
 						>
-						<Icon name="pencil" width={18} height={18} />
+							<Icon name="pencil" width={18} height={18} />
 						</Button>
 
 						<form method="POST" action="?/toggle-visibility" use:enhance>
@@ -274,7 +266,13 @@
 			{:else}
 				<div class="flex flex-col items-center justify-center py-24 text-center">
 					<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-50">
-						<Icon name="x-circle" width={32} height={32} stroke-width={1.5} class="text-neutral-300" />
+						<Icon
+							name="x-circle"
+							width={32}
+							height={32}
+							stroke-width={1.5}
+							class="text-neutral-300"
+						/>
 					</div>
 					<h3 class="font-medium text-neutral-900">{m.projects_no_results()}</h3>
 					<p class="mt-1 text-[13px] text-neutral-500">

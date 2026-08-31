@@ -48,7 +48,7 @@
 
 {#if project}
 	<FormModal
-		bind:isOpen={isOpen}
+		bind:isOpen
 		title="Edit Project"
 		description="Update project information."
 		onSubmitted={onSave}

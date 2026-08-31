@@ -1,7 +1,7 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { RequestHandler } from './$types';
 import { parseTags } from '$lib/utils/portfolio';
-import { fallbackProfile } from '$lib/server/profile';
+import { fallbackProfile } from '$lib/profile';
 import pdfmake from 'pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 

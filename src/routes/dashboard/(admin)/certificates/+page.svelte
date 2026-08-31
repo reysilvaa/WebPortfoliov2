@@ -183,9 +183,7 @@
 					placeholder="https://..."
 				/>
 				{#if editingCertificate.credentialUrl || editingCertificate.imageUrl}
-					{@render certPreview(
-						editingCertificate.imageUrl || editingCertificate.credentialUrl
-					)}
+					{@render certPreview(editingCertificate.imageUrl || editingCertificate.credentialUrl)}
 				{/if}
 			</div>
 		</div>

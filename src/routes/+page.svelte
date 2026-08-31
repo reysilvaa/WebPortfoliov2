@@ -2,28 +2,18 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
+	import { fallbackProfile } from '$lib/profile';
 	import './portfolio.css';
 
-	import { createSectionObserver } from '$lib/actions/scroll-animation';
 	import TimelineNav from '$lib/components/portfolio/TimelineNav.svelte';
 	import HeroSection from '$lib/components/portfolio/HeroSection.svelte';
 	import ExperienceSection from '$lib/components/portfolio/ExperienceSection.svelte';
 	import ProjectsSection from '$lib/components/portfolio/ProjectsSection.svelte';
 	import SkillsSection from '$lib/components/portfolio/SkillsSection.svelte';
 	import CertificatesSection from '$lib/components/portfolio/CertificatesSection.svelte';
+	import { createSectionObserver } from '$lib/actions/scroll-animation';
 
 	let { data }: { data: PageData } = $props();
-
-	// Fallback if DB is empty
-	const fallbackProfile = {
-		name: 'Rey Silva.',
-		role: 'Full Stack Engineer',
-		bio: 'Translating intricate business requirements into robust, high-performing code. I build resilient systems and lead technical workflows with a systematic approach focused on efficiency and impact.',
-		avatarUrl: 'https://github.com/reysilvaa.png',
-		email: 'contact@reysilva.com',
-		github: 'https://github.com/reysilvaa',
-		linkedin: 'https://linkedin.com/in/reynald-silva'
-	};
 
 	const profile = $derived({
 		...fallbackProfile,
@@ -69,7 +59,9 @@
 	<meta name="twitter:title" content={data.seo.title} />
 	<meta name="twitter:description" content={data.seo.description} />
 	<meta name="twitter:image" content={data.seo.ogImage} />
-	<script type="application/ld+json">{@html data.seo.jsonLd}</script>
+	<script type="application/ld+json">
+{@html data.seo.jsonLd}
+	</script>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap"
 		rel="stylesheet"

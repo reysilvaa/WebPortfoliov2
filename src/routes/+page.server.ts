@@ -1,7 +1,7 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { PageServerLoad } from './$types';
 import type { projects as projectsTable, skills as skillsTable } from '$lib/server/db/schema';
-import { SITE_URL, fallbackProfile, type ProfileData } from '$lib/server/profile';
+import { SITE_URL, fallbackProfile, type ProfileData } from '$lib/profile';
 
 function buildJsonLd(
 	profile: ProfileData,
