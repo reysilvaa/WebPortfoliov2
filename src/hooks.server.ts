@@ -9,10 +9,10 @@ import type { Handle } from '@sveltejs/kit';
 const SECURITY_HEADERS: Record<string, string> = {
 	'Content-Security-Policy': [
 		"default-src 'self'",
-		"script-src 'self'",
+		"script-src 'self' 'unsafe-inline'",
 		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 		"font-src 'self' https://fonts.gstatic.com",
-		"img-src 'self' data: https://github.com https://api.microlink.io https://assets.website-files.com https://udemy-certificate.s3.amazonaws.com",
+		"img-src 'self' data: https://github.com https://avatars.githubusercontent.com https://*.githubusercontent.com https://i.ibb.co.com https://*.ibb.co https://api.microlink.io https://assets.website-files.com https://udemy-certificate.s3.amazonaws.com",
 		"connect-src 'self'",
 		"object-src 'none'",
 		"base-uri 'self'",

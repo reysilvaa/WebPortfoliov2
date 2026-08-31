@@ -120,7 +120,7 @@ export class GithubService {
 			url: string;
 			mergedAt: string | null;
 		}[] = [];
-		const prQuery = encodeURIComponent(`${GITHUB_USERNAME} is:pr is:merged`);
+		const prQuery = encodeURIComponent(`author:${GITHUB_USERNAME} is:pr is:merged`);
 		for (let page = 1; page <= 2; page++) {
 			const data = await this.search<{ items?: SearchIssue[] }>(
 				`/search/issues?q=${prQuery}&per_page=100&page=${page}`
