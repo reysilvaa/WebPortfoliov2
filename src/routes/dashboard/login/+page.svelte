@@ -25,7 +25,8 @@
 </script>
 
 <svelte:head>
-	<title>Admin Login</title>
+	<title>Admin Login | Reynald Silva</title>
+	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <div

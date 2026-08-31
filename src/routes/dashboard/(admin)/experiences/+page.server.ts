@@ -1,4 +1,6 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
+import { createCrudActions } from '$lib/server/actions';
+import { experiences } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -7,46 +9,13 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	add: async ({ request }) => {
-		const formData = await request.formData();
-		const role = formData.get('role') as string;
-		const company = formData.get('company') as string;
-		const startDate = formData.get('startDate') as string;
-		const endDate = formData.get('endDate') as string;
-		const description = formData.get('description') as string;
-
-		await PortfolioService.addExperience({
-			role,
-			company,
-			startDate,
-			endDate,
-			description,
-			order: 0
-		});
-		return { success: true };
-	},
-	delete: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		await PortfolioService.deleteExperience(id);
-		return { success: true };
-	},
-	update: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		const role = formData.get('role') as string;
-		const company = formData.get('company') as string;
-		const startDate = formData.get('startDate') as string;
-		const endDate = formData.get('endDate') as string;
-		const description = formData.get('description') as string;
-
-		await PortfolioService.updateExperience(id, {
-			role,
-			company,
-			startDate,
-			endDate,
-			description
-		});
-		return { success: true };
-	}
+	...createCrudActions({
+		addFields: ['role', 'company', 'startDate', 'endDate', 'description'],
+		updateFields: ['role', 'company', 'startDate', 'endDate', 'description'],
+		add: (data: typeof experiences.$inferInsert) =>
+			PortfolioService.addExperience({ ...data, order: 0 }),
+		update: (id: string, data: Partial<typeof experiences.$inferInsert>) =>
+			PortfolioService.updateExperience(id, data),
+		remove: (id: string) => PortfolioService.deleteExperience(id)
+	})
 };

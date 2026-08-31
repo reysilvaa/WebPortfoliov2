@@ -1,6 +1,7 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { RequestHandler } from './$types';
 import { parseTags } from '$lib/utils/portfolio';
+import { fallbackProfile } from '$lib/server/profile';
 import pdfmake from 'pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
@@ -18,17 +19,6 @@ pdfmake.setFonts(fonts);
 export const GET: RequestHandler = async () => {
 	const content = await PortfolioService.getAllContent();
 	const { profile, experiences, projects, skills, certificates } = content;
-
-	// fallback if DB is empty
-	const fallbackProfile = {
-		name: 'Rey Silva.',
-		role: 'Full Stack Engineer',
-		bio: 'Translating intricate business requirements into robust, high-performing code. I build resilient systems and lead technical workflows with a systematic approach focused on efficiency and impact.',
-		avatarUrl: 'https://github.com/reysilvaa.png',
-		email: 'contact@reysilva.com',
-		github: 'https://github.com/reysilvaa',
-		linkedin: 'https://linkedin.com/in/reysilvaa'
-	};
 
 	const safeProfile = { ...fallbackProfile, ...(profile || {}) };
 

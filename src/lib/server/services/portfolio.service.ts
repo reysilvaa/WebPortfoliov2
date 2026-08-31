@@ -2,6 +2,12 @@ import { db } from '$lib/server/db';
 import { projects, certificates, skills, profile, experiences } from '$lib/server/db/schema';
 import { desc, asc, eq, sql } from 'drizzle-orm';
 import { GithubService } from './github.service';
+import { createCrud } from '$lib/server/db/crud';
+
+const projectCrud = createCrud(projects);
+const certificateCrud = createCrud(certificates);
+const skillCrud = createCrud(skills);
+const experienceCrud = createCrud(experiences);
 
 export class PortfolioService {
 	static async getPaginatedProjects(page: number, limit: number, includeHidden = false) {
@@ -142,50 +148,50 @@ export class PortfolioService {
 	}
 
 	static async addProject(data: typeof projects.$inferInsert) {
-		return await db.insert(projects).values(data).returning();
+		return projectCrud.add(data);
 	}
 
 	static async updateProject(id: string, data: Partial<typeof projects.$inferInsert>) {
-		return await db.update(projects).set(data).where(eq(projects.id, id)).returning();
+		return projectCrud.update(id, data);
 	}
 
 	static async deleteProject(id: string) {
-		return await db.delete(projects).where(eq(projects.id, id)).returning();
+		return projectCrud.remove(id);
 	}
 
 	static async addCertificate(data: typeof certificates.$inferInsert) {
-		return await db.insert(certificates).values(data).returning();
+		return certificateCrud.add(data);
 	}
 
 	static async updateCertificate(id: string, data: Partial<typeof certificates.$inferInsert>) {
-		return await db.update(certificates).set(data).where(eq(certificates.id, id)).returning();
+		return certificateCrud.update(id, data);
 	}
 
 	static async deleteCertificate(id: string) {
-		return await db.delete(certificates).where(eq(certificates.id, id)).returning();
+		return certificateCrud.remove(id);
 	}
 
 	static async addSkill(data: typeof skills.$inferInsert) {
-		return await db.insert(skills).values(data).returning();
+		return skillCrud.add(data);
 	}
 
 	static async updateSkill(id: string, data: Partial<typeof skills.$inferInsert>) {
-		return await db.update(skills).set(data).where(eq(skills.id, id)).returning();
+		return skillCrud.update(id, data);
 	}
 
 	static async deleteSkill(id: string) {
-		return await db.delete(skills).where(eq(skills.id, id)).returning();
+		return skillCrud.remove(id);
 	}
 
 	static async addExperience(data: typeof experiences.$inferInsert) {
-		return await db.insert(experiences).values(data).returning();
+		return experienceCrud.add(data);
 	}
 
 	static async updateExperience(id: string, data: Partial<typeof experiences.$inferInsert>) {
-		return await db.update(experiences).set(data).where(eq(experiences.id, id)).returning();
+		return experienceCrud.update(id, data);
 	}
 
 	static async deleteExperience(id: string) {
-		return await db.delete(experiences).where(eq(experiences.id, id)).returning();
+		return experienceCrud.remove(id);
 	}
 }

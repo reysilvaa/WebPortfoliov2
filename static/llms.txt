@@ -1,0 +1,14 @@
+# Reynald Silva — Full Stack Engineer
+
+> Translating intricate business requirements into robust, high-performing code. I build resilient systems and lead technical workflows with a systematic approach focused on efficiency and impact.
+
+## Profile
+
+- [Portfolio](https://www.reynaldsilva.my.id/)
+- [GitHub](https://github.com/reysilvaa)
+- [LinkedIn](https://linkedin.com/in/reysilvaa)
+- [Resume (PDF)](https://www.reynaldsilva.my.id/api/resume)
+
+## About
+
+Full Stack Engineer with experience in SvelteKit, TypeScript, Laravel, NestJS, and database design (Drizzle ORM, MySQL, PostgreSQL). Focus areas: web application architecture, booking systems, ERP modules, and open-source MCDM libraries (DSS-AROMAN, DSS-MEREC).

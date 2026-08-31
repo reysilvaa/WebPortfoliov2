@@ -20,21 +20,11 @@ export interface GitHubRepository {
 }
 
 export class GithubService {
-	private static async fetchRepos(
-		token: string,
-		type: 'user' | 'org' = 'user'
-	): Promise<GitHubRepository[]> {
-		if (!token) return [];
+	private static async api<T>(path: string, token: string): Promise<T | null> {
+		if (!token) return null;
 
 		try {
-			// For personal token, 'user/repos' gets everything (personal + orgs if authorized)
-			// But the user specifically asked for both tokens.
-			const url =
-				type === 'user'
-					? 'https://api.github.com/user/repos?sort=updated&per_page=100'
-					: 'https://api.github.com/user/repos?type=all&sort=updated&per_page=100'; // Actually user/repos with proper token works
-
-			const response = await fetch(url, {
+			const response = await fetch(`https://api.github.com${path}`, {
 				headers: {
 					Authorization: `token ${token}`,
 					Accept: 'application/vnd.github.v3+json'
@@ -42,22 +32,25 @@ export class GithubService {
 			});
 
 			if (!response.ok) {
-				const error = await response.text();
-				console.error(`GitHub API error (${type}):`, response.status, error);
-				return [];
+				console.error(`GitHub API error (${path}):`, response.status);
+				return null;
 			}
 
 			return await response.json();
 		} catch (error) {
-			console.error(`Error fetching GitHub repositories (${type}):`, error);
-			return [];
+			console.error(`Error fetching GitHub API (${path}):`, error);
+			return null;
 		}
+	}
+
+	private static async fetchRepos(token: string, query = ''): Promise<GitHubRepository[]> {
+		return (await this.api<GitHubRepository[]>(`/user/repos${query}`, token)) ?? [];
 	}
 
 	static async getAllRepositories(): Promise<GitHubRepository[]> {
 		const [personalRepos, orgRepos] = await Promise.all([
-			this.fetchRepos(GITHUB_TOKEN_PERSONAL, 'user'),
-			this.fetchRepos(GITHUB_TOKEN_ORGANIZATION, 'org')
+			this.fetchRepos(GITHUB_TOKEN_PERSONAL, '?sort=updated&per_page=100'),
+			this.fetchRepos(GITHUB_TOKEN_ORGANIZATION, '?type=all&sort=updated&per_page=100')
 		]);
 
 		// Merge and deduplicate by ID
@@ -68,29 +61,22 @@ export class GithubService {
 	}
 
 	static async getProfileInfo() {
-		if (!GITHUB_TOKEN_PERSONAL) return null;
+		const data = await this.api<{
+			name: string | null;
+			bio: string | null;
+			avatar_url: string | null;
+			html_url: string | null;
+			email: string | null;
+		}>('/user', GITHUB_TOKEN_PERSONAL);
 
-		try {
-			const response = await fetch('https://api.github.com/user', {
-				headers: {
-					Authorization: `token ${GITHUB_TOKEN_PERSONAL}`,
-					Accept: 'application/vnd.github.v3+json'
-				}
-			});
+		if (!data) return null;
 
-			if (!response.ok) return null;
-
-			const data = await response.json();
-			return {
-				name: data.name,
-				bio: data.bio,
-				avatarUrl: data.avatar_url,
-				github: data.html_url,
-				email: data.email
-			};
-		} catch (error) {
-			console.error('Error fetching GitHub profile:', error);
-			return null;
-		}
+		return {
+			name: data.name ?? undefined,
+			bio: data.bio ?? undefined,
+			avatarUrl: data.avatar_url,
+			github: data.html_url,
+			email: data.email
+		};
 	}
 }

@@ -1,4 +1,6 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
+import { createCrudActions } from '$lib/server/actions';
+import { skills } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -7,34 +9,12 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	add: async ({ request }) => {
-		const formData = await request.formData();
-		const name = formData.get('name') as string;
-		const category = formData.get('category') as string;
-
-		await PortfolioService.addSkill({
-			name,
-			category,
-			order: 0
-		});
-		return { success: true };
-	},
-	delete: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		await PortfolioService.deleteSkill(id);
-		return { success: true };
-	},
-	update: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		const name = formData.get('name') as string;
-		const category = formData.get('category') as string;
-
-		await PortfolioService.updateSkill(id, {
-			name,
-			category
-		});
-		return { success: true };
-	}
+	...createCrudActions({
+		addFields: ['name', 'category'],
+		updateFields: ['name', 'category'],
+		add: (data: typeof skills.$inferInsert) => PortfolioService.addSkill({ ...data, order: 0 }),
+		update: (id: string, data: Partial<typeof skills.$inferInsert>) =>
+			PortfolioService.updateSkill(id, data),
+		remove: (id: string) => PortfolioService.deleteSkill(id)
+	})
 };

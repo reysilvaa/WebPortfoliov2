@@ -22,7 +22,7 @@
 		avatarUrl: 'https://github.com/reysilvaa.png',
 		email: 'contact@reysilva.com',
 		github: 'https://github.com/reysilvaa',
-		linkedin: 'https://linkedin.com/in/reysilvaa'
+		linkedin: 'https://linkedin.com/in/reynald-silva'
 	};
 
 	const profile = $derived({
@@ -55,21 +55,25 @@
 <svelte:window bind:scrollY />
 
 <svelte:head>
-	<title>{profile.name} | Portfolio</title>
+	<title>{data.seo.title}</title>
+	<meta name="description" content={data.seo.description} />
+	<link rel="canonical" href={data.seo.canonical} />
+	<meta property="og:title" content={data.seo.title} />
+	<meta property="og:description" content={data.seo.description} />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={data.seo.canonical} />
+	<meta property="og:image" content={data.seo.ogImage} />
+	<meta property="og:site_name" content="Reynald Silva" />
+	<meta property="og:locale" content="en_US" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={data.seo.title} />
+	<meta name="twitter:description" content={data.seo.description} />
+	<meta name="twitter:image" content={data.seo.ogImage} />
+	<script type="application/ld+json">{@html data.seo.jsonLd}</script>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap"
 		rel="stylesheet"
 	/>
-	<title>{profile.name} — {profile.role}</title>
-	<meta name="description" content={profile.bio} />
-	<meta property="og:title" content="{profile.name} — {profile.role}" />
-	<meta property="og:description" content={profile.bio} />
-	<meta property="og:type" content="website" />
-	<meta property="og:image" content={profile.avatarUrl} />
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="{profile.name} — {profile.role}" />
-	<meta name="twitter:description" content={profile.bio} />
-	<meta name="twitter:image" content={profile.avatarUrl} />
 </svelte:head>
 
 <div

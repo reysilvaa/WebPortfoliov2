@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block admin/private areas
+Disallow: /dashboard/
+Disallow: /api/
+
+Sitemap: https://www.reynaldsilva.my.id/sitemap.xml

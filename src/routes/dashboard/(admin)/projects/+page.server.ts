@@ -1,4 +1,6 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
+import { createCrudActions } from '$lib/server/actions';
+import { projects } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
@@ -7,6 +9,12 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
+	...createCrudActions({
+		updateFields: ['title', 'description', 'language', 'tags', 'liveUrl', 'repoUrl'],
+		update: (id: string, data: Partial<typeof projects.$inferInsert>) =>
+			PortfolioService.updateProject(id, data),
+		remove: (id: string) => PortfolioService.deleteProject(id)
+	}),
 	'sync-github': async () => {
 		await PortfolioService.syncGithubProjects();
 		return { success: true };
@@ -30,33 +38,6 @@ export const actions: Actions = {
 		} else if (action === 'show') {
 			await Promise.all(ids.map((id) => PortfolioService.toggleProjectVisibility(id, false)));
 		}
-
-		return { success: true };
-	},
-	delete: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		await PortfolioService.deleteProject(id);
-		return { success: true };
-	},
-	update: async ({ request }) => {
-		const formData = await request.formData();
-		const id = formData.get('id') as string;
-		const title = formData.get('title') as string;
-		const description = formData.get('description') as string;
-		const language = formData.get('language') as string;
-		const tags = formData.get('tags') as string;
-		const liveUrl = formData.get('liveUrl') as string;
-		const repoUrl = formData.get('repoUrl') as string;
-
-		await PortfolioService.updateProject(id, {
-			title,
-			description,
-			language,
-			tags,
-			liveUrl,
-			repoUrl
-		});
 
 		return { success: true };
 	}

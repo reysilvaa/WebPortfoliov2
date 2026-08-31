@@ -42,6 +42,11 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Admin Dashboard | Reynald Silva</title>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <div
 	class="flex min-h-screen bg-brand-bg font-sans text-brand-text antialiased selection:bg-brand-text selection:text-brand-bg"
 >

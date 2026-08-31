@@ -5,6 +5,8 @@
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Card from '$lib/components/ui/Card.svelte';
+	import FormModal from '$lib/components/ui/FormModal.svelte';
+	import Icon from '$lib/components/ui/Icon.svelte';
 	import { DashboardHeader, DashboardEmptyState, DeleteForm } from '$lib/components/dashboard';
 
 	let { data }: { data: PageData } = $props();
@@ -97,21 +99,7 @@
 							}}
 							title="Edit"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-pencil"
-								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
-									d="m15 5 4 4"
-								/></svg
-							>
+							<Icon name="pencil" />
 						</Button>
 						<DeleteForm
 							id={skill.id}
@@ -127,60 +115,25 @@
 	</section>
 </div>
 
-{#if editModalOpen && editingSkill}
-	<div
-		role="dialog"
-		aria-modal="true"
-		class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+{#if editingSkill}
+	<FormModal
+		bind:isOpen={editModalOpen}
+		title="Edit Skill"
+		description="Update technical capability details."
 	>
-		<!-- Backdrop -->
-		<button
-			type="button"
-			class="fixed inset-0 h-full w-full cursor-default border-none bg-neutral-900/60 backdrop-blur-sm"
-			onclick={() => (editModalOpen = false)}
-			aria-label="Close modal"
-		></button>
-
-		<!-- Modal -->
-		<form
-			method="POST"
-			action="?/update"
-			use:enhance={() => {
-				loading = true;
-				return async ({ update }) => {
-					await update();
-					editModalOpen = false;
-					loading = false;
-				};
-			}}
-			class="relative w-full max-w-2xl rounded-2xl bg-white p-8 shadow-xl"
-		>
-			<div class="mb-6">
-				<h2 class="mb-2 text-[24px] font-semibold tracking-tight text-brand-text">Edit Skill</h2>
-				<p class="text-[14px] text-neutral-500">Update technical capability details.</p>
-			</div>
-
-			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-				<input type="hidden" name="id" value={editingSkill.id} />
-				<Input bind:value={editingSkill.name} name="name" label="Skill Name" required />
-				<Input
-					value={editingSkill.category || ''}
-					oninput={(e) => {
-						if (editingSkill) editingSkill.category = (e.target as HTMLInputElement).value;
-					}}
-					name="category"
-					label="Category"
-					placeholder="e.g., Frontend, Backend"
-					required
-				/>
-			</div>
-
-			<div class="mt-8 flex justify-end gap-4">
-				<Button variant="outline" type="button" onclick={() => (editModalOpen = false)}>
-					Cancel
-				</Button>
-				<Button type="submit" isLoading={loading}>Save Changes</Button>
-			</div>
-		</form>
-	</div>
+		<input type="hidden" name="id" value={editingSkill.id} />
+		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+			<Input bind:value={editingSkill.name} name="name" label="Skill Name" required />
+			<Input
+				value={editingSkill.category || ''}
+				oninput={(e) => {
+					if (editingSkill) editingSkill.category = (e.target as HTMLInputElement).value;
+				}}
+				name="category"
+				label="Category"
+				placeholder="e.g., Frontend, Backend"
+				required
+			/>
+		</div>
+	</FormModal>
 {/if}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+	<rect width="1200" height="630" fill="#f3edde"/>
+	<rect x="70" y="70" width="1060" height="490" fill="none" stroke="#222222" stroke-width="2" opacity="0.18"/>
+	<text x="104" y="280" font-family="'Courier New', monospace" font-size="86" font-weight="900" fill="#222222" letter-spacing="-2">REYNALD SILVA</text>
+	<text x="106" y="352" font-family="'Courier New', monospace" font-size="32" font-weight="700" fill="#222222" letter-spacing="6">FULL STACK ENGINEER</text>
+	<line x1="106" y1="384" x2="330" y2="384" stroke="#222222" stroke-width="3"/>
+	<text x="106" y="430" font-family="Arial, sans-serif" font-size="26" fill="#444444">Building resilient systems — SvelteKit · TypeScript · Drizzle</text>
+	<text x="106" y="500" font-family="'Courier New', monospace" font-size="20" font-weight="700" fill="#555555" letter-spacing="3">reynaldsilva.my.id</text>
+</svg>

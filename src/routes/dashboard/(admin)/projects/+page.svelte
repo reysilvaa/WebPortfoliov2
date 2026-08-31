@@ -4,6 +4,7 @@
 	import * as m from '$lib/paraglide/messages';
 	import Button from '$lib/components/ui/Button.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import Icon from '$lib/components/ui/Icon.svelte';
 	import ProjectItem from '$lib/components/portfolio/ProjectItem.svelte';
 	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 	import EditProjectModal from '$lib/components/portfolio/EditProjectModal.svelte';
@@ -46,6 +47,17 @@
 	}
 
 	let bulkActionLoading = $state(false);
+
+	function bulkActionEnhance() {
+		return () => {
+			bulkActionLoading = true;
+			return async ({ update }: { update: () => Promise<void> }) => {
+				await update();
+				selectedIds = [];
+				bulkActionLoading = false;
+			};
+		};
+	}
 
 	// Modal State
 	let deleteModalOpen = $state(false);
@@ -112,23 +124,7 @@
 		>
 			<Button type="submit" isLoading={syncing} class="gap-2">
 				{#if !syncing}
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-refresh-cw"
-						><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path
-							d="M21 3v5h-5"
-						/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path
-							d="M3 21v-5h5"
-						/></svg
-					>
+					<Icon name="refresh" />
 				{/if}
 				{m.projects_sync_github()}
 			</Button>
@@ -145,19 +141,12 @@
 					placeholder={m.projects_search_placeholder()}
 					class="pl-12"
 				/>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="18"
-					height="18"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
+				<Icon
+					name="search"
+					width={18}
+					height={18}
 					class="absolute top-1/2 left-4 -translate-y-1/2 text-neutral-400"
-					><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg
-				>
+				/>
 			</div>
 
 			{#if selectedIds.length > 0}
@@ -168,14 +157,7 @@
 						<form
 							method="POST"
 							action="?/bulk-action"
-							use:enhance={() => {
-								bulkActionLoading = true;
-								return async ({ update }) => {
-									await update();
-									selectedIds = [];
-									bulkActionLoading = false;
-								};
-							}}
+						use:enhance={bulkActionEnhance()}
 						>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="show" />
@@ -187,14 +169,7 @@
 						<form
 							method="POST"
 							action="?/bulk-action"
-							use:enhance={() => {
-								bulkActionLoading = true;
-								return async ({ update }) => {
-									await update();
-									selectedIds = [];
-									bulkActionLoading = false;
-								};
-							}}
+						use:enhance={bulkActionEnhance()}
 						>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="hide" />
@@ -212,14 +187,7 @@
 									`Delete ${selectedIds.length} projects?`,
 									'This will permanently remove these projects from your portfolio database.'
 								)}
-							use:enhance={() => {
-								bulkActionLoading = true;
-								return async ({ update }) => {
-									await update();
-									selectedIds = [];
-									bulkActionLoading = false;
-								};
-							}}
+						use:enhance={bulkActionEnhance()}
 						>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
 							<input type="hidden" name="type" value="delete" />
@@ -275,21 +243,7 @@
 							onclick={() => openEditModal(project)}
 							title="Edit"
 						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="18"
-								height="18"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-pencil"
-								><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path
-									d="m15 5 4 4"
-								/></svg
-							>
+						<Icon name="pencil" width={18} height={18} />
 						</Button>
 
 						<form method="POST" action="?/toggle-visibility" use:enhance>
@@ -303,41 +257,9 @@
 								title={project.isHidden ? 'Show' : 'Hide'}
 							>
 								{#if project.isHidden}
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="18"
-										height="18"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										class="lucide lucide-eye-off"
-										><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" /><path
-											d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"
-										/><path
-											d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"
-										/><line x1="2" x2="22" y1="2" y2="22" /></svg
-									>
+									<Icon name="eye-off" width={18} height={18} />
 								{:else}
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										width="18"
-										height="18"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										class="lucide lucide-eye"
-										><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle
-											cx="12"
-											cy="12"
-											r="3"
-										/></svg
-									>
+									<Icon name="eye" width={18} height={18} />
 								{/if}
 							</Button>
 						</form>
@@ -352,19 +274,7 @@
 			{:else}
 				<div class="flex flex-col items-center justify-center py-24 text-center">
 					<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-50">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="32"
-							height="32"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="text-neutral-300"
-							><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6" /><path d="m9 9 6 6" /></svg
-						>
+						<Icon name="x-circle" width={32} height={32} stroke-width={1.5} class="text-neutral-300" />
 					</div>
 					<h3 class="font-medium text-neutral-900">{m.projects_no_results()}</h3>
 					<p class="mt-1 text-[13px] text-neutral-500">
