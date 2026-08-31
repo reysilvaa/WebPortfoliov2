@@ -21,19 +21,18 @@ export interface GitHubRepository {
 
 export const GITHUB_USERNAME = 'reysilvaa';
 
-interface GithubPullRequestEvent {
-	type: string;
-	repo: { name: string } | null;
-	payload: {
-		action: string;
-		pull_request?: {
-			number: number;
-			title: string;
-			html_url: string;
-			merged: boolean;
-			merged_at: string | null;
-		};
-	};
+interface SearchIssue {
+	number: number;
+	title: string;
+	html_url: string;
+	repository_url: string;
+	pull_request?: { merged_at: string | null };
+}
+
+interface CommitItem {
+	html_url: string;
+	repository: { full_name: string };
+	commit: { message: string };
 }
 
 export class GithubService {
@@ -77,23 +76,43 @@ export class GithubService {
 		return uniqueRepos;
 	}
 
+	private static async search<T>(path: string): Promise<T | null> {
+		// Anonymous on purpose: fine-grained PATs can't use the Search API, but
+		// anonymous works (10 req/min/IP) — enough for a 10-min-cached section.
+		try {
+			const response = await fetch(`https://api.github.com${path}`, {					headers: {
+						// search/commits requires this preview Accept header
+						Accept: 'application/vnd.github+json',
+						'User-Agent': 'reysilvaa-portfolio'
+					}
+			});
+			if (!response.ok) {
+				console.error(`GitHub Search error (${path}):`, response.status);
+				return null;
+			}
+			return await response.json();
+		} catch (error) {
+			console.error(`Error on GitHub Search (${path}):`, error);
+			return null;
+		}
+	}
+
 	/**
-	 * Merged PRs I authored in repos that are NOT mine or my org's.
-	 * fine-grained PATs can't use the Search API, so attribution comes from public
-	 * events — ponytail: last ~90 days / 300 events window; a classic token + Search
-	 * API later gives full history and authored-commits-in-others'-commits.
+	 * My merged PRs + recent authored commits in repos that are NOT mine or my org's.
+	 * Full history via the Search API (anonymous). "merged" only — the code
+	 * demonstrably landed in other projects.
 	 */
-	static async getMergedContributions(): Promise<
-		{ repo: string; title: string; url: string; mergedAt: string | null }[]
-	> {
-		const ownSet = new Set((await this.getAllRepositories()).map((r) => r.full_name));
+	static async getExternalContributions(): Promise<{
+		contributions: { repo: string; title: string; url: string; mergedAt: string | null }[];
+		commits: { repo: string; message: string; url: string }[];
+	}> {
+		const ownOwners = new Set((await this.getAllRepositories()).map((r) => r.owner.login));
+		const isExternal = (fullName: string) => {
+			const owner = fullName.split('/')[0];
+			return !!owner && !ownOwners.has(owner);
+		};
 
-		const events =
-			(await this.api<GithubPullRequestEvent[]>(
-				`/users/${GITHUB_USERNAME}/events/public?per_page=100`,
-				GITHUB_TOKEN_PERSONAL
-			)) ?? [];
-
+		// Merged pull requests I authored in other repos.
 		const seen = new Set<string>();
 		const contributions: {
 			repo: string;
@@ -101,26 +120,47 @@ export class GithubService {
 			url: string;
 			mergedAt: string | null;
 		}[] = [];
-
-		for (const event of events) {
-			if (event.type !== 'PullRequestEvent' || event.payload.action !== 'closed') continue;
-			const pr = event.payload.pull_request;
-			if (!pr?.merged) continue;
-			const repo = event.repo?.name;
-			if (!repo || ownSet.has(repo)) continue;
-
-			const key = `${repo}#${pr.number}`;
-			if (seen.has(key)) continue;
-			seen.add(key);
-			contributions.push({
-				repo,
-				title: pr.title,
-				url: pr.html_url,
-				mergedAt: pr.merged_at ?? null
-			});
+		const prQuery = encodeURIComponent(`${GITHUB_USERNAME} is:pr is:merged`);
+		for (let page = 1; page <= 2; page++) {
+			const data = await this.search<{ items?: SearchIssue[] }>(
+				`/search/issues?q=${prQuery}&per_page=100&page=${page}`
+			);
+			const items = data?.items ?? [];
+			if (items.length === 0) break;
+			for (const issue of items) {
+				const repo = issue.repository_url.replace('https://api.github.com/repos/', '');
+				if (!isExternal(repo)) continue;
+				const key = `${repo}#${issue.number}`;
+				if (seen.has(key)) continue;
+				seen.add(key);
+				contributions.push({
+					repo,
+					title: issue.title,
+					url: issue.html_url,
+					mergedAt: issue.pull_request?.merged_at ?? null
+				});
+			}
+			if (items.length < 100) break;
 		}
 
-		return contributions;
+		// Recent commits I authored in external repos — my code lines wherever they are.
+		const commits: { repo: string; message: string; url: string }[] = [];
+		const commitQuery = encodeURIComponent(`author:${GITHUB_USERNAME}`);
+		const commitData = await this.search<{ items?: CommitItem[] }>(
+			`/search/commits?q=${commitQuery}&sort=committer-date&order=desc&per_page=100`
+		);
+		for (const item of commitData?.items ?? []) {
+			const repo = item.repository?.full_name;
+			if (!repo || !isExternal(repo)) continue;
+			commits.push({
+				repo,
+				message: item.commit?.message.split('\n')[0].slice(0, 80),
+				url: item.html_url
+			});
+			if (commits.length >= 8) break;
+		}
+
+		return { contributions, commits };
 	}
 
 	static async getProfileInfo() {

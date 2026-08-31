@@ -2,9 +2,9 @@ import { GithubService } from '$lib/server/services/github.service';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async () => {
-	const contributions = await GithubService.getMergedContributions();
+	const { contributions, commits } = await GithubService.getExternalContributions();
 
-	return new Response(JSON.stringify({ contributions }), {
+	return new Response(JSON.stringify({ contributions, commits }), {
 		headers: {
 			'Content-Type': 'application/json',
 			// 10 min shared cache so the homepage doesn't hammer the GitHub API
