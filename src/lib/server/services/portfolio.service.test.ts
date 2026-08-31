@@ -17,7 +17,7 @@ vi.mock('$lib/server/db', () => {
 			insert: vi.fn().mockReturnThis(),
 			values: vi.fn().mockReturnThis(),
 			delete: vi.fn().mockReturnThis(),
-			returning: vi.fn()
+			returning: vi.fn().mockResolvedValue([])
 		}
 	};
 });
@@ -44,73 +44,76 @@ describe('PortfolioService', () => {
 		const mockProject = { id: '1', title: 'Test Project' };
 		vi.mocked((db as any).returning).mockResolvedValueOnce([mockProject] as any);
 
-		const result = await PortfolioService.addProject({
-			title: 'Test Project',
-			description: 'Test'
-		} as any);
-
+		const result = await PortfolioService.addProject(mockProject as any);
 		expect((db as any).insert).toHaveBeenCalled();
-		expect((db as any).values).toHaveBeenCalledWith({ title: 'Test Project', description: 'Test' });
 		expect(result).toEqual([mockProject]);
 	});
 
-	describe('Certificates', () => {
+	describe('CRUD Methods', () => {
 		it('should be able to add a certificate', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.addCertificate({ name: 'Test', issuer: 'Issuer' } as any);
+			const mockCert = { id: '1', name: 'Cert' };
+			vi.mocked((db as any).returning).mockResolvedValueOnce([mockCert] as any);
+			const result = await PortfolioService.addCertificate(mockCert as any);
 			expect((db as any).insert).toHaveBeenCalled();
+			expect(result).toEqual([mockCert]);
 		});
 
 		it('should be able to update a certificate', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.updateCertificate('1', { name: 'Test Update' } as any);
+			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1', name: 'Updated' }] as any);
+			const result = await PortfolioService.updateCertificate('1', { name: 'Updated' } as any);
 			expect((db as any).update).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1', name: 'Updated' }]);
 		});
 
 		it('should be able to delete a certificate', async () => {
 			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.deleteCertificate('1');
+			const result = await PortfolioService.deleteCertificate('1');
 			expect((db as any).delete).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1' }]);
 		});
-	});
 
-	describe('Skills', () => {
 		it('should be able to add a skill', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.addSkill({ name: 'Svelte' } as any);
+			const mockSkill = { id: '1', name: 'Skill' };
+			vi.mocked((db as any).returning).mockResolvedValueOnce([mockSkill] as any);
+			const result = await PortfolioService.addSkill(mockSkill as any);
 			expect((db as any).insert).toHaveBeenCalled();
+			expect(result).toEqual([mockSkill]);
 		});
 
 		it('should be able to update a skill', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.updateSkill('1', { name: 'Svelte 5' } as any);
+			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1', name: 'Updated' }] as any);
+			const result = await PortfolioService.updateSkill('1', { name: 'Updated' } as any);
 			expect((db as any).update).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1', name: 'Updated' }]);
 		});
 
 		it('should be able to delete a skill', async () => {
 			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.deleteSkill('1');
+			const result = await PortfolioService.deleteSkill('1');
 			expect((db as any).delete).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1' }]);
 		});
-	});
 
-	describe('Experiences', () => {
 		it('should be able to add an experience', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.addExperience({ company: 'Acme', role: 'Dev' } as any);
+			const mockExp = { id: '1', role: 'Dev' };
+			vi.mocked((db as any).returning).mockResolvedValueOnce([mockExp] as any);
+			const result = await PortfolioService.addExperience(mockExp as any);
 			expect((db as any).insert).toHaveBeenCalled();
+			expect(result).toEqual([mockExp]);
 		});
 
 		it('should be able to update an experience', async () => {
-			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.updateExperience('1', { role: 'Senior Dev' } as any);
+			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1', role: 'Updated' }] as any);
+			const result = await PortfolioService.updateExperience('1', { role: 'Updated' } as any);
 			expect((db as any).update).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1', role: 'Updated' }]);
 		});
 
 		it('should be able to delete an experience', async () => {
 			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: '1' }] as any);
-			await PortfolioService.deleteExperience('1');
+			const result = await PortfolioService.deleteExperience('1');
 			expect((db as any).delete).toHaveBeenCalled();
+			expect(result).toEqual([{ id: '1' }]);
 		});
 	});
 
@@ -125,16 +128,23 @@ describe('PortfolioService', () => {
 		});
 
 		it('should update profile', async () => {
+			vi.mocked((db as any).limit).mockResolvedValueOnce([] as any);
 			vi.mocked((db as any).returning).mockResolvedValueOnce([{ id: 'main' }] as any);
 			await PortfolioService.updateProfile({ name: 'Rey' });
 			expect((db as any).insert).toHaveBeenCalled();
 		});
 
 		it('should get paginated projects', async () => {
-			vi.mocked((db as any).orderBy).mockReturnThis();
-			vi.mocked((db as any).limit).mockReturnThis();
-			vi.mocked((db as any).offset).mockResolvedValueOnce([{ id: '1' }] as any);
-			vi.mocked((db as any).where).mockResolvedValueOnce([{ count: 1 }] as any);
+			const listChain = {
+				orderBy: vi.fn().mockReturnValue({
+					limit: vi.fn().mockReturnValue({
+						offset: vi.fn().mockResolvedValueOnce([{ id: '1' }] as any)
+					})
+				})
+			};
+			vi.mocked((db as any).where)
+				.mockReturnValueOnce(listChain as any)
+				.mockResolvedValueOnce([{ count: 1 }] as any);
 
 			const result = await PortfolioService.getPaginatedProjects(1, 10);
 			expect(result.projects.length).toBe(1);

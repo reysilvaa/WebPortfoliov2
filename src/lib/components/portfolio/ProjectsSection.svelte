@@ -1,18 +1,9 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
 	import { parseTags } from '$lib/utils/portfolio';
+	import type { ProjectData } from '$lib/profile';
 
-	type Project = {
-		id: string;
-		title: string;
-		description?: string | null;
-		imageUrl?: string | null;
-		repoUrl?: string | null;
-		liveUrl?: string | null;
-		tags?: string | null;
-	};
-
-	let { items }: { items: { projects: Project[] } } = $props();
+	let { items }: { items: { projects: ProjectData[] } } = $props();
 
 	let projectsLimit = $state(6);
 	const displayedProjects = $derived(items.projects.slice(0, projectsLimit));

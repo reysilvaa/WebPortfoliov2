@@ -6,7 +6,6 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import Icon from '$lib/components/ui/Icon.svelte';
 	import ProjectItem from '$lib/components/portfolio/ProjectItem.svelte';
-	import ConfirmModal from '$lib/components/ui/ConfirmModal.svelte';
 	import EditProjectModal from '$lib/components/portfolio/EditProjectModal.svelte';
 	import { DashboardHeader, DeleteForm } from '$lib/components/dashboard';
 
@@ -59,11 +58,7 @@
 		};
 	}
 
-	let deleteModalOpen = $state(false);
 	let editModalOpen = $state(false);
-	let pendingDeleteForm = $state<HTMLFormElement | null>(null);
-	let deleteModalTitle = $state('');
-	let deleteModalMessage = $state('');
 
 	let editingProject = $state<{
 		id: string;
@@ -86,21 +81,6 @@
 	}) {
 		editingProject = { ...project };
 		editModalOpen = true;
-	}
-
-	function openDeleteModal(e: Event, title: string, message: string) {
-		e.preventDefault();
-		pendingDeleteForm = e.target as HTMLFormElement;
-		deleteModalTitle = title;
-		deleteModalMessage = message;
-		deleteModalOpen = true;
-	}
-
-	function handleConfirm() {
-		if (pendingDeleteForm) {
-			pendingDeleteForm.requestSubmit();
-		}
-		deleteModalOpen = false;
 	}
 </script>
 
@@ -171,12 +151,11 @@
 						<form
 							method="POST"
 							action="?/bulk-action"
-							onsubmit={(e) =>
-								openDeleteModal(
-									e,
-									`Delete ${selectedIds.length} projects?`,
-									'This will permanently remove these projects from your portfolio database.'
-								)}
+							onsubmit={(e) => {
+								if (!confirm(`Delete ${selectedIds.length} projects? This will permanently remove them.`)) {
+									e.preventDefault();
+								}
+							}}
 							use:enhance={bulkActionEnhance()}
 						>
 							<input type="hidden" name="ids" value={JSON.stringify(selectedIds)} />
@@ -281,15 +260,6 @@
 		</div>
 	</section>
 </div>
-
-<ConfirmModal
-	isOpen={deleteModalOpen}
-	title={deleteModalTitle}
-	message={deleteModalMessage}
-	onConfirm={handleConfirm}
-	onCancel={() => (deleteModalOpen = false)}
-	isLoading={bulkActionLoading}
-/>
 
 <EditProjectModal
 	bind:isOpen={editModalOpen}

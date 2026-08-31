@@ -10,6 +10,20 @@ export type ProfileData = {
 	linkedin: string | null;
 };
 
+export type ProjectData = {
+	id: string;
+	title: string;
+	description: string | null;
+	imageUrl?: string | null;
+	repoUrl?: string | null;
+	liveUrl?: string | null;
+	stars?: number | null;
+	forks?: number | null;
+	language?: string | null;
+	tags?: string | null;
+	isHidden?: boolean | null;
+};
+
 export const fallbackProfile: ProfileData = {
 	name: 'Rey Silva.',
 	role: 'Full Stack Engineer',

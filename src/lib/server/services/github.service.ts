@@ -1,6 +1,7 @@
 import { GITHUB_TOKEN_PERSONAL, GITHUB_TOKEN_ORGANIZATION } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
-export interface GitHubRepository {
+interface GitHubRepository {
 	id: number;
 	name: string;
 	full_name: string;
@@ -16,7 +17,7 @@ export interface GitHubRepository {
 	owner: { login: string; type: string };
 }
 
-export const GITHUB_USERNAME = 'reysilvaa';
+const GITHUB_USERNAME = env.GITHUB_USERNAME || 'reysilvaa';
 
 interface SearchIssue {
 	number: number;
@@ -69,11 +70,13 @@ export class GithubService {
 		]);
 
 		const ownOwners = new Set([
-			GITHUB_USERNAME,
-			...[...(ownRepos ?? []), ...(orgRepos ?? [])].map((r) => r.owner.login)
+			GITHUB_USERNAME.toLowerCase(),
+			'rey-workbench',
+			...(env.GITHUB_ORGANIZATION ? [env.GITHUB_ORGANIZATION.toLowerCase()] : []),
+			...[...(ownRepos ?? []), ...(orgRepos ?? [])].map((r) => r.owner.login.toLowerCase())
 		]);
 		const isExternal = (repo: string) => {
-			const owner = repo.split('/')[0];
+			const owner = repo.split('/')[0]?.toLowerCase();
 			return Boolean(owner && !ownOwners.has(owner));
 		};
 
