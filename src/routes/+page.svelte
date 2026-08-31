@@ -11,6 +11,7 @@
 	import ProjectsSection from '$lib/components/portfolio/ProjectsSection.svelte';
 	import SkillsSection from '$lib/components/portfolio/SkillsSection.svelte';
 	import CertificatesSection from '$lib/components/portfolio/CertificatesSection.svelte';
+	import ContributionsSection from '$lib/components/portfolio/ContributionsSection.svelte';
 	import { createSectionObserver } from '$lib/actions/scroll-animation';
 
 	let { data }: { data: PageData } = $props();
@@ -119,6 +120,7 @@
 		<HeroSection {profile} {scrollY} />
 		<ExperienceSection {items} />
 		<ProjectsSection {items} />
+		<ContributionsSection />
 		<SkillsSection {items} />
 		<CertificatesSection {items} />
 
