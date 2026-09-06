@@ -67,10 +67,8 @@
 	<meta name="twitter:description" content={data.seo.description} />
 	<meta name="twitter:image" content={data.seo.ogImage} />
 	<!-- Structured Data -->
-	<svelte:element this={'script'} type="application/ld+json">
-		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-		{@html data.seo.jsonLd}
-	</svelte:element>
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html `<script type="application/ld+json">${data.seo.jsonLd}${'<'}/script>`}
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap"
 		rel="stylesheet"
