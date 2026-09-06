@@ -66,7 +66,7 @@
 						<div class="border-l border-[#222]/10 pl-6 md:col-span-8 md:pl-8">
 							<h4 class="text-lg font-bold tracking-wide text-[#222] uppercase">{exp.role}</h4>
 							{#if exp.description}
-								<p class="mt-4 font-sans text-sm leading-relaxed text-[#555]">
+								<p class="mt-4 font-sans text-sm leading-relaxed whitespace-pre-line text-[#555]">
 									{exp.description}
 								</p>
 							{/if}

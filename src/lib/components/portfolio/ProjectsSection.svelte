@@ -78,7 +78,7 @@
 						>
 							{proj.title}
 						</h3>
-						<p class="mt-6 font-sans text-sm leading-relaxed text-[#444]">
+						<p class="mt-6 font-sans text-sm leading-relaxed whitespace-pre-line text-[#444]">
 							{proj.description}
 						</p>
 
