@@ -15,6 +15,9 @@ export const actions: Actions = {
 		const bio = formData.get('bio') as string;
 		const avatarUrl = formData.get('avatarUrl') as string;
 		const email = formData.get('email') as string;
+		const phone = formData.get('phone') as string;
+		const location = formData.get('location') as string;
+		const website = formData.get('website') as string;
 		const github = formData.get('github') as string;
 		const linkedin = formData.get('linkedin') as string;
 
@@ -24,6 +27,9 @@ export const actions: Actions = {
 			bio,
 			avatarUrl,
 			email,
+			phone,
+			location,
+			website,
 			github,
 			linkedin
 		});

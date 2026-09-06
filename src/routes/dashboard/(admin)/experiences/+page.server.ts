@@ -10,8 +10,8 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
 	...createCrudActions({
-		addFields: ['role', 'company', 'startDate', 'endDate', 'description'],
-		updateFields: ['role', 'company', 'startDate', 'endDate', 'description'],
+		addFields: ['role', 'company', 'startDate', 'endDate', 'location', 'companyUrl', 'employmentType', 'description'],
+		updateFields: ['role', 'company', 'startDate', 'endDate', 'location', 'companyUrl', 'employmentType', 'description'],
 		add: (data: typeof experiences.$inferInsert) =>
 			PortfolioService.addExperience({ ...data, order: 0 }),
 		update: (id: string, data: Partial<typeof experiences.$inferInsert>) =>

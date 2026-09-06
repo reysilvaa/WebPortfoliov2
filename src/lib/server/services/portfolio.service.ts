@@ -1,5 +1,13 @@
 import { db } from '$lib/server/db';
-import { projects, certificates, skills, profile, experiences } from '$lib/server/db/schema';
+import {
+	projects,
+	certificates,
+	skills,
+	profile,
+	experiences,
+	education,
+	openSource
+} from '$lib/server/db/schema';
 import { desc, asc, eq, sql } from 'drizzle-orm';
 import { GithubService } from './github.service';
 import { createCrud } from '$lib/server/db/crud';
@@ -8,6 +16,8 @@ const projectCrud = createCrud(projects);
 const certificateCrud = createCrud(certificates);
 const skillCrud = createCrud(skills);
 const experienceCrud = createCrud(experiences);
+const educationCrud = createCrud(education);
+const openSourceCrud = createCrud(openSource);
 
 export class PortfolioService {
 	static async getPaginatedProjects(page: number, limit: number, includeHidden = false) {
@@ -42,21 +52,32 @@ export class PortfolioService {
 			projectQuery.where(eq(projects.isHidden, false));
 		}
 
-		const [allProjects, allCertificates, allSkills, currentProfile, allExperiences] =
-			await Promise.all([
-				projectQuery.orderBy(desc(projects.createdAt)),
-				db.select().from(certificates).orderBy(asc(certificates.order)),
-				db.select().from(skills).orderBy(asc(skills.order)),
-				db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
-				db.select().from(experiences).orderBy(asc(experiences.order))
-			]);
+		const [
+			allProjects,
+			allCertificates,
+			allSkills,
+			currentProfile,
+			allExperiences,
+			allEducation,
+			allOpenSource
+		] = await Promise.all([
+			projectQuery.orderBy(desc(projects.createdAt)),
+			db.select().from(certificates).orderBy(asc(certificates.order)),
+			db.select().from(skills).orderBy(asc(skills.order)),
+			db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
+			db.select().from(experiences).orderBy(asc(experiences.order)),
+			db.select().from(education).orderBy(asc(education.order)),
+			db.select().from(openSource).orderBy(asc(openSource.order))
+		]);
 
 		return {
 			projects: allProjects,
 			certificates: allCertificates,
 			skills: allSkills,
 			profile: currentProfile[0] || null,
-			experiences: allExperiences
+			experiences: allExperiences,
+			education: allEducation,
+			openSource: allOpenSource
 		};
 	}
 
@@ -138,6 +159,9 @@ export class PortfolioService {
 					bio: data.bio || '',
 					avatarUrl: data.avatarUrl || '',
 					email: data.email || '',
+					phone: data.phone || '',
+					location: data.location || '',
+					website: data.website || '',
 					github: data.github || '',
 					linkedin: data.linkedin || ''
 				})
@@ -191,5 +215,29 @@ export class PortfolioService {
 
 	static async deleteExperience(id: string) {
 		return experienceCrud.remove(id);
+	}
+
+	static async addEducation(data: typeof education.$inferInsert) {
+		return educationCrud.add(data);
+	}
+
+	static async updateEducation(id: string, data: Partial<typeof education.$inferInsert>) {
+		return educationCrud.update(id, data);
+	}
+
+	static async deleteEducation(id: string) {
+		return educationCrud.remove(id);
+	}
+
+	static async addOpenSource(data: typeof openSource.$inferInsert) {
+		return openSourceCrud.add(data);
+	}
+
+	static async updateOpenSource(id: string, data: Partial<typeof openSource.$inferInsert>) {
+		return openSourceCrud.update(id, data);
+	}
+
+	static async deleteOpenSource(id: string) {
+		return openSourceCrud.remove(id);
 	}
 }

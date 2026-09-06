@@ -1,5 +1,7 @@
-import { GITHUB_TOKEN_PERSONAL, GITHUB_TOKEN_ORGANIZATION } from '$env/static/private';
 import { env } from '$env/dynamic/private';
+
+const GITHUB_TOKEN_PERSONAL = env.GITHUB_TOKEN_PERSONAL || '';
+const GITHUB_TOKEN_ORGANIZATION = env.GITHUB_TOKEN_ORGANIZATION || '';
 
 interface GitHubRepository {
 	id: number;

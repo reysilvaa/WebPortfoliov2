@@ -12,11 +12,14 @@
 	let { children, data } = $props();
 
 	const links = [
+		{ href: '/dashboard/cv' as const, label: 'Curriculum Vitae' },
 		{ href: '/dashboard' as const, label: m.dashboard_settings_title() },
-		{ href: '/dashboard/projects' as const, label: m.dashboard_projects_title() },
 		{ href: '/dashboard/experiences' as const, label: 'Experiences' },
-		{ href: '/dashboard/certificates' as const, label: m.dashboard_credentials_title() },
-		{ href: '/dashboard/skills' as const, label: m.dashboard_skills_title() }
+		{ href: '/dashboard/projects' as const, label: m.dashboard_projects_title() },
+		{ href: '/dashboard/open-source' as const, label: 'Open Source' },
+		{ href: '/dashboard/education' as const, label: 'Education' },
+		{ href: '/dashboard/skills' as const, label: m.dashboard_skills_title() },
+		{ href: '/dashboard/certificates' as const, label: m.dashboard_credentials_title() }
 	];
 
 	function isActive(href: string) {
@@ -70,7 +73,7 @@
 			<nav class="space-y-1 px-4">
 				{#each links as link (link.href)}
 					<a
-						href={resolve(link.href)}
+						href={resolve(link.href as any)}
 						class="block rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all
 							{isActive(link.href)
 							? 'bg-neutral-200/50 text-brand-text'
@@ -118,7 +121,7 @@
 		>
 			{#each links as link (link.href)}
 				<a
-					href={resolve(link.href)}
+					href={resolve(link.href as any)}
 					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(link.href)
 						? 'border-b-2 border-brand-text text-brand-text'
 						: 'text-neutral-600'}"

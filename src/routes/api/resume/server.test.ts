@@ -29,7 +29,9 @@ describe('GET /api/resume', () => {
 			experiences: [],
 			projects: [],
 			skills: [],
-			certificates: []
+			certificates: [],
+			education: [],
+			openSource: []
 		});
 
 		const response = await GET({} as any);
@@ -47,7 +49,9 @@ describe('GET /api/resume', () => {
 			] as any,
 			projects: [{ title: 'Test Project', tags: 'React, Node', description: 'Test desc' }] as any,
 			skills: [{ name: 'Svelte', category: 'Frontend' }] as any,
-			certificates: [{ name: 'AWS', issuer: 'Amazon' }] as any
+			certificates: [{ name: 'AWS', issuer: 'Amazon' }] as any,
+			education: [{ school: 'Test University', degree: 'CS', period: '2020-2024' }] as any,
+			openSource: [{ title: 'Test OS', role: 'Contributor', period: '2024' }] as any
 		});
 
 		const response = await GET({} as any);

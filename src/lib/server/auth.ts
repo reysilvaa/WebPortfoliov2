@@ -6,14 +6,14 @@ import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
 
 export const auth = betterAuth({
-	baseURL: env.BETTER_AUTH_URL || (env.ORIGIN ? `${env.ORIGIN}/api/auth` : undefined),
-	secret: env.BETTER_AUTH_SECRET,
+	baseURL: env.BETTER_AUTH_URL || (env.ORIGIN ? `${env.ORIGIN}/api/auth` : 'http://localhost:5173/api/auth'),
+	secret: env.BETTER_AUTH_SECRET || 'fallback-secret-for-build-and-ci-testing-purposes-only-32chars',
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	emailAndPassword: { enabled: false },
 	socialProviders: {
 		github: {
-			clientId: env.GITHUB_CLIENT_ID,
-			clientSecret: env.GITHUB_CLIENT_SECRET
+			clientId: env.GITHUB_CLIENT_ID || '',
+			clientSecret: env.GITHUB_CLIENT_SECRET || ''
 		}
 	},
 	trustedOrigins: [

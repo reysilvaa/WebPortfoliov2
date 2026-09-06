@@ -17,6 +17,9 @@
 	let bio = $state('');
 	let avatarUrl = $state('');
 	let email = $state('');
+	let phone = $state('');
+	let location = $state('');
+	let website = $state('');
 	let github = $state('');
 	let linkedin = $state('');
 
@@ -26,6 +29,9 @@
 		bio = data.profile?.bio ?? '';
 		avatarUrl = data.profile?.avatarUrl ?? '';
 		email = data.profile?.email ?? '';
+		phone = data.profile?.phone ?? '';
+		location = data.profile?.location ?? '';
+		website = data.profile?.website ?? '';
 		github = data.profile?.github ?? '';
 		linkedin = data.profile?.linkedin ?? '';
 	});
@@ -155,8 +161,14 @@
 
 			<Textarea label={m.form_label_bio()} name="bio" bind:value={bio} required />
 
-			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
 				<Input label={m.form_label_email()} name="email" type="email" bind:value={email} />
+				<Input label="Phone" name="phone" bind:value={phone} placeholder="+62 852..." />
+				<Input label="Location" name="location" bind:value={location} placeholder="Malang, Indonesia" />
+			</div>
+
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+				<Input label="Website" name="website" bind:value={website} placeholder="https://..." />
 				<Input label={m.form_label_github()} name="github" bind:value={github} />
 				<Input label={m.form_label_linkedin()} name="linkedin" bind:value={linkedin} />
 			</div>

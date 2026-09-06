@@ -1,7 +1,6 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { RequestHandler } from './$types';
-import { parseTags } from '$lib/utils/portfolio';
-import { fallbackProfile } from '$lib/profile';
+import { formatPortfolioToCV } from '$lib/types/cv';
 import pdfmake from 'pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
@@ -18,198 +17,347 @@ pdfmake.setFonts(fonts);
 
 export const GET: RequestHandler = async () => {
 	const content = await PortfolioService.getAllContent();
-	const { profile, experiences, projects, skills, certificates } = content;
-
-	const safeProfile = { ...fallbackProfile, ...(profile || {}) };
-
-	const contactInfo = [safeProfile.email, safeProfile.linkedin, safeProfile.github]
-		.filter(Boolean)
-		.join('  |  ');
+	const cv = formatPortfolioToCV(content);
+	const { personal, skillGroups, experiences, projects, openSource, education, certificates } = cv;
 
 	const docDefinition: TDocumentDefinitions = {
-		content: [
-			{ text: safeProfile.name.toUpperCase(), style: 'header', alignment: 'center' },
-			{
-				text: `${safeProfile.role}\n${contactInfo}`,
-				style: 'subheader',
-				alignment: 'center'
-			},
-			{ text: safeProfile.bio, style: 'bio' }
-		],
+		pageSize: 'A4',
+		pageMargins: [36, 36, 36, 36],
+		content: [],
 		styles: {
-			header: {
-				fontSize: 22,
+			candidateName: {
+				fontSize: 19,
 				bold: true,
+				color: '#0F3B7D',
+				alignment: 'center',
+				margin: [0, 0, 0, 2]
+			},
+			candidateRole: {
+				fontSize: 10.5,
+				bold: true,
+				color: '#2B3E50',
+				alignment: 'center',
 				margin: [0, 0, 0, 4]
 			},
-			subheader: {
-				fontSize: 10,
-				margin: [0, 0, 0, 15],
-				color: '#444444'
-			},
-			bio: {
-				fontSize: 10,
-				margin: [0, 0, 0, 15],
-				lineHeight: 1.3
+			contactBar: {
+				fontSize: 8.5,
+				color: '#4B5563',
+				alignment: 'center',
+				margin: [0, 0, 0, 10]
 			},
 			sectionHeader: {
-				fontSize: 14,
-				bold: true,
-				color: '#000000',
-				margin: [0, 15, 0, 5]
-			},
-			jobTitle: {
-				fontSize: 12,
-				bold: true,
-				margin: [0, 5, 0, 2]
-			},
-			companyName: {
-				fontSize: 11,
-				italics: true,
-				margin: [0, 0, 0, 5]
-			},
-			dateText: {
-				fontSize: 10,
-				margin: [0, 5, 0, 2]
-			},
-			listText: {
-				fontSize: 10,
-				lineHeight: 1.3
-			},
-			projectTitle: {
 				fontSize: 11,
 				bold: true,
-				margin: [0, 5, 0, 2]
+				color: '#0F3B7D',
+				margin: [0, 9, 0, 2]
 			},
-			projectTags: {
+			itemTitle: {
+				fontSize: 9.5,
+				bold: true,
+				color: '#111827'
+			},
+			itemSubtitle: {
 				fontSize: 9,
-				italics: true,
-				color: '#555555',
-				margin: [0, 0, 0, 5]
+				color: '#374151'
+			},
+			itemRightMeta: {
+				fontSize: 8.5,
+				color: '#4B5563',
+				alignment: 'right'
+			},
+			bodyText: {
+				fontSize: 8.5,
+				lineHeight: 1.25,
+				color: '#1F2937'
+			},
+			skillCategory: {
+				fontSize: 8.5,
+				bold: true,
+				color: '#111827'
+			},
+			bulletPrefix: {
+				bold: true,
+				color: '#111827'
+			},
+			hyperlink: {
+				color: '#0F3B7D',
+				decoration: 'underline'
 			}
 		},
 		defaultStyle: {
 			font: 'Helvetica',
-			fontSize: 10,
-			lineHeight: 1.2
+			fontSize: 8.5,
+			lineHeight: 1.2,
+			color: '#1F2937'
 		}
 	};
 
-	const docContent = docDefinition.content as unknown as Record<string, unknown>[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const docContent = docDefinition.content as any[];
 
 	const addDivider = () => {
 		docContent.push({
-			canvas: [{ type: 'line', x1: 0, y1: 0, x2: 515, y2: 0, lineWidth: 1 }],
-			margin: [0, 0, 0, 10]
+			canvas: [
+				{
+					type: 'line',
+					x1: 0,
+					y1: 0,
+					x2: 523,
+					y2: 0,
+					lineWidth: 0.8,
+					lineColor: '#0F3B7D'
+				}
+			],
+			margin: [0, 0, 0, 5]
 		});
 	};
 
-	if (experiences && experiences.length > 0) {
-		docContent.push({ text: 'EXPERIENCE', style: 'sectionHeader' });
+	// 1. Header (Name, Title, Contact Info)
+	docContent.push({ text: personal.fullName.toUpperCase(), style: 'candidateName' });
+	docContent.push({ text: personal.jobTitle.toUpperCase(), style: 'candidateRole' });
+
+	// Contact Bar
+	const contactParts: unknown[] = [];
+	if (personal.location) {
+		contactParts.push(personal.location);
+	}
+	if (personal.phone) {
+		if (contactParts.length > 0) contactParts.push('  |  ');
+		contactParts.push(personal.phone);
+	}
+	if (personal.email) {
+		if (contactParts.length > 0) contactParts.push('  |  ');
+		contactParts.push({
+			text: personal.email,
+			link: `mailto:${personal.email}`,
+			style: 'hyperlink'
+		});
+	}
+	if (personal.website) {
+		if (contactParts.length > 0) contactParts.push('  |  ');
+		const cleanWeb = personal.website.replace(/^https?:\/\//, '');
+		contactParts.push({ text: cleanWeb, link: personal.website, style: 'hyperlink' });
+	}
+	if (personal.linkedin) {
+		if (contactParts.length > 0) contactParts.push('  |  ');
+		const cleanLi = personal.linkedin.replace(/^https?:\/\/(www\.)?/, '');
+		contactParts.push({ text: cleanLi, link: personal.linkedin, style: 'hyperlink' });
+	}
+
+	docContent.push({ text: contactParts, style: 'contactBar' });
+
+	// 2. Professional Summary
+	if (personal.summary) {
+		docContent.push({ text: 'SUMMARY', style: 'sectionHeader' });
 		addDivider();
-
-		experiences.forEach((exp) => {
-			docContent.push({
-				columns: [
-					{ text: exp.role, style: 'jobTitle' },
-					{
-						text: `${exp.startDate} - ${exp.endDate || 'Present'}`,
-						alignment: 'right',
-						style: 'dateText'
-					}
-				]
-			});
-			docContent.push({ text: exp.company, style: 'companyName' });
-
-			if (exp.description) {
-				const bulletPoints = exp.description
-					.split('\n')
-					.map((s) => s.replace(/^[-*•]\s*/, '').trim())
-					.filter(Boolean);
-				docContent.push({
-					ul: bulletPoints,
-					margin: [0, 2, 0, 10],
-					style: 'listText'
-				});
-			} else {
-				docContent.push({ text: '', margin: [0, 0, 0, 10] });
-			}
+		docContent.push({
+			text: personal.summary,
+			style: 'bodyText',
+			margin: [0, 0, 0, 6]
 		});
 	}
 
-	if (projects && projects.length > 0) {
-		docContent.push({ text: 'PROJECTS', style: 'sectionHeader' });
+	// 3. Technical Skills
+	if (skillGroups.length > 0) {
+		docContent.push({ text: 'TECHNICAL SKILLS', style: 'sectionHeader' });
 		addDivider();
-
-		projects.forEach((proj) => {
-			const tags = parseTags(proj.tags).join(', ');
-			docContent.push(
-				{ text: proj.title, style: 'projectTitle' },
-				{ text: tags ? `Technologies: ${tags}` : '', style: 'projectTags' }
-			);
-			if (proj.description) {
-				const bulletPoints = proj.description
-					.split('\n')
-					.map((s) => s.replace(/^[-*•]\s*/, '').trim())
-					.filter(Boolean);
-				docContent.push({
-					ul: bulletPoints,
-					margin: [0, 2, 0, 10],
-					style: 'listText'
-				});
-			} else {
-				docContent.push({ text: '', margin: [0, 0, 0, 10] });
-			}
-		});
-	}
-
-	if (skills && skills.length > 0) {
-		docContent.push({ text: 'SKILLS', style: 'sectionHeader' });
-		addDivider();
-
-		const skillsByCategory: Record<string, string[]> = {};
-		skills.forEach((skill) => {
-			const cats = (skill.category || 'Other')
-				.split(',')
-				.map((c) => c.trim())
-				.filter(Boolean);
-			if (cats.length === 0) cats.push('Other');
-
-			cats.forEach((cat) => {
-				if (!skillsByCategory[cat]) skillsByCategory[cat] = [];
-				skillsByCategory[cat].push(skill.name);
-			});
-		});
-
-		for (const [category, skillNames] of Object.entries(skillsByCategory)) {
+		for (const group of skillGroups) {
 			docContent.push({
-				text: [{ text: `${category}: `, bold: true }, { text: skillNames.join(', ') }],
-				margin: [0, 2, 0, 2],
-				fontSize: 10
+				text: [
+					{ text: `${group.category}: `, style: 'skillCategory' },
+					{ text: group.skills.join(', '), style: 'bodyText' }
+				],
+				margin: [0, 1, 0, 1]
 			});
 		}
-		docContent.push({ text: '', margin: [0, 0, 0, 10] });
+		docContent.push({ text: '', margin: [0, 0, 0, 4] });
 	}
 
-	if (certificates && certificates.length > 0) {
-		docContent.push({ text: 'CERTIFICATES', style: 'sectionHeader' });
+	// 4. Work Experience
+	if (experiences.length > 0) {
+		docContent.push({ text: 'WORK EXPERIENCE', style: 'sectionHeader' });
 		addDivider();
 
-		const certsList = certificates.map((cert) => `${cert.name} - ${cert.issuer}`);
-		docContent.push({
-			ul: certsList,
-			margin: [0, 2, 0, 10],
-			style: 'listText'
-		});
+		for (const exp of experiences) {
+			const leftCol: unknown[] = [
+				{ text: exp.company, style: 'itemTitle' },
+				{ text: ` — ${exp.role}`, style: 'itemSubtitle' }
+			];
+
+			const rightColParts: string[] = [];
+			rightColParts.push(`${exp.startDate} – ${exp.endDate}`);
+			if (exp.location) rightColParts.push(exp.location);
+
+			docContent.push({
+				columns: [
+					{ text: leftCol, width: '*' },
+					{ text: rightColParts.join(' | '), style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 3, 0, 2]
+			});
+
+			if (exp.bullets.length > 0) {
+				const bulletItems = exp.bullets.map((b) => {
+					const parts: unknown[] = [];
+					if (b.prefix) {
+						parts.push({ text: `${b.prefix}: `, style: 'bulletPrefix' });
+					}
+					parts.push({ text: b.text });
+					if (b.linkText && b.linkUrl) {
+						parts.push(' ');
+						parts.push({ text: b.linkText, link: b.linkUrl, style: 'hyperlink' });
+					}
+					return { text: parts, margin: [0, 1, 0, 1.5] };
+				});
+
+				docContent.push({
+					ul: bulletItems,
+					style: 'bodyText',
+					margin: [10, 0, 0, 4]
+				});
+			}
+		}
+	}
+
+	// 5. Selected Projects
+	if (projects.length > 0) {
+		docContent.push({ text: 'SELECTED PROJECTS', style: 'sectionHeader' });
+		addDivider();
+
+		for (const proj of projects) {
+			const leftCol: unknown[] = [{ text: proj.title, style: 'itemTitle' }];
+			if (proj.subtitle) {
+				leftCol.push({ text: ` | ${proj.subtitle}`, style: 'itemSubtitle' });
+			}
+
+			docContent.push({
+				columns: [
+					{ text: leftCol, width: '*' },
+					{ text: proj.period || '', style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 3, 0, 2]
+			});
+
+			if (proj.bullets.length > 0) {
+				const bulletItems = proj.bullets.map((b) => {
+					const parts: unknown[] = [];
+					if (b.prefix) {
+						parts.push({ text: `${b.prefix}: `, style: 'bulletPrefix' });
+					}
+					parts.push({ text: b.text });
+					if (b.linkText && b.linkUrl) {
+						parts.push(' ');
+						parts.push({ text: b.linkText, link: b.linkUrl, style: 'hyperlink' });
+					}
+					return { text: parts, margin: [0, 1, 0, 1.5] };
+				});
+
+				docContent.push({
+					ul: bulletItems,
+					style: 'bodyText',
+					margin: [10, 0, 0, 4]
+				});
+			}
+		}
+	}
+
+	// 6. Open-Source Contributions
+	if (openSource.length > 0) {
+		docContent.push({ text: 'OPEN-SOURCE CONTRIBUTIONS', style: 'sectionHeader' });
+		addDivider();
+
+		for (const os of openSource) {
+			const leftCol: unknown[] = [{ text: os.title, style: 'itemTitle' }];
+			if (os.role) {
+				leftCol.push({ text: ` (${os.role})`, style: 'itemSubtitle' });
+			}
+
+			docContent.push({
+				columns: [
+					{ text: leftCol, width: '*' },
+					{ text: os.period || '', style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 3, 0, 2]
+			});
+
+			if (os.bullets.length > 0) {
+				const bulletItems = os.bullets.map((b) => {
+					const parts: unknown[] = [];
+					if (b.prefix) {
+						parts.push({ text: `${b.prefix}: `, style: 'bulletPrefix' });
+					}
+					parts.push({ text: b.text });
+					if (b.linkText && b.linkUrl) {
+						parts.push(' ');
+						parts.push({ text: b.linkText, link: b.linkUrl, style: 'hyperlink' });
+					}
+					return { text: parts, margin: [0, 1, 0, 1.5] };
+				});
+
+				docContent.push({
+					ul: bulletItems,
+					style: 'bodyText',
+					margin: [10, 0, 0, 4]
+				});
+			}
+		}
+	}
+
+	// 7. Education
+	if (education.length > 0) {
+		docContent.push({ text: 'EDUCATION', style: 'sectionHeader' });
+		addDivider();
+
+		for (const edu of education) {
+			docContent.push({
+				columns: [
+					{ text: edu.school, style: 'itemTitle' },
+					{ text: edu.period, style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 2, 0, 1]
+			});
+
+			docContent.push({
+				columns: [
+					{ text: edu.degree, style: 'itemSubtitle' },
+					{ text: edu.location || '', style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 0, 0, 4]
+			});
+		}
+	}
+
+	// 8. Certifications
+	if (certificates.length > 0) {
+		docContent.push({ text: 'CERTIFICATIONS', style: 'sectionHeader' });
+		addDivider();
+
+		for (const cert of certificates) {
+			docContent.push({
+				columns: [
+					{
+						text: [
+							{ text: cert.name, style: 'itemTitle' },
+							{ text: ` — ${cert.issuer}`, style: 'itemSubtitle' }
+						],
+						width: '*'
+					},
+					{ text: cert.issueDate || '', style: 'itemRightMeta', width: 'auto' }
+				],
+				margin: [0, 1.5, 0, 1.5]
+			});
+		}
 	}
 
 	const pdfDoc = pdfmake.createPdf(docDefinition);
 	const buffer = await pdfDoc.getBuffer();
 
+	const fileName = `${personal.fullName.replace(/\s+/g, '_')}_CV.pdf`;
+
 	return new Response(buffer as unknown as BodyInit, {
 		headers: {
 			'Content-Type': 'application/pdf',
-			'Content-Disposition': `attachment; filename="${safeProfile.name.replace(/\\s+/g, '_')}_Resume.pdf"`
+			'Content-Disposition': `attachment; filename="${fileName}"`
 		}
 	});
 };
