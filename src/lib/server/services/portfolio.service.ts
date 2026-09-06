@@ -8,7 +8,7 @@ import {
 	education,
 	openSource
 } from '$lib/server/db/schema';
-import { desc, eq, sql } from 'drizzle-orm';
+import { desc, asc, eq, sql } from 'drizzle-orm';
 import { GithubService } from './github.service';
 import { BaseRepository } from '$lib/server/db/crud';
 import type { PortfolioContent } from '$lib/types';
@@ -31,7 +31,12 @@ export class PortfolioService {
 				.select()
 				.from(projects)
 				.where(whereClause)
-				.orderBy(desc(projects.createdAt))
+				.orderBy(
+					sql`case when ${projects.order} > 0 then 0 else 1 end asc`,
+					asc(projects.order),
+					desc(projects.stars),
+					desc(projects.updatedAt)
+				)
 				.limit(limit)
 				.offset(offset),
 			db
@@ -51,7 +56,12 @@ export class PortfolioService {
 		if (!includeHidden) {
 			query.where(eq(projects.isHidden, false));
 		}
-		return query.orderBy(desc(projects.createdAt));
+		return query.orderBy(
+			sql`case when ${projects.order} > 0 then 0 else 1 end asc`,
+			asc(projects.order),
+			desc(projects.stars),
+			desc(projects.updatedAt)
+		);
 	}
 
 	static async getCertificates() {
@@ -107,24 +117,64 @@ export class PortfolioService {
 	static async syncGithubProjects() {
 		const githubRepos = await GithubService.getAllRepositories();
 		const existingProjects = await db.select().from(projects);
-		const existingGithubIds = new Set(
+		const existingGithubMap = new Map(
 			existingProjects
 				.filter((p: typeof projects.$inferSelect) => p.githubId !== null)
-				.map((p: typeof projects.$inferSelect) => p.githubId as number)
+				.map((p: typeof projects.$inferSelect) => [p.githubId as number, p])
 		);
 
+		const JUNK_REPO_PATTERNS = [
+			/^crud/i,
+			/^chall?enge/i,
+			/^tugas/i,
+			/^latihan/i,
+			/^pwl/i,
+			/^\d{6,}/,
+			/bucin/i,
+			/love-birthday/i,
+			/truck-letter/i,
+			/^-01-/i,
+			/--old/i,
+			/config files/i,
+			/laundry_ukk/i,
+			/rest-api/i,
+			/^react[_-]?\d/i,
+			/^node[_-]?react/i,
+			/^auth-/i,
+			/siperpus/i,
+			/php-docs/i,
+			/undangan-ippnu/i,
+			/-clone$/i
+		];
+
 		const operations = githubRepos.map((repo) => {
+			const existing = existingGithubMap.get(repo.id);
+			const isJunk = JUNK_REPO_PATTERNS.some(
+				(regex) => regex.test(repo.name) || (repo.description && regex.test(repo.description))
+			);
+
+			// Preserve existing title and description if already customized
+			const title =
+				existing?.title && existing.title.trim() !== '' && existing.title !== repo.name
+					? existing.title
+					: repo.name;
+
+			const description =
+				existing?.description && existing.description.trim() !== ''
+					? existing.description
+					: repo.description;
+
 			const projectData = {
 				githubId: repo.id,
-				title: repo.name,
-				description: repo.description,
+				title,
+				description,
 				repoUrl: repo.html_url,
 				liveUrl:
 					repo.homepage && repo.homepage.trim() !== ''
 						? repo.homepage.startsWith('http')
 							? repo.homepage
 							: `https://${repo.homepage}`
-						: null,
+						: (existing?.liveUrl ?? null),
 				stars: repo.stargazers_count,
 				forks: repo.forks_count,
 				language: repo.language,
@@ -132,18 +182,28 @@ export class PortfolioService {
 				updatedAt: new Date(repo.updated_at)
 			};
 
-			if (existingGithubIds.has(repo.id)) {
+			if (existing) {
+				const isHidden = isJunk ? true : existing.isHidden;
 				return db
 					.update(projects)
-					.set(projectData)
+					.set({
+						...projectData,
+						isHidden
+					})
 					.where(eq(projects.githubId, repo.id))
 					.returning();
 			} else {
+				const isHighActivity =
+					!isJunk &&
+					(repo.stargazers_count > 0 ||
+						(repo.description &&
+							Date.now() - new Date(repo.updated_at).getTime() < 180 * 24 * 60 * 60 * 1000));
+
 				return db
 					.insert(projects)
 					.values({
 						...projectData,
-						isHidden: true,
+						isHidden: !isHighActivity,
 						order: 0
 					})
 					.returning();
