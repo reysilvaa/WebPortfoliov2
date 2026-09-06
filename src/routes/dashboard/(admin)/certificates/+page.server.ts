@@ -4,7 +4,7 @@ import { certificates } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const { certificates } = await PortfolioService.getAllContent(true);
+	const certificates = await PortfolioService.getCertificates();
 	return { certificates };
 };
 

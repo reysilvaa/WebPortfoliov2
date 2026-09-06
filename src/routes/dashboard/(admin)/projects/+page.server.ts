@@ -4,7 +4,7 @@ import { projects } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const { projects } = await PortfolioService.getAllContent(true);
+	const projects = await PortfolioService.getProjects(true);
 	return { projects };
 };
 

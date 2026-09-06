@@ -2,13 +2,14 @@
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
-	import { fallbackProfile } from '$lib/profile';
+	import { resolveProfile } from '$lib/profile';
 	import './portfolio.css';
 
 	import TimelineNav from '$lib/components/portfolio/TimelineNav.svelte';
 	import HeroSection from '$lib/components/portfolio/HeroSection.svelte';
 	import ExperienceSection from '$lib/components/portfolio/ExperienceSection.svelte';
 	import ProjectsSection from '$lib/components/portfolio/ProjectsSection.svelte';
+	import EducationSection from '$lib/components/portfolio/EducationSection.svelte';
 	import SkillsSection from '$lib/components/portfolio/SkillsSection.svelte';
 	import CertificatesSection from '$lib/components/portfolio/CertificatesSection.svelte';
 	import ContributionsSection from '$lib/components/portfolio/ContributionsSection.svelte';
@@ -16,22 +17,29 @@
 
 	let { data }: { data: PageData } = $props();
 
-	const profile = $derived({
-		...fallbackProfile,
-		...(data.profile || {})
-	});
+	const profile = $derived(resolveProfile(data.profile));
 
 	const items = $derived({
 		projects: data.projects || [],
 		certificates: data.certificates || [],
 		skills: data.skills || [],
-		experiences: data.experiences || []
+		experiences: data.experiences || [],
+		education: data.education || [],
+		openSource: data.openSource || []
 	});
 
 	let scrollY = $state(0);
 	let activeSection = $state('hero');
 
-	const SECTION_IDS = ['hero', 'work', 'projects', 'skills', 'certificates'];
+	const SECTION_IDS = [
+		'hero',
+		'work',
+		'projects',
+		'contributions',
+		'education',
+		'skills',
+		'certificates'
+	];
 
 	onMount(() => {
 		const { destroy } = createSectionObserver((id) => {
@@ -58,9 +66,11 @@
 	<meta name="twitter:title" content={data.seo.title} />
 	<meta name="twitter:description" content={data.seo.description} />
 	<meta name="twitter:image" content={data.seo.ogImage} />
-	<script type="application/ld+json">
-{@html data.seo.jsonLd}
-	</script>
+	<!-- Structured Data -->
+	<svelte:element this={'script'} type="application/ld+json">
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html data.seo.jsonLd}
+	</svelte:element>
 	<link
 		href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700;900&display=swap"
 		rel="stylesheet"
@@ -106,6 +116,10 @@
 				WORK
 			{:else if activeSection === 'projects'}
 				PROJ
+			{:else if activeSection === 'contributions'}
+				OPEN
+			{:else if activeSection === 'education'}
+				ACAD
 			{:else if activeSection === 'skills'}
 				TOOL
 			{:else if activeSection === 'certificates'}
@@ -118,7 +132,8 @@
 		<HeroSection {profile} {scrollY} />
 		<ExperienceSection {items} />
 		<ProjectsSection {items} />
-		<ContributionsSection />
+		<ContributionsSection openSource={items.openSource} />
+		<EducationSection {items} />
 		<SkillsSection {items} />
 		<CertificatesSection {items} />
 

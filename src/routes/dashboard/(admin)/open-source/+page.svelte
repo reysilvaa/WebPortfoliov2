@@ -95,7 +95,9 @@
 				/>
 
 				<div class="flex justify-end pt-2">
-					<Button type="submit" isLoading={loading} class="w-full sm:w-auto">Add Open Source Project</Button>
+					<Button type="submit" isLoading={loading} class="w-full sm:w-auto"
+						>Add Open Source Project</Button
+					>
 				</div>
 			</form>
 		</Card>
@@ -114,7 +116,7 @@
 								<a
 									href={os.repoUrl}
 									target="_blank"
-									rel="noreferrer"
+									rel="external noopener noreferrer"
 									class="text-xs text-blue-600 hover:underline"
 								>
 									View
@@ -176,12 +178,7 @@
 					label="Project / Library Name"
 					required
 				/>
-				<Input
-					bind:value={editingOpenSource.role}
-					name="role"
-					label="Role"
-					required
-				/>
+				<Input bind:value={editingOpenSource.role} name="role" label="Role" required />
 				<Input
 					value={editingOpenSource.repoUrl || ''}
 					oninput={(e) => {

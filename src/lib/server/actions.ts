@@ -9,6 +9,19 @@ export function requireOwner(event: AdminEvent): void {
 	if (!event.locals.user) redirect(303, '/dashboard/login');
 }
 
+export function parseFormData<T extends Record<string, unknown> = Record<string, string | null>>(
+	formData: FormData,
+	fields: string[]
+): T {
+	const out: Record<string, string | null> = {};
+	for (const field of fields) {
+		const value = formData.get(field) as string | null;
+		out[field] =
+			value && value.length > MAX_FIELD_LENGTH ? value.slice(0, MAX_FIELD_LENGTH) : value;
+	}
+	return out as T;
+}
+
 export function createCrudActions<
 	TAdd extends Record<string, unknown>,
 	TUpdate extends Record<string, unknown>
@@ -27,23 +40,13 @@ export function createCrudActions<
 	remove: (id: string) => Promise<unknown>;
 	authorize?: (event: AdminEvent) => void;
 }) {
-	function parse(formData: FormData, fields: string[]): Record<string, string | null> {
-		const out: Record<string, string | null> = {};
-		for (const field of fields) {
-			const value = formData.get(field) as string | null;
-			out[field] =
-				value && value.length > MAX_FIELD_LENGTH ? value.slice(0, MAX_FIELD_LENGTH) : value;
-		}
-		return out;
-	}
-
 	const actions: Record<string, (event: AdminEvent) => Promise<{ success: true }>> = {};
 
 	if (add && addFields) {
 		actions.add = async (event) => {
 			authorize(event);
 			const formData = await event.request.formData();
-			await add(parse(formData, addFields) as TAdd);
+			await add(parseFormData<TAdd>(formData, addFields));
 			return { success: true };
 		};
 	}
@@ -52,7 +55,7 @@ export function createCrudActions<
 		authorize(event);
 		const formData = await event.request.formData();
 		const id = formData.get('id') as string;
-		await update(id, parse(formData, updateFields) as TUpdate);
+		await update(id, parseFormData<TUpdate>(formData, updateFields));
 		return { success: true };
 	};
 

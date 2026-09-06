@@ -118,6 +118,18 @@ describe('PortfolioService', () => {
 	});
 
 	describe('Other missing methods', () => {
+		it('should get individual entities', async () => {
+			vi.mocked((db as any).orderBy).mockResolvedValue([] as any);
+
+			expect(await PortfolioService.getProjects()).toEqual([]);
+			expect(await PortfolioService.getProjects(true)).toEqual([]);
+			expect(await PortfolioService.getCertificates()).toEqual([]);
+			expect(await PortfolioService.getSkills()).toEqual([]);
+			expect(await PortfolioService.getExperiences()).toEqual([]);
+			expect(await PortfolioService.getEducation()).toEqual([]);
+			expect(await PortfolioService.getOpenSource()).toEqual([]);
+		});
+
 		it('should get all content', async () => {
 			vi.mocked((db as any).limit).mockResolvedValue([{}] as any);
 			vi.mocked((db as any).orderBy).mockResolvedValue([] as any);

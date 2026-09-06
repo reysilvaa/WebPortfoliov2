@@ -4,7 +4,7 @@ import { skills } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const { skills } = await PortfolioService.getAllContent(true);
+	const skills = await PortfolioService.getSkills();
 	return { skills };
 };
 

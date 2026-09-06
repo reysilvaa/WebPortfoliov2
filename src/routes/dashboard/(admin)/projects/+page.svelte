@@ -152,7 +152,11 @@
 							method="POST"
 							action="?/bulk-action"
 							onsubmit={(e) => {
-								if (!confirm(`Delete ${selectedIds.length} projects? This will permanently remove them.`)) {
+								if (
+									!confirm(
+										`Delete ${selectedIds.length} projects? This will permanently remove them.`
+									)
+								) {
 									e.preventDefault();
 								}
 							}}

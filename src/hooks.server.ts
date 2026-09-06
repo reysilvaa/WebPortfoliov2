@@ -1,7 +1,7 @@
 import { auth } from '$lib/server/auth';
 import { env } from '$env/dynamic/private';
 import { dev } from '$app/environment';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 
 const SECURITY_HEADERS: Record<string, string> = {
 	'Content-Security-Policy': [
@@ -34,6 +34,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (env.GITHUB_EMAIL && session.user.email === env.GITHUB_EMAIL) {
 			event.locals.session = session.session;
 			event.locals.user = session.user;
+		}
+	}
+
+	if (event.url.pathname.startsWith('/dashboard') && event.url.pathname !== '/dashboard/login') {
+		if (!event.locals.user) {
+			redirect(303, '/dashboard/login');
 		}
 	}
 

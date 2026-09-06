@@ -237,10 +237,7 @@ async function main() {
 			.select()
 			.from(schema.experiences)
 			.where(
-				and(
-					eq(schema.experiences.company, exp.company),
-					eq(schema.experiences.role, exp.role)
-				)
+				and(eq(schema.experiences.company, exp.company), eq(schema.experiences.role, exp.role))
 			)
 			.limit(1);
 		if (existing.length > 0) {
@@ -368,12 +365,7 @@ async function main() {
 		const existing = await db
 			.select()
 			.from(schema.education)
-			.where(
-				and(
-					eq(schema.education.school, edu.school),
-					eq(schema.education.degree, edu.degree)
-				)
-			)
+			.where(and(eq(schema.education.school, edu.school), eq(schema.education.degree, edu.degree)))
 			.limit(1);
 		if (existing.length > 0) {
 			await db.update(schema.education).set(edu).where(eq(schema.education.id, existing[0].id));
@@ -409,14 +401,14 @@ async function main() {
 			.select()
 			.from(schema.certificates)
 			.where(
-				and(
-					eq(schema.certificates.name, cert.name),
-					eq(schema.certificates.issuer, cert.issuer)
-				)
+				and(eq(schema.certificates.name, cert.name), eq(schema.certificates.issuer, cert.issuer))
 			)
 			.limit(1);
 		if (existing.length > 0) {
-			await db.update(schema.certificates).set(cert).where(eq(schema.certificates.id, existing[0].id));
+			await db
+				.update(schema.certificates)
+				.set(cert)
+				.where(eq(schema.certificates.id, existing[0].id));
 		} else {
 			await db.insert(schema.certificates).values(cert);
 		}

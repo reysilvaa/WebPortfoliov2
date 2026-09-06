@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ProjectData } from '$lib/profile';
+	import type { ProjectData } from '$lib/types/project';
 
 	let { project }: { project: ProjectData } = $props();
 </script>

@@ -99,7 +99,8 @@
 							{edu.degree}
 						</p>
 						<p class="text-[12px] text-neutral-400">
-							{edu.period} {edu.location ? `• ${edu.location}` : ''}
+							{edu.period}
+							{edu.location ? `• ${edu.location}` : ''}
 						</p>
 					</div>
 					<div class="flex gap-2">

@@ -1,12 +1,12 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import type { PageServerLoad } from './$types';
-import type { projects as projectsTable, skills as skillsTable } from '$lib/server/db/schema';
-import { SITE_URL, fallbackProfile, type ProfileData } from '$lib/profile';
+import type { Project, Skill } from '$lib/types';
+import { SITE_URL, resolveProfile, type ProfileData } from '$lib/profile';
 
 function buildJsonLd(
 	profile: ProfileData,
-	projectRows: (typeof projectsTable.$inferSelect)[],
-	skillRows: (typeof skillsTable.$inferSelect)[],
+	projectRows: Project[],
+	skillRows: Skill[],
 	canonical: string,
 	ogImage: string
 ) {
@@ -53,7 +53,7 @@ function buildJsonLd(
 export const load: PageServerLoad = async () => {
 	const content = await PortfolioService.getAllContent();
 
-	const profile = { ...fallbackProfile, ...(content.profile || {}) };
+	const profile = resolveProfile(content.profile);
 
 	const canonical = `${SITE_URL}/`;
 	const ogImage = `${SITE_URL}/og-card.svg`;
@@ -63,6 +63,8 @@ export const load: PageServerLoad = async () => {
 		certificates: content.certificates,
 		skills: content.skills,
 		experiences: content.experiences,
+		education: content.education,
+		openSource: content.openSource,
 		profile: content.profile,
 		seo: {
 			title: `${profile.name} — ${profile.role} | Portfolio`,

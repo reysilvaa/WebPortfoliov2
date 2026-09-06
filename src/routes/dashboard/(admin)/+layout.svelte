@@ -11,15 +11,25 @@
 
 	let { children, data } = $props();
 
-	const links = [
-		{ href: '/dashboard/cv' as const, label: 'Curriculum Vitae' },
-		{ href: '/dashboard' as const, label: m.dashboard_settings_title() },
-		{ href: '/dashboard/experiences' as const, label: 'Experiences' },
-		{ href: '/dashboard/projects' as const, label: m.dashboard_projects_title() },
-		{ href: '/dashboard/open-source' as const, label: 'Open Source' },
-		{ href: '/dashboard/education' as const, label: 'Education' },
-		{ href: '/dashboard/skills' as const, label: m.dashboard_skills_title() },
-		{ href: '/dashboard/certificates' as const, label: m.dashboard_credentials_title() }
+	type DashboardRoute =
+		| '/dashboard/cv'
+		| '/dashboard'
+		| '/dashboard/experiences'
+		| '/dashboard/projects'
+		| '/dashboard/open-source'
+		| '/dashboard/education'
+		| '/dashboard/skills'
+		| '/dashboard/certificates';
+
+	const links: { href: DashboardRoute; label: string }[] = [
+		{ href: '/dashboard/cv', label: 'Curriculum Vitae' },
+		{ href: '/dashboard', label: m.dashboard_settings_title() },
+		{ href: '/dashboard/experiences', label: 'Experiences' },
+		{ href: '/dashboard/projects', label: m.dashboard_projects_title() },
+		{ href: '/dashboard/open-source', label: 'Open Source' },
+		{ href: '/dashboard/education', label: 'Education' },
+		{ href: '/dashboard/skills', label: m.dashboard_skills_title() },
+		{ href: '/dashboard/certificates', label: m.dashboard_credentials_title() }
 	];
 
 	function isActive(href: string) {
@@ -73,7 +83,7 @@
 			<nav class="space-y-1 px-4">
 				{#each links as link (link.href)}
 					<a
-						href={resolve(link.href as any)}
+						href={resolve(link.href)}
 						class="block rounded-lg px-4 py-2.5 text-[13px] font-medium transition-all
 							{isActive(link.href)
 							? 'bg-neutral-200/50 text-brand-text'
@@ -121,7 +131,7 @@
 		>
 			{#each links as link (link.href)}
 				<a
-					href={resolve(link.href as any)}
+					href={resolve(link.href)}
 					class="shrink-0 px-4 py-3 text-[13px] font-medium {isActive(link.href)
 						? 'border-b-2 border-brand-text text-brand-text'
 						: 'text-neutral-600'}"

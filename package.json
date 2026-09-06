@@ -44,7 +44,6 @@
 		"globals": "^17.6.0",
 		"knip": "^5.45.0",
 		"mdsvex": "^0.12.7",
-		"playwright": "^1.61.0",
 		"prettier": "^3.8.4",
 		"prettier-plugin-svelte": "^3.5.2",
 		"prettier-plugin-tailwindcss": "^0.7.4",
@@ -58,7 +57,6 @@
 		"vitest": "^4.1.9"
 	},
 	"dependencies": {
-		"@vitest/browser-playwright": "^4.1.9",
 		"pdfmake": "^0.3.11"
 	}
 }

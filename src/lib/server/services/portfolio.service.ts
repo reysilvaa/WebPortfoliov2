@@ -8,18 +8,19 @@ import {
 	education,
 	openSource
 } from '$lib/server/db/schema';
-import { desc, asc, eq, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { GithubService } from './github.service';
-import { createCrud } from '$lib/server/db/crud';
-
-const projectCrud = createCrud(projects);
-const certificateCrud = createCrud(certificates);
-const skillCrud = createCrud(skills);
-const experienceCrud = createCrud(experiences);
-const educationCrud = createCrud(education);
-const openSourceCrud = createCrud(openSource);
+import { BaseRepository } from '$lib/server/db/crud';
+import type { PortfolioContent } from '$lib/types';
 
 export class PortfolioService {
+	public static readonly projectRepo = new BaseRepository(projects);
+	public static readonly certificateRepo = new BaseRepository(certificates);
+	public static readonly skillRepo = new BaseRepository(skills);
+	public static readonly experienceRepo = new BaseRepository(experiences);
+	public static readonly profileRepo = new BaseRepository(profile);
+	public static readonly educationRepo = new BaseRepository(education);
+	public static readonly openSourceRepo = new BaseRepository(openSource);
 	static async getPaginatedProjects(page: number, limit: number, includeHidden = false) {
 		const offset = (page - 1) * limit;
 
@@ -45,13 +46,35 @@ export class PortfolioService {
 		};
 	}
 
-	static async getAllContent(includeHidden = false) {
-		const projectQuery = db.select().from(projects);
-
+	static async getProjects(includeHidden = false) {
+		const query = db.select().from(projects);
 		if (!includeHidden) {
-			projectQuery.where(eq(projects.isHidden, false));
+			query.where(eq(projects.isHidden, false));
 		}
+		return query.orderBy(desc(projects.createdAt));
+	}
 
+	static async getCertificates() {
+		return this.certificateRepo.getAll(certificates.order, 'asc');
+	}
+
+	static async getSkills() {
+		return this.skillRepo.getAll(skills.order, 'asc');
+	}
+
+	static async getExperiences() {
+		return this.experienceRepo.getAll(experiences.order, 'asc');
+	}
+
+	static async getEducation() {
+		return this.educationRepo.getAll(education.order, 'asc');
+	}
+
+	static async getOpenSource() {
+		return this.openSourceRepo.getAll(openSource.order, 'asc');
+	}
+
+	static async getAllContent(includeHidden = false): Promise<PortfolioContent> {
 		const [
 			allProjects,
 			allCertificates,
@@ -61,20 +84,20 @@ export class PortfolioService {
 			allEducation,
 			allOpenSource
 		] = await Promise.all([
-			projectQuery.orderBy(desc(projects.createdAt)),
-			db.select().from(certificates).orderBy(asc(certificates.order)),
-			db.select().from(skills).orderBy(asc(skills.order)),
-			db.select().from(profile).where(eq(profile.id, 'main')).limit(1),
-			db.select().from(experiences).orderBy(asc(experiences.order)),
-			db.select().from(education).orderBy(asc(education.order)),
-			db.select().from(openSource).orderBy(asc(openSource.order))
+			this.getProjects(includeHidden),
+			this.getCertificates(),
+			this.getSkills(),
+			this.getProfile(),
+			this.getExperiences(),
+			this.getEducation(),
+			this.getOpenSource()
 		]);
 
 		return {
 			projects: allProjects,
 			certificates: allCertificates,
 			skills: allSkills,
-			profile: currentProfile[0] || null,
+			profile: currentProfile,
 			experiences: allExperiences,
 			education: allEducation,
 			openSource: allOpenSource
@@ -84,13 +107,13 @@ export class PortfolioService {
 	static async syncGithubProjects() {
 		const githubRepos = await GithubService.getAllRepositories();
 		const existingProjects = await db.select().from(projects);
-		const existingGithubIds = existingProjects
-			.filter((p: typeof projects.$inferSelect) => p.githubId !== null)
-			.map((p: typeof projects.$inferSelect) => p.githubId as number);
+		const existingGithubIds = new Set(
+			existingProjects
+				.filter((p: typeof projects.$inferSelect) => p.githubId !== null)
+				.map((p: typeof projects.$inferSelect) => p.githubId as number)
+		);
 
-		const results = [];
-
-		for (const repo of githubRepos) {
+		const operations = githubRepos.map((repo) => {
 			const projectData = {
 				githubId: repo.id,
 				title: repo.name,
@@ -109,15 +132,14 @@ export class PortfolioService {
 				updatedAt: new Date(repo.updated_at)
 			};
 
-			if (existingGithubIds.includes(repo.id)) {
-				const updated = await db
+			if (existingGithubIds.has(repo.id)) {
+				return db
 					.update(projects)
 					.set(projectData)
 					.where(eq(projects.githubId, repo.id))
 					.returning();
-				results.push(...updated);
 			} else {
-				const inserted = await db
+				return db
 					.insert(projects)
 					.values({
 						...projectData,
@@ -125,11 +147,11 @@ export class PortfolioService {
 						order: 0
 					})
 					.returning();
-				results.push(...inserted);
 			}
-		}
+		});
 
-		return results;
+		const results = await Promise.all(operations);
+		return results.flat();
 	}
 
 	static async toggleProjectVisibility(id: string, isHidden: boolean) {
@@ -170,74 +192,74 @@ export class PortfolioService {
 	}
 
 	static async addProject(data: typeof projects.$inferInsert) {
-		return projectCrud.add(data);
+		return this.projectRepo.add(data);
 	}
 
 	static async updateProject(id: string, data: Partial<typeof projects.$inferInsert>) {
-		return projectCrud.update(id, data);
+		return this.projectRepo.update(id, data);
 	}
 
 	static async deleteProject(id: string) {
-		return projectCrud.remove(id);
+		return this.projectRepo.remove(id);
 	}
 
 	static async addCertificate(data: typeof certificates.$inferInsert) {
-		return certificateCrud.add(data);
+		return this.certificateRepo.add(data);
 	}
 
 	static async updateCertificate(id: string, data: Partial<typeof certificates.$inferInsert>) {
-		return certificateCrud.update(id, data);
+		return this.certificateRepo.update(id, data);
 	}
 
 	static async deleteCertificate(id: string) {
-		return certificateCrud.remove(id);
+		return this.certificateRepo.remove(id);
 	}
 
 	static async addSkill(data: typeof skills.$inferInsert) {
-		return skillCrud.add(data);
+		return this.skillRepo.add(data);
 	}
 
 	static async updateSkill(id: string, data: Partial<typeof skills.$inferInsert>) {
-		return skillCrud.update(id, data);
+		return this.skillRepo.update(id, data);
 	}
 
 	static async deleteSkill(id: string) {
-		return skillCrud.remove(id);
+		return this.skillRepo.remove(id);
 	}
 
 	static async addExperience(data: typeof experiences.$inferInsert) {
-		return experienceCrud.add(data);
+		return this.experienceRepo.add(data);
 	}
 
 	static async updateExperience(id: string, data: Partial<typeof experiences.$inferInsert>) {
-		return experienceCrud.update(id, data);
+		return this.experienceRepo.update(id, data);
 	}
 
 	static async deleteExperience(id: string) {
-		return experienceCrud.remove(id);
+		return this.experienceRepo.remove(id);
 	}
 
 	static async addEducation(data: typeof education.$inferInsert) {
-		return educationCrud.add(data);
+		return this.educationRepo.add(data);
 	}
 
 	static async updateEducation(id: string, data: Partial<typeof education.$inferInsert>) {
-		return educationCrud.update(id, data);
+		return this.educationRepo.update(id, data);
 	}
 
 	static async deleteEducation(id: string) {
-		return educationCrud.remove(id);
+		return this.educationRepo.remove(id);
 	}
 
 	static async addOpenSource(data: typeof openSource.$inferInsert) {
-		return openSourceCrud.add(data);
+		return this.openSourceRepo.add(data);
 	}
 
 	static async updateOpenSource(id: string, data: Partial<typeof openSource.$inferInsert>) {
-		return openSourceCrud.update(id, data);
+		return this.openSourceRepo.update(id, data);
 	}
 
 	static async deleteOpenSource(id: string) {
-		return openSourceCrud.remove(id);
+		return this.openSourceRepo.remove(id);
 	}
 }

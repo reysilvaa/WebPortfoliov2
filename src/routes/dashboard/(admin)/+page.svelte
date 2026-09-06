@@ -164,7 +164,12 @@
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
 				<Input label={m.form_label_email()} name="email" type="email" bind:value={email} />
 				<Input label="Phone" name="phone" bind:value={phone} placeholder="+62 852..." />
-				<Input label="Location" name="location" bind:value={location} placeholder="Malang, Indonesia" />
+				<Input
+					label="Location"
+					name="location"
+					bind:value={location}
+					placeholder="Malang, Indonesia"
+				/>
 			</div>
 
 			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">

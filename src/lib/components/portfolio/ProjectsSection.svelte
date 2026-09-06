@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
 	import { parseTags } from '$lib/utils/portfolio';
-	import type { ProjectData } from '$lib/profile';
+	import type { ProjectData } from '$lib/types/project';
 
 	let { items }: { items: { projects: ProjectData[] } } = $props();
 

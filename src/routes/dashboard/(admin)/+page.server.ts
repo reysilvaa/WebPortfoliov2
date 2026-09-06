@@ -1,42 +1,41 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
 import { GithubService } from '$lib/server/services/github.service';
+import { parseFormData, requireOwner } from '$lib/server/actions';
+import { profile } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
-export const load: PageServerLoad = async () => {
-	const profile = await PortfolioService.getProfile();
+export const load: PageServerLoad = async ({ parent }) => {
+	const { profile } = await parent();
 	return { profile };
 };
 
+const PROFILE_FIELDS = [
+	'name',
+	'role',
+	'bio',
+	'avatarUrl',
+	'email',
+	'phone',
+	'location',
+	'website',
+	'github',
+	'linkedin'
+];
+
 export const actions: Actions = {
-	updateProfile: async ({ request }) => {
-		const formData = await request.formData();
-		const name = formData.get('name') as string;
-		const role = formData.get('role') as string;
-		const bio = formData.get('bio') as string;
-		const avatarUrl = formData.get('avatarUrl') as string;
-		const email = formData.get('email') as string;
-		const phone = formData.get('phone') as string;
-		const location = formData.get('location') as string;
-		const website = formData.get('website') as string;
-		const github = formData.get('github') as string;
-		const linkedin = formData.get('linkedin') as string;
+	updateProfile: async (event) => {
+		requireOwner(event);
+		const formData = await event.request.formData();
+		const profileData = parseFormData<Partial<typeof profile.$inferInsert>>(
+			formData,
+			PROFILE_FIELDS
+		);
 
-		await PortfolioService.updateProfile({
-			name,
-			role,
-			bio,
-			avatarUrl,
-			email,
-			phone,
-			location,
-			website,
-			github,
-			linkedin
-		});
-
+		await PortfolioService.updateProfile(profileData);
 		return { success: true };
 	},
-	syncGithubProfile: async () => {
+	syncGithubProfile: async (event) => {
+		requireOwner(event);
 		const ghProfile = await GithubService.getProfileInfo();
 		if (ghProfile) {
 			await PortfolioService.updateProfile({

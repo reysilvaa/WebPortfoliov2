@@ -4,8 +4,8 @@ import { openSource } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const { openSource: allOpenSource } = await PortfolioService.getAllContent(true);
-	return { openSource: allOpenSource };
+	const openSource = await PortfolioService.getOpenSource();
+	return { openSource };
 };
 
 export const actions: Actions = {

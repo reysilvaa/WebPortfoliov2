@@ -53,8 +53,14 @@ export class GithubService {
 
 	static async getAllRepositories(): Promise<GitHubRepository[]> {
 		const [personal, org] = await Promise.all([
-			this.request<GitHubRepository[]>('/user/repos?sort=updated&per_page=100', GITHUB_TOKEN_PERSONAL),
-			this.request<GitHubRepository[]>('/user/repos?type=all&sort=updated&per_page=100', GITHUB_TOKEN_ORGANIZATION)
+			this.request<GitHubRepository[]>(
+				'/user/repos?sort=updated&per_page=100',
+				GITHUB_TOKEN_PERSONAL
+			),
+			this.request<GitHubRepository[]>(
+				'/user/repos?type=all&sort=updated&per_page=100',
+				GITHUB_TOKEN_ORGANIZATION
+			)
 		]);
 
 		const map = new Map<number, GitHubRepository>();
@@ -62,28 +68,39 @@ export class GithubService {
 		return Array.from(map.values());
 	}
 
-	static async getExternalContributions(): Promise<{
-		contributions: { repo: string; title: string; url: string; mergedAt: string | null }[];
-		commits: { repo: string; message: string; url: string; date: string }[];
-	}> {
+	private static async getOwnedLogins(): Promise<Set<string>> {
 		const [ownRepos, orgRepos] = await Promise.all([
-			this.request<GitHubRepository[]>('/user/repos?affiliation=owner&per_page=100', GITHUB_TOKEN_PERSONAL),
-			this.request<GitHubRepository[]>('/user/repos?affiliation=owner&per_page=100', GITHUB_TOKEN_ORGANIZATION)
+			this.request<GitHubRepository[]>(
+				'/user/repos?affiliation=owner&per_page=100',
+				GITHUB_TOKEN_PERSONAL
+			),
+			this.request<GitHubRepository[]>(
+				'/user/repos?affiliation=owner&per_page=100',
+				GITHUB_TOKEN_ORGANIZATION
+			)
 		]);
 
-		const ownOwners = new Set([
+		return new Set([
 			GITHUB_USERNAME.toLowerCase(),
 			'rey-workbench',
 			...(env.GITHUB_ORGANIZATION ? [env.GITHUB_ORGANIZATION.toLowerCase()] : []),
 			...[...(ownRepos ?? []), ...(orgRepos ?? [])].map((r) => r.owner.login.toLowerCase())
 		]);
+	}
+
+	static async getExternalContributions(): Promise<{
+		contributions: { repo: string; title: string; url: string; mergedAt: string | null }[];
+		commits: { repo: string; message: string; url: string; date: string }[];
+	}> {
+		const ownOwners = await this.getOwnedLogins();
 		const isExternal = (repo: string) => {
 			const owner = repo.split('/')[0]?.toLowerCase();
 			return Boolean(owner && !ownOwners.has(owner));
 		};
 
 		const seenPrs = new Set<string>();
-		const contributions: { repo: string; title: string; url: string; mergedAt: string | null }[] = [];
+		const contributions: { repo: string; title: string; url: string; mergedAt: string | null }[] =
+			[];
 		const prQuery = encodeURIComponent(`author:${GITHUB_USERNAME} is:pr is:merged`);
 
 		for (let page = 1; page <= 2; page++) {

@@ -1,9 +1,12 @@
+import path from 'node:path';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import tailwind from 'eslint-plugin-tailwindcss';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+
+const rootDir = import.meta.dirname ?? process.cwd();
 
 export default ts.config(
 	js.configs.recommended,
@@ -15,7 +18,7 @@ export default ts.config(
 	{
 		settings: {
 			tailwindcss: {
-				cssConfigPath: './src/routes/layout.css'
+				cssConfigPath: path.resolve(rootDir, 'src/routes/layout.css')
 			}
 		}
 	},
@@ -36,6 +39,6 @@ export default ts.config(
 		}
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', 'dist/', '.vercel']
+		ignores: ['build/', '.svelte-kit/', 'dist/', '.vercel/', 'src/lib/paraglide/']
 	}
 );

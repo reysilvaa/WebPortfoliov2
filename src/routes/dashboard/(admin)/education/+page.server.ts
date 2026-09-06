@@ -4,8 +4,8 @@ import { education } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async () => {
-	const { education: allEducation } = await PortfolioService.getAllContent(true);
-	return { education: allEducation };
+	const education = await PortfolioService.getEducation();
+	return { education };
 };
 
 export const actions: Actions = {

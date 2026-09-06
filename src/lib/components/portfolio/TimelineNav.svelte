@@ -8,6 +8,8 @@
 			projects: unknown[];
 			skills: unknown[];
 			certificates: unknown[];
+			education?: unknown[];
+			openSource?: unknown[];
 		};
 		activeSection: string;
 	} = $props();
@@ -17,6 +19,8 @@
 			{ id: 'hero', label: 'Intro', show: true },
 			{ id: 'work', label: 'Experience', show: items.experiences.length > 0 },
 			{ id: 'projects', label: 'Projects', show: items.projects.length > 0 },
+			{ id: 'contributions', label: 'Open Source', show: true },
+			{ id: 'education', label: 'Education', show: (items.education?.length ?? 0) > 0 },
 			{ id: 'skills', label: 'Toolbox', show: items.skills.length > 0 },
 			{ id: 'certificates', label: 'Credentials', show: items.certificates.length > 0 }
 		].filter((n) => n.show)
