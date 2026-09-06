@@ -1,5 +1,6 @@
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
+import { and, eq } from 'drizzle-orm';
 import * as schema from './schema';
 import 'dotenv/config';
 
@@ -164,7 +165,16 @@ async function main() {
 	];
 
 	for (const s of skillsData) {
-		await db.insert(schema.skills).values(s).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.skills)
+			.where(eq(schema.skills.name, s.name))
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.skills).set(s).where(eq(schema.skills.id, existing[0].id));
+		} else {
+			await db.insert(schema.skills).values(s);
+		}
 	}
 
 	console.log('Inserting experiences...');
@@ -223,7 +233,21 @@ async function main() {
 	];
 
 	for (const exp of experiencesData) {
-		await db.insert(schema.experiences).values(exp).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.experiences)
+			.where(
+				and(
+					eq(schema.experiences.company, exp.company),
+					eq(schema.experiences.role, exp.role)
+				)
+			)
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.experiences).set(exp).where(eq(schema.experiences.id, existing[0].id));
+		} else {
+			await db.insert(schema.experiences).values(exp);
+		}
 	}
 
 	console.log('Inserting projects...');
@@ -269,7 +293,16 @@ async function main() {
 	];
 
 	for (const proj of projectsData) {
-		await db.insert(schema.projects).values(proj).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.projects)
+			.where(eq(schema.projects.title, proj.title))
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.projects).set(proj).where(eq(schema.projects.id, existing[0].id));
+		} else {
+			await db.insert(schema.projects).values(proj);
+		}
 	}
 
 	console.log('Inserting open source contributions...');
@@ -301,7 +334,16 @@ async function main() {
 	];
 
 	for (const os of openSourceData) {
-		await db.insert(schema.openSource).values(os).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.openSource)
+			.where(eq(schema.openSource.title, os.title))
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.openSource).set(os).where(eq(schema.openSource.id, existing[0].id));
+		} else {
+			await db.insert(schema.openSource).values(os);
+		}
 	}
 
 	console.log('Inserting education...');
@@ -323,7 +365,21 @@ async function main() {
 	];
 
 	for (const edu of educationData) {
-		await db.insert(schema.education).values(edu).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.education)
+			.where(
+				and(
+					eq(schema.education.school, edu.school),
+					eq(schema.education.degree, edu.degree)
+				)
+			)
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.education).set(edu).where(eq(schema.education.id, existing[0].id));
+		} else {
+			await db.insert(schema.education).values(edu);
+		}
 	}
 
 	console.log('Inserting certificates...');
@@ -349,7 +405,21 @@ async function main() {
 	];
 
 	for (const cert of certificatesData) {
-		await db.insert(schema.certificates).values(cert).onConflictDoNothing();
+		const existing = await db
+			.select()
+			.from(schema.certificates)
+			.where(
+				and(
+					eq(schema.certificates.name, cert.name),
+					eq(schema.certificates.issuer, cert.issuer)
+				)
+			)
+			.limit(1);
+		if (existing.length > 0) {
+			await db.update(schema.certificates).set(cert).where(eq(schema.certificates.id, existing[0].id));
+		} else {
+			await db.insert(schema.certificates).values(cert);
+		}
 	}
 
 	console.log('✅ Seeding complete with authentic portfolio data!');

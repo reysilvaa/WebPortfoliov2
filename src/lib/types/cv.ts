@@ -1,4 +1,5 @@
 import type { PortfolioContent, Experience, Project, OpenSource, Education, Certificate } from './portfolio';
+import { fallbackProfile } from '$lib/profile';
 
 export interface CVParsedBullet {
 	prefix?: string;
@@ -127,18 +128,18 @@ const CATEGORY_ORDER = [
  * Transforms raw portfolio content queried from database into a strongly typed CVViewModel.
  */
 export function formatPortfolioToCV(content: PortfolioContent): CVViewModel {
-	const p = content.profile;
+	const p = { ...fallbackProfile, ...(content.profile || {}) };
 
 	const personal = {
-		fullName: p?.name || 'Moch. Reynald Silva Baktiar',
-		jobTitle: p?.role || 'Fullstack Software Engineer',
-		location: p?.location || 'Malang, Indonesia',
-		phone: p?.phone || '+62 852-3215-2313',
-		email: p?.email || 'reynaldsilva123@gmail.com',
-		website: p?.website || 'https://www.reynaldsilva.my.id',
-		linkedin: p?.linkedin || 'https://www.linkedin.com/in/reynald-silva/',
-		github: p?.github || 'https://github.com/reysilvaa',
-		summary: p?.bio || ''
+		fullName: p.name,
+		jobTitle: p.role,
+		location: p.location || '',
+		phone: p.phone || '',
+		email: p.email || '',
+		website: p.website || '',
+		linkedin: p.linkedin || '',
+		github: p.github || '',
+		summary: p.bio || ''
 	};
 
 	// Group skills by category

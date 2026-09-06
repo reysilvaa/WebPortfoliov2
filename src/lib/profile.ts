@@ -1,33 +1,9 @@
+import type { Profile, Project } from '$lib/types/portfolio';
+
 export const SITE_URL = 'https://www.reynaldsilva.my.id';
 
-export type ProfileData = {
-	name: string;
-	role: string;
-	bio: string;
-	avatarUrl: string | null;
-	email: string | null;
-	phone?: string | null;
-	location?: string | null;
-	website?: string | null;
-	github: string | null;
-	linkedin: string | null;
-};
-
-export type ProjectData = {
-	id: string;
-	title: string;
-	subtitle?: string | null;
-	period?: string | null;
-	description: string | null;
-	imageUrl?: string | null;
-	repoUrl?: string | null;
-	liveUrl?: string | null;
-	stars?: number | null;
-	forks?: number | null;
-	language?: string | null;
-	tags?: string | null;
-	isHidden?: boolean | null;
-};
+export type ProfileData = Omit<Profile, 'id'> & { id?: string };
+export type ProjectData = Project;
 
 export const fallbackProfile: ProfileData = {
 	name: 'Moch. Reynald Silva Baktiar',
