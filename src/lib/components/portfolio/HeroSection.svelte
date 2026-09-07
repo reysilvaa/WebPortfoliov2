@@ -2,17 +2,9 @@
 	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
+	import type { ProfileData } from '$lib/types';
 
-	type Profile = {
-		name: string;
-		role: string;
-		bio: string;
-		avatarUrl?: string | null;
-		email?: string | null;
-		github?: string | null;
-		linkedin?: string | null;
-	};
-	let { profile, scrollY }: { profile: Profile; scrollY: number } = $props();
+	let { profile, scrollY }: { profile: ProfileData; scrollY: number } = $props();
 
 	const roles = [
 		'Full Stack Engineer',

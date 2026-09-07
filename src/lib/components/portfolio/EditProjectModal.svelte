@@ -1,6 +1,7 @@
 <script lang="ts">
 	import FormModal from '$lib/components/ui/FormModal.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import type { Project } from '$lib/types';
 
 	let {
 		isOpen = $bindable(false),
@@ -8,15 +9,7 @@
 		onSave
 	}: {
 		isOpen: boolean;
-		project: {
-			id: string;
-			title: string;
-			description: string | null;
-			language: string | null;
-			tags: string | null;
-			liveUrl: string | null;
-			repoUrl: string | null;
-		} | null;
+		project: Project | null;
 		onSave: () => void;
 	} = $props();
 

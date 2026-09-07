@@ -1,14 +1,7 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
+	import type { Certificate } from '$lib/types';
 
-	type Certificate = {
-		id: string;
-		name: string;
-		issuer: string;
-		issueDate?: Date | string | null;
-		credentialUrl?: string | null;
-		imageUrl?: string | null;
-	};
 	let { items }: { items: { certificates: Certificate[] } } = $props();
 </script>
 

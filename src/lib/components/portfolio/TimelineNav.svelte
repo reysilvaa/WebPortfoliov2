@@ -1,16 +1,11 @@
 <script lang="ts">
+	import type { PortfolioContent } from '$lib/types';
+
 	let {
 		items,
 		activeSection
 	}: {
-		items: {
-			experiences: unknown[];
-			projects: unknown[];
-			skills: unknown[];
-			certificates: unknown[];
-			education?: unknown[];
-			openSource?: unknown[];
-		};
+		items: Omit<PortfolioContent, 'profile'>;
 		activeSection: string;
 	} = $props();
 

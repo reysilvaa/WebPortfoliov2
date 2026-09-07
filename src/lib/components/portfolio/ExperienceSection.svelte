@@ -1,14 +1,7 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
+	import type { Experience } from '$lib/types';
 
-	type Experience = {
-		id: string;
-		role: string;
-		company: string;
-		startDate: string;
-		endDate?: string | null;
-		description?: string | null;
-	};
 	let { items }: { items: { experiences: Experience[] } } = $props();
 </script>
 

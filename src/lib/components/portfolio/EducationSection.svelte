@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
-	import type { Education } from '$lib/types/education';
+	import type { Education } from '$lib/types';
 
 	let { items }: { items: { education: Education[] } } = $props();
 </script>

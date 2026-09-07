@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { scrollAnimation } from '$lib/actions/scroll-animation';
+	import type { Skill } from '$lib/types';
 
-	type Skill = {
-		id: string;
-		name: string;
-		category?: string | null;
-	};
 	let { items }: { items: { skills: Skill[] } } = $props();
 
 	let activeCategory = $state('All');
