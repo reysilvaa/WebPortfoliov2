@@ -71,7 +71,7 @@
 		<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{#each data.skills as skill (skill.id)}
 				<div class="flex flex-col rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-					<div class="mb-4 flex flex-1 items-start justify-between space-y-2">
+					<div class="mb-4 flex flex-1 items-start justify-between">
 						<div>
 							<h4 class="text-[16px] font-medium text-brand-text">
 								{skill.name}
@@ -79,11 +79,6 @@
 							<p class="text-[13px] text-neutral-500">
 								{skill.category}
 							</p>
-						</div>
-						<div
-							class="shrink-0 rounded bg-brand-text px-2 py-0.5 text-[10px] font-medium text-brand-bg uppercase"
-						>
-							{skill.level}%
 						</div>
 					</div>
 

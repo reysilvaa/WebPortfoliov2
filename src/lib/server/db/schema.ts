@@ -40,7 +40,6 @@ export const skills = sqliteTable('skills', {
 		.$defaultFn(() => crypto.randomUUID()),
 	name: text('name').notNull(),
 	category: text('category'),
-	level: integer('level').default(1),
 	order: integer('order').default(0)
 });
 

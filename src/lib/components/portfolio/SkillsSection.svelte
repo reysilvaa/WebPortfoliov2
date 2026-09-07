@@ -5,7 +5,6 @@
 		id: string;
 		name: string;
 		category?: string | null;
-		level?: number | null;
 	};
 	let { items }: { items: { skills: Skill[] } } = $props();
 
