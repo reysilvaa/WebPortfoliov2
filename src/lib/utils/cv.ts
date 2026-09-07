@@ -61,6 +61,95 @@ const CATEGORY_ORDER = [
 	'DevOps & Practices'
 ];
 
+function formatOpenSourceToCV(
+	rawOpenSource: PortfolioContent['openSource'] = []
+): CVFormattedOpenSource[] {
+	const curatedItems: CVFormattedOpenSource[] = [];
+	const prsByRepo: Record<string, PortfolioContent['openSource']> = {};
+
+	for (const os of rawOpenSource) {
+		const isMergedPr = os.role.toLowerCase().includes('merged');
+		if (isMergedPr) {
+			const repo = os.role.replace(' · merged', '').trim();
+			if (!prsByRepo[repo]) {
+				prsByRepo[repo] = [];
+			}
+			prsByRepo[repo].push(os);
+		} else {
+			curatedItems.push({
+				title: os.title,
+				role: os.role,
+				period: os.period || undefined,
+				repoUrl: os.repoUrl || undefined,
+				bullets: parseBulletPoints(os.description)
+			});
+		}
+	}
+
+	for (const [repo, prs] of Object.entries(prsByRepo)) {
+		const repoNameOnly = repo.includes('/') ? repo.split('/')[1] : repo;
+		const matchingCurated = curatedItems.find((item) => {
+			const itemTitleLower = item.title.toLowerCase();
+			const repoLower = repo.toLowerCase();
+			const repoNameLower = repoNameOnly.toLowerCase();
+			const matchesTitle = itemTitleLower === repoLower || itemTitleLower === repoNameLower;
+			const matchesUrl = item.repoUrl
+				? item.repoUrl.toLowerCase().includes(repoLower) ||
+					item.repoUrl.toLowerCase().includes(repoNameLower)
+				: false;
+			return matchesTitle || matchesUrl;
+		});
+
+		if (matchingCurated) {
+			const existingText = matchingCurated.bullets.map((b) => b.text).join(' ');
+			for (const pr of prs) {
+				const prNumMatch = pr.repoUrl?.match(/\/pull\/(\d+)/);
+				const prNum = prNumMatch ? `#${prNumMatch[1]}` : '';
+				if (prNum && existingText.includes(prNum)) {
+					continue;
+				}
+				matchingCurated.bullets.push({
+					prefix: prNum ? `PR ${prNum}` : undefined,
+					text: pr.title,
+					linkText: prNum ? `View PR ${prNum}` : pr.repoUrl ? 'View PR' : undefined,
+					linkUrl: pr.repoUrl || undefined
+				});
+			}
+		} else {
+			const years = Array.from(
+				new Set(prs.map((p) => p.period).filter((p): p is string => Boolean(p)))
+			).sort();
+			const period =
+				years.length > 1
+					? `${years[0]} – ${years[years.length - 1]}`
+					: years.length === 1
+						? years[0]
+						: undefined;
+
+			const bullets: CVParsedBullet[] = prs.map((pr) => {
+				const prNumMatch = pr.repoUrl?.match(/\/pull\/(\d+)/);
+				const prNum = prNumMatch ? `#${prNumMatch[1]}` : '';
+				return {
+					prefix: prNum ? `PR ${prNum}` : undefined,
+					text: pr.title,
+					linkText: prNum ? `View PR ${prNum}` : pr.repoUrl ? 'View PR' : undefined,
+					linkUrl: pr.repoUrl || undefined
+				};
+			});
+
+			curatedItems.push({
+				title: repo,
+				role: 'Contributor',
+				period,
+				repoUrl: `https://github.com/${repo}`,
+				bullets
+			});
+		}
+	}
+
+	return curatedItems;
+}
+
 /**
  * Transforms raw portfolio content queried from database into a strongly typed CVViewModel.
  */
@@ -124,13 +213,7 @@ export function formatPortfolioToCV(content: PortfolioContent): CVViewModel {
 		bullets: parseBulletPoints(proj.description)
 	}));
 
-	const openSource: CVFormattedOpenSource[] = (content.openSource || []).map((os) => ({
-		title: os.title,
-		role: os.role,
-		period: os.period || undefined,
-		repoUrl: os.repoUrl || undefined,
-		bullets: parseBulletPoints(os.description)
-	}));
+	const openSource = formatOpenSourceToCV(content.openSource);
 
 	const education: CVFormattedEducation[] = (content.education || []).map((edu) => ({
 		school: edu.school,
