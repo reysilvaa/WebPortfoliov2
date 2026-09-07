@@ -12,6 +12,7 @@
 	let { data }: { data: PageData } = $props();
 
 	let loading = $state(false);
+	let syncing = $state(false);
 	let title = $state('');
 	let role = $state('');
 	let repoUrl = $state('');
@@ -34,7 +35,26 @@
 	<DashboardHeader
 		title="Open Source Contributions"
 		description="Manage your open-source projects, libraries, and contributions displayed on your portfolio and CV."
-	/>
+	>
+		<form
+			method="POST"
+			action="?/sync-github"
+			use:enhance={() => {
+				syncing = true;
+				return async ({ update }) => {
+					await update();
+					syncing = false;
+				};
+			}}
+		>
+			<Button type="submit" isLoading={syncing} class="gap-2">
+				{#if !syncing}
+					<Icon name="refresh" />
+				{/if}
+				Sync with GitHub
+			</Button>
+		</form>
+	</DashboardHeader>
 
 	<section class="space-y-10">
 		<Card

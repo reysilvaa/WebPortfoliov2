@@ -13,26 +13,13 @@
 
 	const categories = $derived([
 		'All',
-		...new Set(
-			items.skills.flatMap((s: Skill) =>
-				(s.category || 'Other')
-					.split(',')
-					.map((c: string) => c.trim())
-					.filter(Boolean)
-			)
-		)
-	] as string[]);
+		...new Set(items.skills.map((s: Skill) => s.category?.trim() || 'Other').filter(Boolean))
+	]);
 
 	const filteredSkills = $derived(
 		activeCategory === 'All'
 			? items.skills
-			: items.skills.filter((s: Skill) => {
-					const cats = (s.category || 'Other')
-						.split(',')
-						.map((c: string) => c.trim())
-						.filter(Boolean);
-					return cats.includes(activeCategory);
-				})
+			: items.skills.filter((s: Skill) => (s.category?.trim() || 'Other') === activeCategory)
 	);
 </script>
 

@@ -1,5 +1,5 @@
 import { PortfolioService } from '$lib/server/services/portfolio.service';
-import { createCrudActions } from '$lib/server/actions';
+import { createCrudActions, requireOwner } from '$lib/server/actions';
 import { openSource } from '$lib/server/db/schema';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -17,5 +17,10 @@ export const actions: Actions = {
 		update: (id: string, data: Partial<typeof openSource.$inferInsert>) =>
 			PortfolioService.updateOpenSource(id, data),
 		remove: (id: string) => PortfolioService.deleteOpenSource(id)
-	})
+	}),
+	'sync-github': async (event) => {
+		requireOwner(event);
+		await PortfolioService.syncGithubOpenSource();
+		return { success: true };
+	}
 };

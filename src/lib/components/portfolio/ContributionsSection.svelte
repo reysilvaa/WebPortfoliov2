@@ -11,6 +11,20 @@
 	let contributions = $state<Contrib[] | null>(null);
 	let commits = $state<Commit[]>([]);
 
+	const packages = $derived(openSource.filter((os) => !os.role.toLowerCase().includes('merged')));
+	const dbContributions = $derived(
+		openSource
+			.filter((os) => os.role.toLowerCase().includes('merged'))
+			.map((os) => ({
+				repo: os.role.replace(' · merged', ''),
+				title: os.title,
+				url: os.repoUrl || '#'
+			}))
+	);
+	const displayContributions = $derived(
+		contributions && contributions.length > 0 ? contributions : dbContributions
+	);
+
 	onMount(() => {
 		fetch('/api/contributions')
 			.then((r) => r.json())
@@ -22,7 +36,7 @@
 	});
 </script>
 
-{#if openSource.length > 0 || (contributions && (contributions.length > 0 || commits.length > 0))}
+{#if packages.length > 0 || displayContributions.length > 0 || commits.length > 0}
 	<section id="contributions" class="mt-40">
 		<div class="mb-24 text-center">
 			<h2
@@ -37,7 +51,7 @@
 			></div>
 		</div>
 
-		{#if openSource.length > 0}
+		{#if packages.length > 0}
 			<div class="mb-10 flex items-center justify-between gap-4">
 				<h3 class="font-mono text-[11px] font-bold tracking-[0.2em] text-[#222]/50 uppercase">
 					Featured Projects & Roles
@@ -45,7 +59,7 @@
 				<span class="h-px flex-1 bg-[#222]/10"></span>
 			</div>
 			<div class="mb-16 grid grid-cols-1 gap-6 md:grid-cols-2">
-				{#each openSource as os (os.id)}
+				{#each packages as os (os.id)}
 					<a
 						href={os.repoUrl || '#'}
 						target={os.repoUrl ? '_blank' : undefined}
@@ -72,7 +86,7 @@
 			</div>
 		{/if}
 
-		{#if contributions && contributions.length > 0}
+		{#if displayContributions.length > 0}
 			<div class="mb-10 flex items-center justify-between gap-4">
 				<h3 class="font-mono text-[11px] font-bold tracking-[0.2em] text-[#222]/50 uppercase">
 					Merged Pull Requests
@@ -80,7 +94,7 @@
 				<span class="h-px flex-1 bg-[#222]/10"></span>
 			</div>
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-				{#each contributions as c (c.url)}
+				{#each displayContributions as c (c.url)}
 					<a
 						href={c.url}
 						target="_blank"

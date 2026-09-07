@@ -214,6 +214,43 @@ export class PortfolioService {
 		return results.flat();
 	}
 
+	static async syncGithubOpenSource() {
+		const { contributions } = await GithubService.getExternalContributions();
+		const existingItems = await db.select().from(openSource);
+		const existingUrls = new Set(
+			existingItems.filter((item) => item.repoUrl !== null).map((item) => item.repoUrl as string)
+		);
+
+		const operations = contributions.map((c) => {
+			const year = c.mergedAt ? new Date(c.mergedAt).getFullYear().toString() : 'Merged';
+			const itemData = {
+				title: c.title,
+				role: `${c.repo} · merged`,
+				repoUrl: c.url,
+				period: year,
+				description: `Merged pull request in ${c.repo}`,
+				order: 0
+			};
+
+			if (existingUrls.has(c.url)) {
+				return db
+					.update(openSource)
+					.set({
+						title: c.title,
+						role: `${c.repo} · merged`,
+						period: year
+					})
+					.where(eq(openSource.repoUrl, c.url))
+					.returning();
+			} else {
+				return db.insert(openSource).values(itemData).returning();
+			}
+		});
+
+		const results = await Promise.all(operations);
+		return results.flat();
+	}
+
 	static async toggleProjectVisibility(id: string, isHidden: boolean) {
 		return await db.update(projects).set({ isHidden }).where(eq(projects.id, id)).returning();
 	}
