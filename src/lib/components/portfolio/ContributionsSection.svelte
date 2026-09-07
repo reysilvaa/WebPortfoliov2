@@ -64,7 +64,7 @@
 		expandedCommitRepos[repo] = !expandedCommitRepos[repo];
 	}
 
-	function formatCommitDate(dateStr?: string) {
+	function formatCommitDate(dateStr = '') {
 		if (!dateStr) return '';
 		try {
 			const d = new Date(dateStr);
