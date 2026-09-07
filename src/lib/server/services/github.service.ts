@@ -101,29 +101,34 @@ export class GithubService {
 		const seenPrs = new Set<string>();
 		const contributions: { repo: string; title: string; url: string; mergedAt: string | null }[] =
 			[];
-		const prQuery = encodeURIComponent(`author:${GITHUB_USERNAME} is:pr is:merged`);
+		const prQueries = [
+			encodeURIComponent(`author:${GITHUB_USERNAME} is:pr is:merged`),
+			encodeURIComponent(`involves:${GITHUB_USERNAME} -author:${GITHUB_USERNAME} is:pr is:merged`)
+		];
 
-		for (let page = 1; page <= 2; page++) {
-			const data = await this.request<{ items?: SearchIssue[] }>(
-				`/search/issues?q=${prQuery}&per_page=100&page=${page}`
-			);
-			const items = data?.items ?? [];
-			if (items.length === 0) break;
+		for (const prQuery of prQueries) {
+			for (let page = 1; page <= 2; page++) {
+				const data = await this.request<{ items?: SearchIssue[] }>(
+					`/search/issues?q=${prQuery}&per_page=100&page=${page}`
+				);
+				const items = data?.items ?? [];
+				if (items.length === 0) break;
 
-			for (const issue of items) {
-				const repo = issue.repository_url.replace('https://api.github.com/repos/', '');
-				if (!isExternal(repo)) continue;
-				const key = `${repo}#${issue.number}`;
-				if (seenPrs.has(key)) continue;
-				seenPrs.add(key);
-				contributions.push({
-					repo,
-					title: issue.title,
-					url: issue.html_url,
-					mergedAt: issue.pull_request?.merged_at ?? null
-				});
+				for (const issue of items) {
+					const repo = issue.repository_url.replace('https://api.github.com/repos/', '');
+					if (!isExternal(repo)) continue;
+					const key = `${repo}#${issue.number}`;
+					if (seenPrs.has(key)) continue;
+					seenPrs.add(key);
+					contributions.push({
+						repo,
+						title: issue.title,
+						url: issue.html_url,
+						mergedAt: issue.pull_request?.merged_at ?? null
+					});
+				}
+				if (items.length < 100) break;
 			}
-			if (items.length < 100) break;
 		}
 
 		const commits: { repo: string; message: string; url: string; date: string }[] = [];
